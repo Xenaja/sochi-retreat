@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /privacy
+
+Sitemap: https://xenaja.github.io/sochi-retreat/sitemap.xml
