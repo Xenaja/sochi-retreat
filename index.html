@@ -18,7 +18,7 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🌅%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500&family=IBM+Plex+Sans:wght@400;500;600&family=Playfair+Display:ital,wght@0,500;1,500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500&family=Montserrat:ital,wght@0,500;0,600;1,500&display=swap" rel="stylesheet">
 <style>
 :root {
   /* Палитра: премиальный ретрит — песок и глубокое море */
@@ -35,8 +35,8 @@
   --line:       #DED8CB;
   --eyebrow:    #8A8578;
 
-  --font-display: 'Playfair Display', Georgia, serif;
-  --font-body:    'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-display: 'Montserrat', 'Helvetica Neue', Arial, sans-serif;
+  --font-body:    Arial, 'Helvetica Neue', Helvetica, sans-serif;
   --font-mono:    'IBM Plex Mono', ui-monospace, 'Consolas', monospace;
 
   --section-pad: 64px;
@@ -454,6 +454,45 @@ footer.site a:hover { color: #fff; }
   .method-wrap { display: grid; grid-template-columns: 1.1fr 1fr; gap: 56px; align-items: start; }
   .stay-wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 52px; align-items: start; }
   .foot-grid { grid-template-columns: 1.5fr 1fr 1fr; }
+}
+
+/* ---------- укрупнённая шкала на десктопе ----------
+   мобильные размеры не трогаем: там кегль уже был в норме        */
+@media (min-width: 1024px) {
+  body { font-size: 18px; }
+  h1 { font-size: clamp(48px, 5.6vw, 80px); }
+  h2 { font-size: clamp(34px, 3.4vw, 48px); }
+  h3 { font-size: 26px; }
+  .sec-head .lead, .pain-note { font-size: 21px; }
+
+  /* основной текст блоков */
+  .pain p, .energy p, .place-card p, .amen p, .tl-item p, .callout li,
+  .incl-col li, .author-list li, .travel-card p, .travel-card li,
+  .faq-a p, .proof-labs, .warn, .room .n, .method-text p { font-size: 17px; }
+  .faq-q, .rev-body b, .room .p b { font-size: 18px; }
+  .tl-item h3, .travel-card h3 { font-size: 22px; }
+
+  /* мелкий текст — не ниже 16px */
+  .note, .field label, .check, .form-status, .form-alt, .wave .until,
+  .pay-link, .rev-body span, .room .n small, .room .p small,
+  .addr, footer.site, .fact span, .chip, .socials a, .foot-bottom { font-size: 16px; }
+
+  /* моно-метки */
+  .eyebrow, .hero-kicker, .place-card h3, .rooms-block h3, .amen h4,
+  .callout h3, .foot-grid h4, .wave .lbl, .energy .num, .logo b { font-size: 13px; }
+  .wave .tag { font-size: 12px; }
+  .tl-time, .rev-body em, .hero-meta { font-size: 14px; }
+
+  /* hero, цены, интерфейс */
+  .hero-lead { font-size: 21px; }
+  .wave-badge { font-size: 16px; }
+  .fact b { font-size: 38px; }
+  .wave .amount { font-size: 40px; }
+  .wave[data-state="active"] .amount { font-size: 50px; }
+  .btn { font-size: 17px; padding: 17px 30px; min-height: 52px; }
+  .btn-sm { font-size: 16px; padding: 13px 22px; min-height: 46px; }
+  .nav-links a { font-size: 16px; }
+  .chip { padding: 11px 18px; }
 }
 </style>
 </head>
