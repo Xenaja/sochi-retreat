@@ -39,13 +39,17 @@
   --font-body:    Arial, 'Helvetica Neue', Helvetica, sans-serif;
   --font-mono:    'IBM Plex Mono', ui-monospace, 'Consolas', monospace;
 
-  --section-pad: 64px;
+  /* три режима ширины: текст — узкий, сетки — широкий, фото и тёмные секции — во всю ширину */
+  --w-text:      680px;
+  --w-wide:      1240px;
+
+  --section-pad: 72px;
   --gutter:      20px;
   --header-h:    62px;
-  --container:   min(1160px, calc(100% - 2 * var(--gutter)));
+  --container:   min(var(--w-wide), calc(100% - 2 * var(--gutter)));
 }
 @media (min-width: 1024px) {
-  :root { --section-pad: 96px; --gutter: 40px; --header-h: 68px; }
+  :root { --section-pad: 140px; --gutter: 40px; --header-h: 68px; }
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -60,6 +64,10 @@ body {
 img, svg { max-width: 100%; display: block; }
 a { color: var(--accent); }
 .container { width: var(--container); margin: 0 auto; }
+/* ограничение по ширине текста — слева, без центрирования */
+.w-text { max-width: var(--w-text); }
+/* во всю ширину экрана из любого контейнера */
+.full-bleed { width: 100vw; margin-left: calc(50% - 50vw); }
 section { padding: var(--section-pad) 0; }
 section[id], main [id] { scroll-margin-top: calc(var(--header-h) + 18px); }
 #top { scroll-margin-top: 0; }
@@ -71,18 +79,25 @@ section[id], main [id] { scroll-margin-top: calc(var(--header-h) + 18px); }
 
 /* ---------- типографика ---------- */
 h1, h2, h3 { font-family: var(--font-display); font-weight: 500; line-height: 1.15; text-wrap: balance; }
-h1 { font-size: clamp(40px, 6vw, 68px); line-height: 1.05; letter-spacing: -0.01em; }
-h2 { font-size: clamp(30px, 4vw, 40px); letter-spacing: -0.005em; }
+h1 { font-size: clamp(56px, 9vw, 128px); line-height: .95; letter-spacing: -0.03em; }
+h2 { font-size: clamp(36px, 5vw, 64px); line-height: 1.04; letter-spacing: -0.02em; }
 h3 { font-size: 24px; }
+/* курсивом — одно слово в каждом крупном заголовке */
+h1 em, h2 em { font-style: italic; color: var(--accent); }
 p, li { text-wrap: pretty; }
+/* эйбрау: метка — линия — счётчик секции */
 .eyebrow {
   font-family: var(--font-mono); font-size: 12px; font-weight: 500;
   text-transform: uppercase; letter-spacing: .16em; color: var(--eyebrow);
-  display: inline-flex; align-items: center; gap: 12px; margin-bottom: 16px;
+  display: flex; align-items: center; gap: 16px; margin-bottom: 20px;
 }
-.eyebrow::before { content: ""; width: 24px; height: 1px; background: var(--eyebrow); }
-.sec-head { max-width: 68ch; margin-bottom: clamp(32px, 5vw, 56px); }
-.sec-head .lead { color: var(--ink-soft); margin-top: 16px; font-size: 19px; max-width: 68ch; }
+.eyebrow::after { content: ""; flex: 1; height: 1px; background: var(--line); }
+.eyebrow .num { flex: none; }
+.dark .eyebrow::after { background: rgba(245,241,234,.3); }
+.sec-head { margin-bottom: clamp(36px, 5vw, 72px); }
+.sec-head h2 { max-width: 16ch; }
+/* лид-абзац секции — крупнее и темнее остального текста */
+.sec-head .lead { color: var(--ink); margin-top: 24px; font-size: 21px; line-height: 1.5; max-width: var(--w-text); }
 .center { margin-left: auto; margin-right: auto; text-align: center; }
 .center .eyebrow { justify-content: center; }
 .mono { font-family: var(--font-mono); white-space: nowrap; font-variant-numeric: tabular-nums; }
@@ -152,17 +167,28 @@ header.site { position: sticky; top: 0; z-index: 100;
 .hero { position: relative; min-height: calc(100svh - var(--header-h));
   display: flex; align-items: flex-end; overflow: hidden;
   padding: 120px 0 clamp(44px, 8vh, 90px); color: var(--deep-ink); }
-.hero-bg { position: absolute; inset: 0; z-index: 0; }
-.hero-bg img { width: 100%; height: 100%; object-fit: cover; object-position: center; }
+.hero-bg { position: absolute; inset: 0; z-index: 0; overflow: hidden; }
+.hero-bg img { width: 100%; height: 100%; object-fit: cover; object-position: center;
+  animation: heroZoom 20s ease-out forwards; }
+@keyframes heroZoom { from { transform: scale(1); } to { transform: scale(1.06); } }
 .hero-bg::after { content: ""; position: absolute; inset: 0;
-  background: linear-gradient(to top, rgba(10,26,32,.72) 0%, rgba(10,26,32,.35) 45%, rgba(10,26,32,.1) 100%); }
+  background: linear-gradient(to top, rgba(10,26,32,.45) 0%, rgba(10,26,32,.24) 48%, rgba(10,26,32,.05) 100%); }
 .hero .container { position: relative; z-index: 1; }
+/* метка прокрутки: тонкая линия, без подписи */
+.hero-scroll { position: absolute; left: 50%; bottom: 20px; z-index: 1; transform: translateX(-50%);
+  width: 1px; height: 40px; background: rgba(245,241,234,.5); overflow: hidden; }
+.hero-scroll::after { content: ""; display: block; width: 1px; height: 14px;
+  background: var(--deep-ink); animation: scrollHint 2.4s ease-in-out infinite; }
+@keyframes scrollHint { 0% { transform: translateY(-14px); } 60%, 100% { transform: translateY(40px); } }
 .hero-kicker { font-family: var(--font-mono); font-size: 12px; font-weight: 500; letter-spacing: .16em;
   text-transform: uppercase; color: rgba(245,241,234,.92); margin-bottom: 20px;
   text-shadow: 0 1px 12px rgba(10,26,32,.55); }
-.hero h1 { max-width: 16ch; color: #fff; }
-.hero h1 em { font-style: italic; }
-.hero-lead { margin-top: 20px; max-width: 56ch; font-size: 20px; line-height: 1.5; color: rgba(245,241,234,.92); }
+/* вуаль ослаблена, поэтому текст держится на собственной тени, а не на заливке */
+.hero h1 { max-width: 12ch; color: #fff; text-shadow: 0 2px 40px rgba(10,26,32,.65), 0 1px 4px rgba(10,26,32,.35); }
+/* на закатном фото терракота теряется — акцент в hero держит курсив, а не цвет */
+.hero h1 em { color: var(--deep-ink); text-shadow: 0 2px 30px rgba(10,26,32,.8); }
+.hero-lead { margin-top: 26px; max-width: 52ch; font-size: 20px; line-height: 1.5; color: #fff;
+  text-shadow: 0 1px 16px rgba(10,26,32,.75); }
 .hero-actions { display: flex; flex-direction: column; gap: 12px; margin-top: 32px; }
 .hero-meta { display: flex; flex-wrap: wrap; margin-top: 26px;
   font-family: var(--font-mono); font-size: 13px; color: var(--deep-soft); }
@@ -174,14 +200,27 @@ header.site { position: sticky; top: 0; z-index: 100;
 .wave-badge .dot { width: 6px; height: 6px; background: var(--accent); flex: none; margin-top: 9px; }
 
 /* ---------- полоса фактов ---------- */
-.facts { border-bottom: 1px solid var(--line); padding: 32px 0; }
-.facts-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 20px 16px; }
-.fact b { display: block; font-family: var(--font-display); font-weight: 500; font-size: 32px; line-height: 1.1; }
-.fact span { display: block; font-size: 15px; color: var(--ink-soft); margin-top: 4px; }
+/* числа как графика: цифра во всю высоту строки, подпись — моно рядом */
+.facts { border-bottom: 1px solid var(--line); padding: clamp(44px, 6vw, 88px) 0; }
+.facts-grid { display: grid; grid-template-columns: 1fr; }
+.fact { display: flex; align-items: baseline; gap: clamp(16px, 2.5vw, 34px); padding: clamp(14px, 2vw, 26px) 0; }
+.fact + .fact { border-top: 1px solid var(--line); }
+.fact b { font-family: var(--font-display); font-weight: 500; line-height: .9;
+  font-size: clamp(64px, 10vw, 140px); letter-spacing: -0.045em; font-variant-numeric: tabular-nums; }
+.fact span { font-family: var(--font-mono); font-size: 12px; font-weight: 500; letter-spacing: .16em;
+  text-transform: uppercase; color: var(--eyebrow); }
 
-/* ---------- карточки и сетки ---------- */
+/* ---------- сетки ---------- */
+/* коробка-карточка остаётся только в блоке болей и в ценах — остальное живёт на фоне страницы */
 .card { background: var(--paper); border: 1px solid var(--card-line); border-radius: 2px; padding: 24px 26px; }
 .grid { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+.plain { padding: 0; background: none; border: none; }
+.grid > .plain { padding-top: 22px; border-top: 1px solid var(--line); }
+.plain + .plain { margin-top: 28px; padding-top: 28px; border-top: 1px solid var(--line); }
+
+/* ---------- фото-паузы во всю ширину ---------- */
+.photo-break { height: 60vh; min-height: 300px; max-height: 720px; overflow: hidden; }
+.photo-break img { width: 100%; height: 100%; object-fit: cover; object-position: center; }
 
 /* ---------- «знакомо?» ---------- */
 .pain h3 { color: var(--accent); margin-bottom: 10px; }
@@ -194,8 +233,10 @@ header.site { position: sticky; top: 0; z-index: 100;
 .dark .eyebrow::before { background: var(--deep-soft); }
 .dark h2, .dark h3 { color: #fff; }
 .dark .lead, .dark p, .dark .note { color: var(--deep-soft); }
+.dark .sec-head .lead { color: var(--deep-ink); }
 .dark .card { background: rgba(245,241,234,.06); border-color: rgba(245,241,234,.16); }
-.dark-photo { position: absolute; inset: 0; opacity: .14; z-index: 0; }
+/* на тёмных секциях фоном — фото, а не плоская заливка */
+.dark-photo { position: absolute; inset: 0; opacity: .18; z-index: 0; mix-blend-mode: luminosity; }
 .dark-photo img { width: 100%; height: 100%; object-fit: cover; }
 .dark > .container { position: relative; z-index: 1; }
 .method-text p + p { margin-top: 18px; }
@@ -205,37 +246,58 @@ header.site { position: sticky; top: 0; z-index: 100;
 .callout h3 { color: var(--deep-soft) !important; font-family: var(--font-mono); font-size: 12px;
   text-transform: uppercase; letter-spacing: .16em; margin-bottom: 12px; font-weight: 500; }
 .callout ul { list-style: none; display: grid; gap: 9px; }
-.callout li { color: var(--deep-ink); font-size: 16px; padding-left: 20px; position: relative; }
+.callout li { color: var(--deep-ink); font-size: 16px; padding-left: 30px; position: relative; }
 .callout li::before { content: "—"; position: absolute; left: 0; color: var(--deep-soft); }
 
-/* ---------- программа ---------- */
-.energy { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
-.energy .num { font-family: var(--font-mono); font-size: 12px; font-weight: 500; color: var(--accent);
-  letter-spacing: .16em; display: block; margin-bottom: 14px; }
-.energy h3 { margin-bottom: 10px; }
-.energy p { color: var(--ink-soft); font-size: 16px; }
+/* ---------- программа: четыре энергетики как разделы книги ---------- */
+.energy { display: grid; }
+.energy-row { display: grid; grid-template-columns: 1fr; gap: 10px;
+  padding: clamp(26px, 3.5vw, 46px) 0; border-top: 1px solid var(--line); }
+.energy-row:last-child { border-bottom: 1px solid var(--line); }
+.energy-num { font-family: var(--font-display); font-weight: 500; line-height: .82;
+  font-size: clamp(56px, 9vw, 120px); letter-spacing: -0.045em; color: var(--line);
+  font-variant-numeric: tabular-nums; }
+.energy-body { max-width: 560px; }
+.energy-cat { display: block; font-family: var(--font-mono); font-size: 12px; font-weight: 500;
+  letter-spacing: .16em; text-transform: uppercase; color: var(--eyebrow); margin-bottom: 12px; }
+.energy-row h3 { margin-bottom: 12px; }
+.energy-row p { color: var(--ink-soft); font-size: 16px; }
+@media (min-width: 1024px) {
+  .energy-row { grid-template-columns: 200px 1fr; gap: 56px; align-items: start; }
+}
 .chips { display: flex; flex-wrap: wrap; align-items: stretch; gap: 8px; margin-top: 32px; }
 .chip { flex: 1 1 calc(50% - 4px); min-width: 0; background: var(--paper); border: 1px solid var(--card-line);
   border-radius: 2px; padding: 10px 14px; font-size: 15px; line-height: 1.4; color: var(--ink); }
 @media (min-width: 640px) { .chip { flex: 0 0 auto; max-width: 100%; padding: 10px 16px; font-size: 15px; } }
 
-/* ---------- день на ретрите ---------- */
-.timeline { display: grid; gap: 0; border-left: 1px solid var(--line); margin-left: 5px; }
-.tl-item { position: relative; padding: 0 0 28px 26px; }
-.tl-item:last-child { padding-bottom: 0; }
-.tl-item::before { content: ""; position: absolute; left: -4px; top: 9px; width: 7px; height: 7px;
-  background: var(--accent); }
-.tl-time { font-family: var(--font-mono); font-size: 13px; font-weight: 500; color: var(--accent); letter-spacing: .06em; }
-.tl-item h3 { margin: 6px 0 6px; font-size: 20px; }
-.tl-item p { color: var(--ink-soft); font-size: 16px; max-width: 68ch; }
+/* ---------- день на ретрите: время слева, линия, описание справа ---------- */
+.timeline { display: grid; }
+.tl-item { display: grid; grid-template-columns: 74px 1fr; align-items: start;
+  padding: clamp(20px, 2.5vw, 32px) 0; border-top: 1px solid var(--line); }
+.tl-item:last-child { border-bottom: 1px solid var(--line); }
+.tl-time { font-family: var(--font-mono); font-size: 18px; font-weight: 500; color: var(--accent);
+  letter-spacing: .01em; font-variant-numeric: tabular-nums; line-height: 1.3; }
+.tl-body { padding-left: clamp(20px, 3vw, 40px); border-left: 1px solid var(--line); max-width: var(--w-text); }
+.tl-item h3 { margin: 0 0 8px; font-size: 20px; }
+.tl-item p { color: var(--ink-soft); font-size: 16px; }
+@media (min-width: 1024px) {
+  .tl-item { grid-template-columns: 150px 1fr; }
+  .tl-time { font-size: 24px; }
+}
 .day-photos { display: grid; gap: 16px; margin-top: 36px; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
 .day-photos img { border-radius: 2px; width: 100%; height: auto; aspect-ratio: 4/3; object-fit: cover; }
 .note { margin-top: 28px; font-size: 15px; color: var(--ink-soft); max-width: 68ch; }
 
-/* ---------- место ---------- */
-.place-card { background: var(--paper); border: 1px solid var(--card-line); border-radius: 2px; overflow: hidden; }
-.place-card img { width: 100%; height: auto; aspect-ratio: 3/2; object-fit: cover; }
-.place-card .body { padding: 24px 26px; }
+/* ---------- место: асимметричная сетка, без рамок ---------- */
+.place-grid { display: grid; gap: 16px; grid-template-columns: 1fr; }
+.place-card img { width: 100%; height: clamp(220px, 42vw, 320px); object-fit: cover; border-radius: 2px; }
+.place-card .body { padding: 18px 0 0; }
+@media (min-width: 1024px) {
+  .place-grid { grid-template-columns: 6fr 4fr; column-gap: 24px; row-gap: 30px; align-items: start; }
+  .place-grid > :nth-child(1) { grid-row: span 2; }
+  .place-grid > :nth-child(1) img { height: 520px; }
+  .place-grid > :nth-child(2) img, .place-grid > :nth-child(3) img { height: 250px; }
+}
 .place-card h3 { color: var(--eyebrow); font-family: var(--font-mono); font-size: 12px;
   letter-spacing: .16em; text-transform: uppercase; font-weight: 500; margin-bottom: 12px; }
 .place-card p { color: var(--ink-soft); font-size: 16px; }
@@ -272,7 +334,7 @@ header.site { position: sticky; top: 0; z-index: 100;
 .gallery img, .author-photo img, .rev-media img { filter: saturate(.92) contrast(1.03); }
 
 /* ---------- номера и питание ---------- */
-.rooms-block + .rooms-block { margin-top: 28px; }
+.rooms-block + .rooms-block { margin-top: 34px; }
 .rooms-block h3 { font-family: var(--font-mono); font-size: 12px; text-transform: uppercase;
   letter-spacing: .16em; color: var(--eyebrow); font-weight: 500; margin-bottom: 14px; }
 .room { display: grid; grid-template-columns: 1fr auto; gap: 4px 16px; align-items: start;
@@ -297,16 +359,19 @@ header.site { position: sticky; top: 0; z-index: 100;
   .room .p { text-align: left; }
   .room .p small { text-align: left; }
 }
-.warn { margin-top: 26px; background: var(--paper); border: 1px solid var(--card-line);
-  border-left: 2px solid var(--accent); border-radius: 2px; padding: 20px 22px; font-size: 16px; }
+.warn { margin-top: 30px; border-left: 2px solid var(--accent); padding: 4px 0 4px 22px; font-size: 16px; }
 .warn strong { display: block; margin-bottom: 8px; }
 .warn a { font-family: var(--font-mono); white-space: nowrap; }
 
-/* ---------- что входит ---------- */
-.incl { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
-.incl-col { background: var(--paper); border: 1px solid var(--card-line); border-radius: 2px; padding: 24px 26px; }
-.incl-col.out { background: transparent; border-style: dashed; }
+/* ---------- что входит: две колонки, разделённые вертикальной линией ---------- */
+.incl { display: grid; gap: 36px; grid-template-columns: 1fr; }
+.incl-col { background: none; border: none; padding: 0; }
 .incl-col h3 { margin-bottom: 18px; }
+@media (min-width: 768px) {
+  .incl { grid-template-columns: 1fr 1fr; gap: 0; }
+  .incl-col.in { padding-right: clamp(28px, 4vw, 56px); }
+  .incl-col.out { border-left: 1px solid var(--line); padding-left: clamp(28px, 4vw, 56px); }
+}
 .incl-col ul { list-style: none; display: grid; gap: 12px; }
 .incl-col li { padding-left: 26px; position: relative; font-size: 16px; }
 .incl-col.in li::before { content: ""; position: absolute; left: 2px; top: 9px; width: 11px; height: 7px;
@@ -314,10 +379,10 @@ header.site { position: sticky; top: 0; z-index: 100;
 .incl-col.out li { color: var(--ink-soft); }
 .incl-col.out li::before { content: ""; position: absolute; left: 3px; top: 13px; width: 11px; height: 1px; background: var(--ink-soft); }
 
-/* ---------- автор ---------- */
+/* ---------- автор: портрет на половину ширины, без рамки ---------- */
 .author-wrap { display: grid; gap: 32px; }
-.author-photo { border-radius: 2px; overflow: hidden; background: var(--line); max-width: 320px; }
-.author-photo img { width: 100%; height: auto; }
+.author-photo { border-radius: 2px; overflow: hidden; }
+.author-photo img { width: 100%; height: clamp(320px, 60vw, 560px); object-fit: cover; object-position: top center; }
 .author-list { list-style: none; display: grid; gap: 11px; margin-top: 24px; }
 .author-list li { padding-left: 24px; position: relative; font-size: 16px; color: var(--ink-soft); max-width: 68ch; }
 .author-list li::before { content: ""; position: absolute; left: 0; top: 13px; width: 12px; height: 1px; background: var(--accent); }
@@ -388,6 +453,7 @@ header.site { position: sticky; top: 0; z-index: 100;
 
 /* ---------- дорога ---------- */
 .travel-grid { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+.travel-card { padding-top: 24px; border-top: 1px solid var(--line); }
 .travel-card h3 { margin-bottom: 14px; font-size: 20px; }
 .travel-card p, .travel-card li { color: var(--ink-soft); font-size: 16px; }
 .travel-card ul { list-style: none; display: grid; gap: 10px; margin-top: 12px; }
@@ -397,8 +463,7 @@ header.site { position: sticky; top: 0; z-index: 100;
 
 /* ---------- форма ---------- */
 .book { border-top: 1px solid var(--line); }
-.form-wrap { background: var(--paper); border: 1px solid var(--card-line); border-radius: 2px;
-  padding: clamp(24px, 5vw, 40px); max-width: 620px; margin: 0 auto; }
+.form-wrap { max-width: 620px; margin: 0 auto; }
 .field { margin-bottom: 18px; }
 .field label { display: block; font-size: 15px; font-weight: 500; margin-bottom: 8px; }
 .field input, .field select, .field textarea {
@@ -441,6 +506,8 @@ footer.site a:hover { color: #fff; }
   *, *::before, *::after { animation: none !important; transition: none !important; }
   .reveal { opacity: 1; transform: none; }
   .mobile-bar { transition: none; }
+  .hero-bg img { transform: none; }
+  .hero-scroll { display: none; }
 }
 
 /* ---------- адаптив ---------- */
@@ -450,8 +517,7 @@ footer.site a:hover { color: #fff; }
 }
 @media (min-width: 1024px) {
   .gallery { grid-template-columns: 1fr; }
-  .author-wrap { grid-template-columns: 320px 1fr; gap: 52px; align-items: start; }
-  .method-wrap { display: grid; grid-template-columns: 1.1fr 1fr; gap: 56px; align-items: start; }
+  .author-wrap { grid-template-columns: 1fr 520px; gap: 64px; align-items: start; }
   .stay-wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 52px; align-items: start; }
   .foot-grid { grid-template-columns: 1.5fr 1fr 1fr; }
 }
@@ -460,10 +526,10 @@ footer.site a:hover { color: #fff; }
    мобильные размеры не трогаем: там кегль уже был в норме        */
 @media (min-width: 1024px) {
   body { font-size: 18px; }
-  h1 { font-size: clamp(48px, 5.6vw, 80px); }
-  h2 { font-size: clamp(34px, 3.4vw, 48px); }
   h3 { font-size: 26px; }
-  .sec-head .lead, .pain-note { font-size: 21px; }
+  .pain-note { font-size: 21px; }
+  /* текст тёмных секций живёт в узкой колонке */
+  .dark .sec-head, .method-wrap { max-width: var(--w-text); }
 
   /* основной текст блоков */
   .pain p, .energy p, .place-card p, .amen p, .tl-item p, .callout li,
@@ -477,16 +543,15 @@ footer.site a:hover { color: #fff; }
   .pay-link, .rev-body span, .room .n small, .room .p small,
   .addr, footer.site, .fact span, .chip, .socials a, .foot-bottom { font-size: 16px; }
 
-  /* моно-метки */
-  .eyebrow, .hero-kicker, .place-card h3, .rooms-block h3, .amen h4,
-  .callout h3, .foot-grid h4, .wave .lbl, .energy .num, .logo b { font-size: 13px; }
+  /* моно-метки: эйбрау остаётся 12px — это второй полюс масштаба */
+  .hero-kicker, .place-card h3, .rooms-block h3, .amen h4,
+  .callout h3, .foot-grid h4, .wave .lbl, .energy-cat, .logo b { font-size: 13px; }
   .wave .tag { font-size: 12px; }
-  .tl-time, .rev-body em, .hero-meta { font-size: 14px; }
+  .rev-body em, .hero-meta { font-size: 14px; }
 
   /* hero, цены, интерфейс */
   .hero-lead { font-size: 21px; }
   .wave-badge { font-size: 16px; }
-  .fact b { font-size: 38px; }
   .wave .amount { font-size: 40px; }
   .wave[data-state="active"] .amount { font-size: 50px; }
   .btn { font-size: 17px; padding: 17px 30px; min-height: 52px; }
@@ -556,6 +621,7 @@ footer.site a:hover { color: #fff; }
       <span>300 м до моря</span>
     </div>
   </div>
+  <span class="hero-scroll" aria-hidden="true"></span>
 </section>
 
 <!-- ============ ФАКТЫ ============ -->
@@ -571,8 +637,8 @@ footer.site a:hover { color: #fff; }
 <section class="pain" id="pain">
   <div class="container">
     <div class="sec-head reveal">
-      <span class="eyebrow">Знакомо?</span>
-      <h2>Дело не в тайм-менеджменте.<br>Дело в том, что кончилась энергия</h2>
+      <span class="eyebrow">Знакомо?<span class="num">01 / 12</span></span>
+      <h2>Дело не в тайм-менеджменте.<br>Дело в том, что кончилась <em>энергия</em></h2>
       <p class="lead">Если хотя бы три пункта из шести — про вас, этот тренинг собран ровно для такого состояния.</p>
     </div>
     <div class="grid grid-3">
@@ -617,8 +683,8 @@ footer.site a:hover { color: #fff; }
   <div class="container">
     <div class="method-wrap">
       <div class="reveal">
-        <span class="eyebrow">Метод</span>
-        <h2>Энергоактивная психология</h2>
+        <span class="eyebrow">Метод<span class="num">02 / 12</span></span>
+        <h2>Энергоактивная <em>психология</em></h2>
         <div class="method-text" style="margin-top:20px">
           <p>Направление, которое рассматривает психику человека неотделимо от его биоэнергетической
           сферы, а физическое тело — как своего рода производную психики. Автор направления —
@@ -658,34 +724,46 @@ footer.site a:hover { color: #fff; }
 <section id="program">
   <div class="container">
     <div class="sec-head reveal">
-      <span class="eyebrow">Программа</span>
-      <h2>Четыре энергетики, с которыми работаем</h2>
+      <span class="eyebrow">Программа<span class="num">03 / 12</span></span>
+      <h2>Четыре <em>энергетики</em>, с которыми работаем</h2>
       <p class="lead">Каждый день — один блок теории и практика, которая эту теорию проверяет на вас же.</p>
     </div>
     <div class="energy">
-      <div class="card reveal">
-        <span class="num">01 / ФИЗИЧЕСКАЯ</span>
+      <div class="energy-row reveal">
+        <div class="energy-num">01</div>
+        <div class="energy-body">
+        <span class="energy-cat">Физическая</span>
         <h3>Тело как источник, а не как расходник</h3>
         <p>Как обеспечивать физическую энергию для поддержки тела и активного ведения дел: дыхание,
         движение, сон, питание, холод и баня.</p>
+        </div>
       </div>
-      <div class="card reveal">
-        <span class="num">02 / ЭМОЦИОНАЛЬНАЯ</span>
+      <div class="energy-row reveal">
+        <div class="energy-num">02</div>
+        <div class="energy-body">
+        <span class="energy-cat">Эмоциональная</span>
         <h3>Что съедает ресурс незаметно</h3>
         <p>Как проработать неконтролируемые эмоции и достигнуть стабильности, чтобы не терять
         контроль в переговорах и в бизнес-среде.</p>
+        </div>
       </div>
-      <div class="card reveal">
-        <span class="num">03 / МЕНТАЛЬНАЯ</span>
+      <div class="energy-row reveal">
+        <div class="energy-num">03</div>
+        <div class="energy-body">
+        <span class="energy-cat">Ментальная</span>
         <h3>Ясность и скорость решений</h3>
         <p>Как развить ментальную энергию и сформировать прочное мышление для принятия
         стратегических решений — без «тумана» и бесконечного анализа.</p>
+        </div>
       </div>
-      <div class="card reveal">
-        <span class="num">04 / СОЦИАЛЬНАЯ</span>
+      <div class="energy-row reveal">
+        <div class="energy-num">04</div>
+        <div class="energy-body">
+        <span class="energy-cat">Социальная</span>
         <h3>Команда, партнёры, род, семья</h3>
         <p>Как направить поток на формирование эффективной команды и надёжных партнёрств.
         Разбираем родовые, семейные и профессиональные взаимосвязи.</p>
+        </div>
       </div>
     </div>
 
@@ -693,9 +771,9 @@ footer.site a:hover { color: #fff; }
       <h2 style="font-size:clamp(1.25rem,3vw,1.6rem)">А также разбираем отдельно</h2>
     </div>
     <div class="grid grid-3">
-      <div class="card reveal"><h3>Энергетика руководителя</h3><p style="color:var(--ink-soft);font-size:.96rem;margin-top:8px">Состояние первого лица и то, как оно расходится по всей организации.</p></div>
-      <div class="card reveal"><h3>Утечки в организации</h3><p style="color:var(--ink-soft);font-size:.96rem;margin-top:8px">Где компания теряет ресурс: процессы, роли, конфликты, HR.</p></div>
-      <div class="card reveal"><h3>Финансы и энергетика</h3><p style="color:var(--ink-soft);font-size:.96rem;margin-top:8px">Деньги как контур: почему приходят и почему уходят потоки.</p></div>
+      <div class="plain reveal"><h3>Энергетика руководителя</h3><p style="color:var(--ink-soft);font-size:.96rem;margin-top:8px">Состояние первого лица и то, как оно расходится по всей организации.</p></div>
+      <div class="plain reveal"><h3>Утечки в организации</h3><p style="color:var(--ink-soft);font-size:.96rem;margin-top:8px">Где компания теряет ресурс: процессы, роли, конфликты, HR.</p></div>
+      <div class="plain reveal"><h3>Финансы и энергетика</h3><p style="color:var(--ink-soft);font-size:.96rem;margin-top:8px">Деньги как контур: почему приходят и почему уходят потоки.</p></div>
     </div>
 
     <div class="sec-head reveal" style="margin-top:clamp(44px,7vw,72px);margin-bottom:0">
@@ -725,51 +803,69 @@ footer.site a:hover { color: #fff; }
 
 <div class="horizon"></div>
 
+<div class="photo-break full-bleed reveal">
+  <img decoding="async" src="photos/g09.webp" alt="Закат над морем с территории ретрит-центра" loading="lazy" width="1200" height="800">
+</div>
+
 <!-- ============ ДЕНЬ НА РЕТРИТЕ ============ -->
 <section id="day">
   <div class="container">
     <div class="sec-head reveal">
-      <span class="eyebrow">Как проходит день</span>
-      <h2>Ритм, ради которого сюда едут</h2>
+      <span class="eyebrow">Как проходит день<span class="num">04 / 12</span></span>
+      <h2><em>Ритм</em>, ради которого сюда едут</h2>
       <p class="lead">Ранний подъём, море, работа в группе и вечерний процесс. К третьему дню
       организм перестаёт сопротивляться — и начинается самое интересное.</p>
     </div>
     <div class="timeline reveal">
       <div class="tl-item">
         <div class="tl-time">07:00</div>
-        <h3>Практика на рассвете</h3>
+        <div class="tl-body">
+          <h3>Практика на рассвете</h3>
         <p>Энергоактивное дыхание и биоэнергетическая йога на террасе с видом на море.</p>
+        </div>
       </div>
       <div class="tl-item">
         <div class="tl-time">09:30</div>
-        <h3>Завтрак</h3>
+        <div class="tl-body">
+          <h3>Завтрак</h3>
         <p>Вегетарианская кухня центра. В отдельные дни — блок оздоравливающего питания.</p>
+        </div>
       </div>
       <div class="tl-item">
         <div class="tl-time">10:30</div>
-        <h3>Теоретический блок</h3>
+        <div class="tl-body">
+          <h3>Теоретический блок</h3>
         <p>Андрей Захаревич разбирает одну из четырёх энергетик — с примерами из практики консультирования.</p>
+        </div>
       </div>
       <div class="tl-item">
         <div class="tl-time">13:30</div>
-        <h3>Обед и своё время</h3>
+        <div class="tl-body">
+          <h3>Обед и своё время</h3>
         <p>Море в 300 метрах, два бассейна на территории, SUP, тень и тишина.</p>
+        </div>
       </div>
       <div class="tl-item">
         <div class="tl-time">16:00</div>
-        <h3>Групповая работа</h3>
+        <div class="tl-body">
+          <h3>Групповая работа</h3>
         <p>Разбор личных ситуаций: бизнес, команда, деньги, отношения. Работаем на конкретике участников.</p>
+        </div>
       </div>
       <div class="tl-item">
         <div class="tl-time">19:00</div>
-        <h3>Ужин</h3>
+        <div class="tl-body">
+          <h3>Ужин</h3>
         <p>И короткая пауза перед вечерним блоком.</p>
+        </div>
       </div>
       <div class="tl-item">
         <div class="tl-time">20:30</div>
-        <h3>Вечерний процесс</h3>
+        <div class="tl-body">
+          <h3>Вечерний процесс</h3>
         <p>Многомерные энергетические практики. В несколько дней заезда — ночные трансформационные процессы,
         банное оздоровление и холодовые воздействия.</p>
+        </div>
       </div>
     </div>
     <div class="day-photos reveal">
@@ -787,12 +883,12 @@ footer.site a:hover { color: #fff; }
 <section id="place">
   <div class="container">
     <div class="sec-head reveal">
-      <span class="eyebrow">Место</span>
-      <h2>Ретрит-центр «Лето» в Вардане</h2>
+      <span class="eyebrow">Место<span class="num">05 / 12</span></span>
+      <h2>Ретрит-центр «Лето» в <em>Вардане</em></h2>
       <p class="lead">Закрытая территория на склоне с видом на море: пальмы, два бассейна, баня,
       просторные залы и открытые площадки для практик. До галечного пляжа — 300 метров.</p>
     </div>
-    <div class="grid grid-3">
+    <div class="place-grid">
       <article class="place-card reveal">
         <img decoding="async" src="photos/place-live.webp" alt="Корпуса ретрит-центра с бассейнами и видом на море" loading="lazy" width="900" height="600">
         <div class="body">
@@ -868,7 +964,7 @@ footer.site a:hover { color: #fff; }
 <section id="author">
   <div class="container">
     <div class="sec-head reveal">
-      <span class="eyebrow">Автор и ведущий</span>
+      <span class="eyebrow">Автор и ведущий<span class="num">06 / 12</span></span>
       <h2>Захаревич Андрей Станиславович</h2>
     </div>
     <div class="author-wrap">
@@ -898,12 +994,16 @@ footer.site a:hover { color: #fff; }
 
 <div class="horizon"></div>
 
+<div class="photo-break full-bleed reveal">
+  <img decoding="async" src="photos/g08.webp" alt="SUP-доски на галечном пляже у ретрит-центра" loading="lazy" width="1200" height="800">
+</div>
+
 <!-- ============ ВИДЕООТЗЫВЫ ============ -->
 <section id="reviews">
   <div class="container">
     <div class="sec-head reveal">
-      <span class="eyebrow">Отзывы</span>
-      <h2>Что говорят те, кто уже прошёл</h2>
+      <span class="eyebrow">Отзывы<span class="num">07 / 12</span></span>
+      <h2>Что говорят те, кто уже <em>прошёл</em></h2>
       <p class="lead">Десять видеоотзывов с семинаров и мастер-классов Андрея Захаревича.
       Видео открывается прямо здесь — ничего не грузится, пока вы не нажмёте.</p>
     </div>
@@ -994,10 +1094,11 @@ footer.site a:hover { color: #fff; }
 
 <!-- ============ СТОИМОСТЬ ============ -->
 <section class="dark" id="price">
+  <div class="dark-photo" aria-hidden="true"><img decoding="async" src="photos/g06.webp" alt="Ретрит-центр и SUP-доски, вид на море" loading="lazy" width="1200" height="800"></div>
   <div class="container">
     <div class="sec-head reveal">
-      <span class="eyebrow">Стоимость</span>
-      <h2>Чем раньше — тем дешевле</h2>
+      <span class="eyebrow">Стоимость<span class="num">08 / 12</span></span>
+      <h2>Чем раньше — тем <em>дешевле</em></h2>
       <p class="lead">Цена растёт по мере приближения заезда — организаторам нужно
       понимать размер группы заранее.</p>
     </div>
@@ -1035,7 +1136,7 @@ footer.site a:hover { color: #fff; }
 <section>
   <div class="container">
     <div class="sec-head reveal">
-      <h2>Что входит в стоимость участия</h2>
+      <h2>Что входит в стоимость <em>участия</em></h2>
     </div>
     <div class="incl">
       <div class="incl-col in reveal">
@@ -1068,13 +1169,13 @@ footer.site a:hover { color: #fff; }
 <section id="stay">
   <div class="container">
     <div class="sec-head reveal">
-      <span class="eyebrow">Организационное</span>
-      <h2>Проживание и питание</h2>
+      <span class="eyebrow">Организационное<span class="num">09 / 12</span></span>
+      <h2>Проживание и <em>питание</em></h2>
       <p class="lead">Оплачиваются отдельно от участия в тренинге и напрямую ретрит-центру.
       Мы показываем цены здесь, чтобы вы могли посчитать полный бюджет поездки заранее.</p>
     </div>
     <div class="stay-wrap">
-      <div class="card reveal rooms">
+      <div class="rooms reveal">
         <div class="rooms-block">
           <h3>Корпус 4</h3>
           <div class="room"><span class="n">2-местный стандарт<small>Односпальные кровати</small></span><span class="p"><b>2 000 ₽ <i>с человека</i></b><small>4 000 ₽ за номер</small></span></div>
@@ -1097,7 +1198,7 @@ footer.site a:hover { color: #fff; }
         холодильник, телевизор, душ с туалетом. Номера видовые — на море и территорию.</p>
       </div>
       <div class="reveal">
-        <div class="card">
+        <div class="plain">
           <h3 style="margin-bottom:12px">Питание</h3>
           <div class="room"><span class="n">Трёхразовое: завтрак, обед, ужин</span><span class="p"><b>1 800 ₽ <i>с человека</i></b><small>в день</small></span></div>
           <div class="room"><span class="n">Отдельный приём пищи</span><span class="p"><b>600 ₽ <i>с человека</i></b><small>за заказ</small></span></div>
@@ -1110,7 +1211,7 @@ footer.site a:hover { color: #fff; }
           Бронь по телефону <a href="tel:+79057259797">+7 905 725-97-97</a> (Юлия).
           Актуальную стоимость уточняйте при бронировании.
         </div>
-        <div class="card" style="margin-top:18px">
+        <div class="plain" style="margin-top:28px">
           <h3 style="margin-bottom:10px">Пример бюджета на 7 ночей</h3>
           <p style="color:var(--ink-soft);font-size:.96rem">
             Участие <b class="mono">70 000 ₽</b> (при оплате до 1 августа) + проживание в 2-местном
@@ -1125,12 +1226,16 @@ footer.site a:hover { color: #fff; }
 
 <div class="horizon"></div>
 
+<div class="photo-break full-bleed reveal">
+  <img decoding="async" src="photos/g05.webp" alt="Внутренний двор ретрит-центра с бассейном" loading="lazy" width="1200" height="800">
+</div>
+
 <!-- ============ FAQ ============ -->
 <section id="faq">
   <div class="container">
     <div class="sec-head reveal">
-      <span class="eyebrow">Вопросы</span>
-      <h2>О чём обычно спрашивают до оплаты</h2>
+      <span class="eyebrow">Вопросы<span class="num">10 / 12</span></span>
+      <h2>О чём обычно <em>спрашивают</em> до оплаты</h2>
     </div>
     <div class="faq reveal">
       <div class="faq-item">
@@ -1203,11 +1308,11 @@ footer.site a:hover { color: #fff; }
 <section id="travel">
   <div class="container">
     <div class="sec-head reveal">
-      <span class="eyebrow">Дорога</span>
-      <h2>Как добраться до Вардане</h2>
+      <span class="eyebrow">Дорога<span class="num">11 / 12</span></span>
+      <h2>Как добраться до <em>Вардане</em></h2>
     </div>
     <div class="travel-grid">
-      <div class="card travel-card reveal">
+      <div class="travel-card reveal">
         <h3>Из аэропорта Сочи</h3>
         <ul>
           <li>Скоростной электричкой «Аэропорт (Сочи)» до станции Вардане</li>
@@ -1215,20 +1320,20 @@ footer.site a:hover { color: #fff; }
           <li>Расписание электричек — на tutu.ru</li>
         </ul>
       </div>
-      <div class="card travel-card reveal">
+      <div class="travel-card reveal">
         <h3>С ж/д вокзала</h3>
         <ul>
           <li>От вокзала в Вардане или Лоо — на такси (Яндекс, Убер, Максим)</li>
           <li>Если поезд идёт до Сочи без остановок в Вардане и Лоо, придётся возвращаться на электричке или такси</li>
         </ul>
       </div>
-      <div class="card travel-card reveal">
+      <div class="travel-card reveal">
         <h3>Адрес и сбор группы</h3>
         <p class="addr">Краснодарский край, г. Сочи,<br>Лазаревский район, пос. Вардане,<br>ул. Рассветная 22/14</p>
         <p style="margin-top:14px">Сбор группы в отеле — <b>20 августа к 18:00 мск</b>.
         Заселение в номера с 14:00.</p>
       </div>
-      <div class="card travel-card reveal">
+      <div class="travel-card reveal">
         <h3>Возьмите с собой</h3>
         <ul>
           <li>Туристический коврик или пенку</li>
@@ -1245,8 +1350,8 @@ footer.site a:hover { color: #fff; }
 <section class="book" id="book">
   <div class="container">
     <div class="sec-head center reveal" style="max-width:640px">
-      <span class="eyebrow">Заявка</span>
-      <h2>Забронировать место в группе</h2>
+      <span class="eyebrow">Заявка<span class="num">12 / 12</span></span>
+      <h2>Забронировать <em>место</em> в группе</h2>
       <p class="lead">Оставьте контакт — организаторы свяжутся в течение дня, ответят на вопросы,
       помогут выбрать номер и, если нужно, оформят рассрочку. Это ещё не оплата.</p>
     </div>
@@ -1418,6 +1523,32 @@ footer.site a:hover { color: #fff; }
     entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
   }, { rootMargin: '0px 0px -8% 0px', threshold: 0.08 });
   els.forEach((e, i) => { e.style.transitionDelay = (i % 3) * 60 + 'ms'; io.observe(e); });
+})();
+
+/* ---------- крупные числа: счёт от нуля при появлении ---------- */
+(function(){
+  const nums = [...document.querySelectorAll('.fact b')];
+  const noMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (!nums.length || noMotion || !('IntersectionObserver' in window)) return;
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (!e.isIntersecting) return;
+      io.unobserve(e.target);
+      const el = e.target, raw = el.textContent.trim();
+      const target = parseInt(raw.replace(/\D/g, ''), 10);
+      const suffix = raw.replace(/[\d\s]/g, '');
+      if (!target) return;
+      const dur = 1000, t0 = performance.now();
+      el.textContent = '0' + suffix;
+      const step = now => {
+        const k = Math.min(1, (now - t0) / dur);
+        el.textContent = Math.round(target * (1 - Math.pow(1 - k, 3))) + suffix;
+        if (k < 1) requestAnimationFrame(step);
+      };
+      requestAnimationFrame(step);
+    });
+  }, { threshold: .4 });
+  nums.forEach(n => io.observe(n));
 })();
 
 /* ---------- волны цен + плашка в hero ---------- */
