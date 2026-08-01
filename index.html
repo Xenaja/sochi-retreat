@@ -262,9 +262,12 @@ h3, .h3 { font-size:20px; line-height:1.26; margin:0 0 10px; }
 }
 @media (min-width:1200px) { .hero-h1 b, .hero-h1 i { font-size:72px; line-height:1.08; } }
 .hero-sub { margin:0; font-size:17px; line-height:1.5; color:rgba(246,242,236,.9); }
-.hero-list { list-style:none; margin:0; padding:0; display:grid; gap:5px; }
-.hero-list li { display:grid; grid-template-columns:14px 1fr; gap:6px; font-size:17px; line-height:1.45; }
-.hero-list span { font-family:'Prata',serif; font-size:19px; line-height:1; color:var(--sand); }
+.hero-claim { margin:0; font-size:19px; line-height:1.4; max-width:560px; }
+@media (min-width:1200px) { .hero-claim { font-size:21px; } }
+/* стрелка вместо снятых буллетов: тот же тёплый акцент, что был у «+».
+   Prata стрелки не содержит — берём текстовый шрифт, иначе она подставляется
+   системным и выходит заметно тоньше строки. */
+.hero-up { font-weight:500; font-size:1.05em; color:var(--sand); margin-left:.3em; }
 .hero-cta { width:100%; margin-top:8px; }
 @media (min-width:768px) { .hero-cta { width:auto; align-self:flex-start; padding-left:44px; padding-right:44px; } }
 
@@ -592,11 +595,7 @@ a.sr-only:focus { left:0; top:0; width:auto; height:auto; z-index:60;
         <p class="eb hero-eb">Вардане · Сочи · 20—27 августа 2026</p>
         <h1 class="hero-h1"><b>Энергия</b><i>моря и личной силы</i></h1>
         <p class="hero-sub">Тренинг по энергоактивной психологии с Андреем Захаревичем</p>
-        <ul class="hero-list">
-          <li><span>+</span>снять выгорание, выйти в ресурс</li>
-          <li><span>+</span>пересобрать бизнес-стратегию</li>
-          <li><span>+</span>кратно увеличить доходы</li>
-        </ul>
+        <p class="hero-claim">Как снять выгорание, пересобрать бизнес-стратегию и выйти на кратный доход<span class="hero-up" aria-hidden="true">↑</span></p>
         <a class="btn hero-cta" href="#form">Забронировать место</a>
       </div>
     </div>
@@ -664,7 +663,7 @@ a.sr-only:focus { left:0; top:0; width:auto; height:auto; z-index:60;
           <div class="ph author-ph">
             <img src="photos/r/w-rock.webp" alt="Андрей Захаревич, автор направления «Энергоактивная психология»" width="1120" height="1015" loading="lazy" decoding="async">
           </div>
-          <figcaption class="cap" style="margin-top:12px;">Ему 68. Сорок лет практики — это не только теория.</figcaption>
+          <figcaption class="cap" style="margin-top:12px;">Ему 68. Сорок лет он проверяет метод на себе.</figcaption>
         </figure>
         <div>
           <p class="eb">Автор и ведущий</p>
