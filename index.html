@@ -260,7 +260,10 @@ h3, .h3 { font-size:20px; line-height:1.26; margin:0 0 10px; }
    ============================================================ */
 @media (max-width:767px) {
   .stack { display:block; }
-  .stack > * { position:sticky; min-height:168px; box-sizing:border-box; }
+  /* display:block убивает gap сетки: без рамки и отбивки карточки одного цвета
+     встают вплотную и читаются как одна сплошная плашка */
+  .stack > * { position:sticky; min-height:168px; box-sizing:border-box;
+    margin-bottom:10px; border:1px solid var(--line-soft); }
   /* +var(--hh): иначе карточки прилипают под фиксированную шапку и прячутся за ней */
   .stack > *:nth-child(1) { top:calc(var(--hh) + 12px); }
   .stack > *:nth-child(2) { top:calc(var(--hh) + 23px); }
@@ -398,6 +401,20 @@ a.sr-only:focus { left:0; top:0; width:auto; height:auto; z-index:60;
 .stg > *:nth-child(6) { transition-delay:450ms; }
 .stg > *:nth-child(7) { transition-delay:540ms; }
 .stg > *:nth-child(8) { transition-delay:630ms; }
+/* от 768px липкой колоды нет — движение карточек несёт ступенчатый въезд,
+   поэтому там он крупнее и разнесён шире, иначе на широком экране не читается */
+@media (min-width:768px) {
+  .stg.rv > * { transform:translateY(28px); transition-duration:.7s; }
+  .stg > *:nth-child(2) { transition-delay:110ms; }
+  .stg > *:nth-child(3) { transition-delay:220ms; }
+  .stg > *:nth-child(4) { transition-delay:330ms; }
+  .stg > *:nth-child(5) { transition-delay:440ms; }
+  .stg > *:nth-child(6) { transition-delay:550ms; }
+  .stg > *:nth-child(7) { transition-delay:660ms; }
+  .stg > *:nth-child(8) { transition-delay:770ms; }
+  .stg.rv.in > * { transform:none; }
+}
+
 .g3 > .wave:nth-child(2) { transition-delay:110ms; }
 .g3 > .wave:nth-child(3) { transition-delay:220ms; }
 .mobile-bar .btn { animation:none; }
@@ -829,11 +846,11 @@ a.sr-only:focus { left:0; top:0; width:auto; height:auto; z-index:60;
       <h2 class="rv" style="max-width:640px;">Ретрит-центр «Лето», Вардане</h2>
       <p class="muted rv" style="max-width:var(--w-text); margin-bottom:32px;">Субтропики Лазаревского района: галечные пляжи, дендрарий, озёра и водопады. Закрытая территория на склоне над морем: три корпуса, бассейн, беседки и террасы, где проходят дневные сессии. Спуск к галечному пляжу — семь минут пешком. Во всех номерах кондиционер, холодильник, душ; охраняемая парковка.</p>
 
-      <div class="grid g2 rv" style="margin-bottom:12px;">
+      <div class="grid g2 rv stg" style="margin-bottom:12px;">
         <div class="ph" style="height:240px;"><img src="photos/r/g-circle.webp" alt="Круг группы на террасе с видом на море" width="1400" height="1400" loading="lazy" decoding="async" style="object-position:center 35%;"></div>
         <div class="ph" style="height:240px;"><img src="photos/r/v-pool.webp" alt="Бассейн и территория центра" width="1600" height="1000" loading="lazy" decoding="async"></div>
       </div>
-      <div class="grid g3 rv" style="margin-bottom:36px;">
+      <div class="grid g3 rv stg" style="margin-bottom:36px;">
         <div class="ph" style="height:180px;"><img src="photos/r/v-sunset.webp" alt="Закат над морем с террасы центра" width="1200" height="900" loading="lazy" decoding="async"></div>
         <div class="ph" style="height:180px;"><img src="photos/r/v-gazebo.webp" alt="Беседка для практик с видом на море" width="1200" height="900" loading="lazy" decoding="async"></div>
         <div class="ph" style="height:180px;"><img src="photos/r/v-loungers.webp" alt="Зона отдыха у бассейна" width="1200" height="900" loading="lazy" decoding="async"></div>
@@ -877,7 +894,7 @@ a.sr-only:focus { left:0; top:0; width:auto; height:auto; z-index:60;
     <div class="wrap">
       <h2 class="rv" style="max-width:640px;">Что говорят те, кто уже прошёл</h2>
       <p class="muted rv" style="max-width:620px; margin-bottom:36px;">Десять видеоотзывов с семинаров и мастер-классов Андрея Захаревича. Видео открывается прямо здесь — YouTube не загружается, пока вы не нажмёте.</p>
-      <div class="grid g3 rv" id="revGrid" style="gap:24px 16px; margin-bottom:28px;">
+      <div class="grid g3 rv stg" id="revGrid" style="gap:24px 16px; margin-bottom:28px;">
         <article class="rev">
           <div class="rev-media">
             <button type="button" data-yt="HT-pJl2V1lA" aria-label="Смотреть видеоотзыв: Радислав Гандапас">
@@ -1014,7 +1031,7 @@ a.sr-only:focus { left:0; top:0; width:auto; height:auto; z-index:60;
         </div>
       </div>
 
-      <div class="grid g3 rv" style="margin-bottom:36px;">
+      <div class="grid g3 rv stg" style="margin-bottom:36px;">
         <div class="card" style="background:var(--foam);"><p>Участие в рассрочку</p></div>
         <div class="card" style="background:var(--foam);"><p>Индивидуальная консультация</p></div>
         <div class="card" style="background:var(--foam);"><p>Работа с наставником</p></div>
