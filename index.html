@@ -346,9 +346,12 @@ h3, .h3 { font-size:20px; line-height:1.26; margin:0 0 10px; }
    Десктопные блоки варианта 4a
    ============================================================ */
 .author-grid { display:grid; gap:28px; }
-@media (min-width:1200px) { .author-grid { grid-template-columns:560px minmax(0,1fr); gap:72px; align-items:start; } }
-.author-ph { aspect-ratio:1/1; }
-.author-ph img { object-position:50% 72%; }
+@media (min-width:1200px) { .author-grid { grid-template-columns:440px minmax(0,1fr); gap:72px; align-items:start; } }
+/* 440×660 — бокс уже по пропорции, чем w-rock.webp (1120×1015).
+   Иначе вертикальный object-position не работает вовсе: cover упирается
+   в ширину, и в кадр лезут вода и камни. */
+.author-ph { aspect-ratio:440/660; }
+.author-ph img { object-position:50% 24%; }
 .author-nums { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin:26px 0; }
 .author-nums .eb { margin:8px 0 0; }
 .reg { list-style:none; padding:0; margin:0 0 26px; }
@@ -394,21 +397,55 @@ h3, .h3 { font-size:20px; line-height:1.26; margin:0 0 10px; }
 .word-q { margin:0 0 18px; font-size:26px; line-height:1.3; }
 @media (min-width:1200px) { .word-q { font-size:38px; } }
 
+/* ---- приглашённый мастер ----
+   Prata только у имени и цитаты; роль — Onest, иначе в колонке
+   сходятся два дисплейных кегля и блок читается мешаниной.
+   На телефоне порядок: имя и роль → портрет → текст, чтобы фото
+   не открывало блок без контекста (order, DOM-порядок общий). */
 .pav { display:grid; gap:28px; }
-@media (min-width:768px) and (max-width:1199px) { .pav { grid-template-columns:300px minmax(0,1fr); gap:36px; align-items:start; } }
-@media (min-width:1200px) { .pav { grid-template-columns:480px minmax(0,1fr); gap:64px; align-items:start; } }
-.pav-portrait { height:420px; }
+.pav-head { order:1; }
+.pav-portrait { order:2; height:470px; }
+.pav-body { order:3; display:flex; flex-direction:column; gap:28px; }
 @media (max-width:767px) {
   .pav-portrait { margin-left:calc(-1 * var(--px)); margin-right:calc(-1 * var(--px)); border-radius:0; }
 }
-@media (min-width:768px)  { .pav-portrait { height:400px; } }
-@media (min-width:1200px) { .pav-portrait { height:660px; } }
-.pav-portrait img { object-position:50% 30%; }
-.pav-gong { height:200px; border-bottom-left-radius:0; border-bottom-right-radius:0; }
-@media (min-width:1200px) { .pav-gong { height:320px; } }
-.pav-gong + .card { border-top-left-radius:0; border-top-right-radius:0; }
-.pav-quote { margin:0; font-family:'Prata',serif; font-size:21px; line-height:1.34; }
-@media (min-width:1200px) { .pav-quote { font-size:24px; } }
+.pav-portrait img { object-position:50% 22%; }
+
+@media (min-width:768px) {
+  .pav { grid-template-columns:340px minmax(0,1fr); grid-template-rows:auto 1fr; gap:0 36px; }
+  .pav-portrait { grid-area:1 / 1 / 3 / 2; height:460px; align-self:center; }
+  .pav-head { grid-area:1 / 2 / 2 / 3; }
+  .pav-body { grid-area:2 / 2 / 3 / 3; justify-content:center; padding-top:24px; }
+}
+@media (min-width:1200px) {
+  .pav { grid-template-columns:520px minmax(0,1fr); gap:0 64px; }
+  .pav-portrait { height:640px; align-self:start; }
+  .pav-portrait img { object-position:50% 24%; }
+  .pav-body { justify-content:space-between; padding-top:28px; }
+}
+
+.pav-name { margin:0 0 12px; font-size:32px; line-height:1.1; }
+@media (min-width:768px)  { .pav-name { font-size:44px; } }
+@media (min-width:1200px) { .pav-name { font-size:56px; } }
+.pav-role { margin:0; font-size:17px; line-height:1.45; color:var(--sea-ink); }
+@media (min-width:768px)  { .pav-role { font-size:18px; } }
+@media (min-width:1200px) { .pav-role { font-size:20px; } }
+.pav-q { border-top:1px solid var(--line); padding-top:18px; }
+@media (min-width:1200px) { .pav-q { padding-top:28px; } }
+.pav-quote { margin:0 0 14px; font-family:'Prata',serif; font-size:22px; line-height:1.4; }
+@media (min-width:1200px) { .pav-quote { font-size:28px; } }
+.pav-q .eb { margin:0; }
+
+/* ---- гонг-медитация: full-bleed полоса, тот же приём, что у фото-пауз ---- */
+.gong { height:420px; min-height:0; margin-bottom:8px; }
+@media (min-width:1200px) { .gong { height:560px; margin-bottom:24px; } }
+.gong .scrim { background:linear-gradient(180deg,rgba(34,48,58,0) 34%,rgba(34,48,58,.89) 100%); }
+.gong-split { display:grid; gap:12px; }
+@media (min-width:1200px) { .gong-split { grid-template-columns:minmax(0,1fr) 520px; gap:64px; align-items:end; } }
+.gong-h { margin:0; font-size:28px; line-height:1.12; color:var(--foam); }
+@media (min-width:1200px) { .gong-h { font-size:44px; } }
+.gong-split p { margin:0; font-size:16px; color:var(--foam); }
+@media (min-width:1200px) { .gong-split p { font-size:18px; } }
 
 /* ---- волны цены ---- */
 .wave { position:relative; }
@@ -877,34 +914,41 @@ a.sr-only:focus { left:0; top:0; width:auto; height:auto; z-index:60;
   <section class="sec sec--pebble" id="pavitra">
     <div class="wrap">
       <div class="pav">
+        <div class="pav-head rv">
+          <p class="eb">Приглашённый мастер</p>
+          <h2 class="pav-name">Павитра</h2>
+          <p class="pav-role">Проводник Три йоги, парной йоги и гонг-медитации. 25 лет практики.</p>
+        </div>
+
         <div class="ph pav-portrait rv">
           <img src="photos/r/p-portrait.webp" alt="Павитра, приглашённый мастер программы" width="854" height="1280" loading="lazy" decoding="async">
         </div>
-        <div>
-          <p class="eb rv">Приглашённый мастер</p>
-          <h2 class="rv">Павитра</h2>
-          <p class="pr rv" style="font-size:20px; line-height:1.3; color:var(--sea-ink); margin-bottom:22px;">Проводник Три йоги, парной йоги и гонг-медитации. 25 лет практики.</p>
-          <p class="rv" style="max-width:var(--w-text); margin-bottom:32px;">Ведёт утренние практики йоги и проводит гонг-медитацию – звуковую практику глубокого расслабления. Сочетает телесную, дыхательную и медитативную работу, подбирая нагрузку под особенности тела и состояния каждого участника. Акцент – на верном и безопасном выполнении, расслаблении и осознанности.</p>
 
-          <div class="rv" style="max-width:var(--w-text); margin-bottom:32px;">
-            <div class="ph pav-gong">
-              <img src="photos/r/p-gong.webp" alt="Павитра проводит гонг-медитацию" width="1280" height="720" loading="lazy" decoding="async">
-            </div>
-            <div class="card" style="background:var(--foam);">
-              <h3>Гонг-медитация</h3>
-              <p>Групповая звуковая практика: участники лежат, Павитра играет на гонге. Вибрации звука дают глубокое мышечное и нервное расслабление – многие сравнивают состояние после с эффектом полноценного дневного сна.</p>
-            </div>
+        <div class="pav-body rv">
+          <p style="margin:0;">Ведёт утренние практики йоги и проводит гонг-медитацию – звуковую практику глубокого расслабления. Сочетает телесную, дыхательную и медитативную работу, подбирая нагрузку под особенности тела и состояния каждого участника. Акцент – на верном и безопасном выполнении, расслаблении и осознанности.</p>
+          <div class="pav-q">
+            <blockquote class="pav-quote">«Представьте, что вы стоите на берегу океана, и на вас накатывают волны звука. Напряжение уходит, оставляя место покою – вы как чистый холст, готовый принять новые краски».</blockquote>
+            <p class="eb">Павитра</p>
           </div>
-
-          <div class="rv" style="max-width:var(--w-text); padding-top:26px; border-top:1px solid var(--line);">
-            <blockquote class="pav-quote">Представьте, что вы стоите на берегу океана, и на вас накатывают волны звука. Напряжение уходит, оставляя место покою – вы как чистый холст, готовый принять новые краски.</blockquote>
-            <p class="eb" style="margin:16px 0 24px;">Павитра</p>
-            <a class="link" href="http://t.me/pavitrayog" target="_blank" rel="noopener">Телеграм Павитры</a>
-          </div>
+          <a class="link" href="http://t.me/pavitrayog" target="_blank" rel="noopener">Телеграм Павитры</a>
         </div>
       </div>
     </div>
   </section>
+
+  <!-- ================= гонг-медитация: полоса во всю ширину ================= -->
+  <figure class="bleed gong rv">
+    <div class="ph">
+      <img src="photos/r/p-gong.webp" alt="Павитра проводит гонг-медитацию" width="1280" height="720" loading="lazy" decoding="async">
+    </div>
+    <div class="scrim"></div>
+    <figcaption>
+      <div class="gong-split">
+        <h3 class="pr gong-h">Гонг-медитация</h3>
+        <p>Групповая звуковая практика: участники лежат, Павитра играет на гонге. Вибрации звука дают глубокое мышечное и нервное расслабление – многие сравнивают состояние после с эффектом полноценного дневного сна.</p>
+      </div>
+    </figcaption>
+  </figure>
 
   <!-- ================= тренинг и море ================= -->
   <section class="sec">
