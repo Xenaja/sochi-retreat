@@ -23,6 +23,8 @@
 /* ============================================================
    Токены. Палитра снята с фотографии рассвета photos/r/g-shore.webp.
    --gold строго функционален: действие или срочность, больше ничего.
+   --sea — только эйбраузы и подписи на светлом; заливать им секции
+   с наборным текстом нельзя (кремовый на нём 3.5:1). Заливка — --sea-ink (5.5:1).
    ============================================================ */
 :root {
   --foam:#F6F2EC;
@@ -36,16 +38,17 @@
 
   --line:rgba(110,132,150,.4);
   --line-soft:rgba(110,132,150,.24);
-  --line-foam:rgba(246,242,236,.24);
-  --on-dark:rgba(246,242,236,.85);
+  --line-foam:rgba(246,242,236,.26);
+  --dim:rgba(246,242,236,.88);   /* второстепенное на тёмном — не светлее */
+  --card-dark:rgba(246,242,236,.1);
 
   --w-page:1200px;
   --w-text:760px;
-  --px:20px;          /* боковой паддинг */
-  --py:56px;          /* вертикальный паддинг секции */
-  --hh:60px;          /* высота шапки */
-  --rail:28px;        /* место под шкалу дня */
-  --r:8px;            /* скругления — 8px везде, больше нет */
+  --px:20px;
+  --py:56px;
+  --hh:60px;
+  --rail:28px;
+  --r:8px;
   --ease:cubic-bezier(.22,1,.36,1);
 }
 @media (min-width:768px)  { :root { --px:48px;  --py:72px;  --hh:68px; --rail:34px; } }
@@ -74,39 +77,45 @@ h3, .h3 { font-size:20px; line-height:1.26; margin:0 0 10px; }
 @media (min-width:768px)  { h2,.h2 { font-size:40px; line-height:1.14; } h3,.h3 { font-size:24px; } }
 @media (min-width:1200px) { h2,.h2 { font-size:50px; line-height:1.12; margin-bottom:22px; } h3,.h3 { font-size:26px; } }
 
-/* эйбрау / лейблы */
 .eb {
   font-family:'Onest','Golos Text',system-ui,sans-serif; font-weight:500;
   font-size:12px; letter-spacing:.08em; text-transform:uppercase; line-height:1.4;
   color:var(--sea); margin:0 0 16px;
 }
 @media (min-width:1200px) { .eb { font-size:13px; } }
-.on-dark .eb, .sec--sea .eb, .sec--ink .eb { color:rgba(246,242,236,.8); }
+.sec--deep .eb, .sec--ink .eb { color:var(--dim); }
 
 .num { font-family:'Prata',Georgia,serif; font-size:36px; line-height:1; color:var(--sea-ink); }
 @media (min-width:768px)  { .num { font-size:52px; } }
 @media (min-width:1200px) { .num { font-size:76px; } }
 .num--gold { color:var(--gold); }
+.num--s { font-size:34px; }
+@media (min-width:768px)  { .num--s { font-size:44px; } }
+@media (min-width:1200px) { .num--s { font-size:56px; } }
+.num--m { font-size:32px; }
+@media (min-width:768px)  { .num--m { font-size:44px; } }
+@media (min-width:1200px) { .num--m { font-size:64px; } }
 
 .lead { font-size:18px; line-height:1.55; color:var(--sea-ink); }
 @media (min-width:1200px) { .lead { font-size:21px; } }
 .muted { color:var(--sea-ink); }
-.on-dark .muted, .sec--sea .muted, .sec--ink .muted { color:var(--on-dark); }
 .cap { font-size:14px; line-height:1.5; color:var(--sea); }
 
-/* ---- сетка ---- */
 .wrap { max-width:var(--w-page); margin:0 auto; width:100%; }
 .sec  { padding:var(--py) var(--px); }
 .sec--pebble { background:var(--pebble); }
-.sec--sea    { background:var(--sea);  color:var(--foam); }
-.sec--ink    { background:var(--ink);  color:var(--foam); }
-.sec--sea a, .sec--ink a { color:var(--foam); }
+.sec--deep   { background:var(--sea-ink); color:var(--foam); }
+.sec--ink    { background:var(--ink);     color:var(--foam); }
+/* на цветной заливке наборный текст — сплошной --foam, без прозрачности */
+.sec--deep p, .sec--ink p, .sec--deep .lead, .sec--ink .lead,
+.sec--deep .muted, .sec--ink .muted, .sec--deep li, .sec--ink li { color:var(--foam); }
+.sec--deep a, .sec--ink a { color:var(--foam); }
 .text { max-width:var(--w-text); }
-.hr { height:1px; background:var(--line); transform:scaleX(0); transform-origin:left;
-      transition:transform .9s var(--ease); }
-.hr.in { transform:none; }
+.hr { height:1px; background:var(--line); transition:transform .9s var(--ease); }
+.hr.pre { transform:scaleX(0); transform-origin:left; }
+.hr--sea { background:var(--sea); opacity:.35; }
+.hr--foam { background:var(--line-foam); }
 
-/* ---- карточки ---- */
 .card { background:var(--pebble); border-radius:var(--r); padding:24px 22px; }
 @media (min-width:768px)  { .card { padding:28px 26px; } }
 @media (min-width:1200px) { .card { padding:34px 32px; } }
@@ -114,15 +123,14 @@ h3, .h3 { font-size:20px; line-height:1.26; margin:0 0 10px; }
 .card p { color:var(--sea-ink); font-size:16px; }
 .card-n { font-family:'Prata',serif; font-size:28px; line-height:1; color:var(--sea-ink); margin-bottom:14px; }
 @media (min-width:1200px) { .card-n { font-size:34px; } }
-.sec--sea .card { background:rgba(246,242,236,.12); }
-.sec--sea .card p { color:rgba(246,242,236,.85); }
-.sec--sea .card-n, .sec--sea .card h3 { color:var(--foam); }
+.sec--deep .card { background:var(--card-dark); }
+.sec--deep .card p, .sec--deep .card-n, .sec--deep .card h3 { color:var(--foam); }
 
 .grid { display:grid; gap:12px; }
-@media (min-width:768px)  { .grid { gap:16px; } }
+@media (min-width:768px) { .grid { gap:16px; } }
 .g2 { grid-template-columns:1fr; }
 .g3 { grid-template-columns:1fr; }
-.g4 { grid-template-columns:repeat(2,1fr); }
+.g4 { display:grid; grid-template-columns:repeat(2,1fr); }
 @media (min-width:768px)  { .g2 { grid-template-columns:repeat(2,1fr); }
                             .g3 { grid-template-columns:repeat(2,1fr); }
                             .g4 { grid-template-columns:repeat(4,1fr); } }
@@ -139,34 +147,42 @@ h3, .h3 { font-size:20px; line-height:1.26; margin:0 0 10px; }
 .btn:hover { background:#F5B85A; color:var(--ink); }
 .btn[disabled] { opacity:.6; cursor:default; animation:none; }
 @keyframes breathe { 0%,100% { transform:scale(1); } 50% { transform:scale(1.025); } }
+.btn-line {
+  background:none; border:1px solid var(--ink); border-radius:var(--r); cursor:pointer;
+  font-family:inherit; font-weight:500; font-size:16px; color:var(--ink);
+  padding:14px 26px; min-height:48px;
+}
+.btn-line:hover { background:rgba(34,48,58,.06); }
 .link {
   display:inline-block; font-weight:500; font-size:17px; color:var(--sea-ink);
   border-bottom:1px solid rgba(110,132,150,.5); padding-bottom:3px;
 }
-.sec--ink .link, .sec--sea .link { color:var(--foam); border-bottom-color:rgba(246,242,236,.5); }
-.tbtn {
-  background:none; border:0; padding:0 0 4px; cursor:pointer; font-family:inherit;
-  font-weight:500; font-size:16px; color:var(--sea-ink);
-  border-bottom:1px solid rgba(110,132,150,.5);
-  display:inline-flex; align-items:center; gap:10px; min-height:44px;
-}
+.sec--ink .link, .sec--deep .link { color:var(--foam); border-bottom-color:rgba(246,242,236,.5); }
 
-/* ---- пульс: только у дедлайна первой волны ---- */
 .pulse { position:relative; width:8px; height:8px; flex:0 0 8px; border-radius:50%; background:var(--gold); }
 .pulse::after { content:''; position:absolute; inset:0; border-radius:50%; background:var(--gold);
   animation:pulse 2.4s ease-out infinite; }
 @keyframes pulse { 0% { transform:scale(1); opacity:1; } 100% { transform:scale(1.9); opacity:.35; } }
 
-/* ---- фото: единое тонирование ---- */
+/* ---- фото ---- */
 .ph { position:relative; overflow:hidden; border-radius:var(--r);
       filter:saturate(1.12) contrast(1.04) brightness(1.03); }
 .ph::after { content:''; position:absolute; inset:0; background:rgba(14,124,134,.06); pointer-events:none; }
 .ph img { width:100%; height:100%; object-fit:cover; }
-.bleed { position:relative; margin:0; }
-.bleed .ph { border-radius:0; }
-.bleed figcaption { position:absolute; left:var(--px); right:var(--px); bottom:34px; z-index:2; color:var(--foam); }
+.bleed { position:relative; margin:0; height:52vh; min-height:280px; }
+@media (min-width:1200px) { .bleed { height:620px; } }
+.bleed .ph { position:absolute; inset:0; border-radius:0; }
 .bleed .scrim { position:absolute; inset:0; z-index:1;
-  background:linear-gradient(to top,rgba(34,48,58,.82),rgba(34,48,58,.34) 34%,rgba(34,48,58,0) 66%); }
+  background:linear-gradient(to top,rgba(34,48,58,.85) 0%,rgba(34,48,58,.85) 40%,rgba(34,48,58,0) 100%); }
+.bleed .scrim--light { background:linear-gradient(to top,rgba(34,48,58,.8),rgba(34,48,58,.2) 40%,rgba(34,48,58,0) 72%); }
+.bleed figcaption { position:absolute; left:0; right:0; bottom:34px; z-index:2; color:var(--foam);
+  padding:0 var(--px); }
+@media (min-width:1200px) { .bleed figcaption { bottom:56px; } }
+.bleed figcaption > * { max-width:var(--w-page); margin-left:auto; margin-right:auto; }
+.cap-split { display:grid; gap:12px; }
+@media (min-width:1200px) { .cap-split { grid-template-columns:minmax(0,1fr) 420px; gap:72px; align-items:end; } }
+.cap-h { font-size:30px; line-height:1.12; }
+@media (min-width:1200px) { .cap-h { font-size:44px; } }
 
 /* ============================================================
    Шапка
@@ -177,7 +193,7 @@ h3, .h3 { font-size:20px; line-height:1.26; margin:0 0 10px; }
   padding:0 var(--px); transition:background .25s ease, border-color .25s ease;
   border-bottom:1px solid transparent;
 }
-.hd-logo { font-family:'Prata',serif; font-size:15px; color:var(--foam); letter-spacing:.01em; }
+.hd-logo { font-family:'Prata',serif; font-size:15px; color:var(--foam); }
 .hd nav { display:none; gap:30px; }
 .hd nav a, .hd .hd-cta { font-size:15px; color:var(--foam); }
 .hd .hd-cta { display:none; font-weight:500; border-bottom:1px solid rgba(246,242,236,.5); padding-bottom:2px; }
@@ -189,23 +205,21 @@ h3, .h3 { font-size:20px; line-height:1.26; margin:0 0 10px; }
 
 .burger { display:inline-flex; flex-direction:column; justify-content:center; gap:5px;
   width:44px; height:44px; margin-right:-10px; border:0; background:none; cursor:pointer; padding:0 10px; }
-.burger span { display:block; height:2px; background:var(--foam); transition:transform .2s ease, opacity .2s ease; }
+.burger span { display:block; height:2px; background:var(--foam); transition:transform .2s ease; }
 .burger[aria-expanded="true"] span:nth-child(1) { transform:translateY(3.5px) rotate(45deg); }
 .burger[aria-expanded="true"] span:nth-child(2) { transform:translateY(-3.5px) rotate(-45deg); }
 @media (min-width:1200px) { .burger { display:none; } }
 #navPanel { display:none; }
 #navPanel.open {
   display:flex; position:fixed; top:var(--hh); left:0; right:0; z-index:39;
-  flex-direction:column; gap:0; background:var(--foam); padding:4px var(--px) 16px;
+  flex-direction:column; background:var(--foam); padding:4px var(--px) 16px;
   border-bottom:1px solid var(--line-soft);
 }
 #navPanel.open a { color:var(--ink); padding:15px 0; border-bottom:1px solid var(--line-soft); font-size:16px; }
 
 /* ============================================================
-   Хиро — эталон 2a (390px)
+   Хиро
    ============================================================ */
-/* во весь экран; svh — чтобы адресная строка на телефоне не дёргала высоту.
-   min-height держит контент, когда окно ниже, чем нужно заголовку и списку. */
 .hero { position:relative; height:100vh; height:100svh; min-height:620px; overflow:hidden; }
 @media (min-width:768px)  { .hero { min-height:640px; } }
 @media (min-width:1200px) { .hero { min-height:700px; } }
@@ -226,7 +240,7 @@ h3, .h3 { font-size:20px; line-height:1.26; margin:0 0 10px; }
 @media (min-width:1200px) { .hero-in { padding-bottom:72px; } }
 .hero-bot { display:flex; flex-direction:column; gap:26px; max-width:640px; }
 @media (min-width:1200px) { .hero-bot { max-width:800px; } }
-.hero-eb { margin-bottom:-12px; color:rgba(246,242,236,.8); }
+.hero-eb { margin-bottom:-12px; color:var(--dim); }
 .hero-h1 { margin:0; letter-spacing:-.015em; }
 .hero-h1 b { display:block; font-weight:400; font-size:73px; line-height:.98; }
 .hero-h1 i { display:block; font-style:normal; font-size:30px; line-height:1.15;
@@ -235,36 +249,59 @@ h3, .h3 { font-size:20px; line-height:1.26; margin:0 0 10px; }
   .hero-h1 b { font-size:52px; line-height:1.06; }
   .hero-h1 i { font-size:52px; line-height:1.06; padding-left:0; }
 }
-@media (min-width:1200px) {
-  .hero-h1 b, .hero-h1 i { font-size:72px; line-height:1.08; }
-}
+@media (min-width:1200px) { .hero-h1 b, .hero-h1 i { font-size:72px; line-height:1.08; } }
 .hero-sub { margin:0; font-size:17px; line-height:1.5; color:rgba(246,242,236,.9); }
 .hero-list { list-style:none; margin:0; padding:0; display:grid; gap:5px; }
 .hero-list li { display:grid; grid-template-columns:14px 1fr; gap:6px; font-size:17px; line-height:1.45; }
 .hero-list span { font-family:'Prata',serif; font-size:19px; line-height:1; color:var(--sand); }
 .hero-cta { width:100%; margin-top:8px; }
 @media (min-width:768px) { .hero-cta { width:auto; align-self:flex-start; padding-left:44px; padding-right:44px; } }
-.hero-note { display:none; margin:-14px 0 0; font-size:15px; color:rgba(246,242,236,.75); }
+.hero-note { display:none; margin:-14px 0 0; font-size:15px; color:var(--dim); }
 @media (min-width:768px) { .hero-note { display:block; } }
 
-/* ============================================================
-   Полоса ключевых цифр
-   ============================================================ */
+/* ---- полоса ключевых цифр ---- */
 .nums { display:grid; grid-template-columns:repeat(2,1fr); gap:26px 16px; padding-top:26px; }
 @media (min-width:768px) { .nums { grid-template-columns:repeat(4,1fr); gap:24px; padding-top:34px; } }
 .nums .eb { margin:10px 0 0; }
-.hr--sea { background:var(--sea); opacity:.35; }
 
 /* ============================================================
-   Колода карточек на телефоне: блок занимает один экран вместо восьми
+   Аккордеоны — борьба с длиной страницы. Сворачиваются только
+   на телефоне; от 768px JS раскрывает всё и прячет знак.
+   ============================================================ */
+.acc { border-top:1px solid var(--line-soft); }
+.acc > summary { list-style:none; cursor:pointer; display:grid;
+  grid-template-columns:minmax(0,1fr) 22px; gap:12px; align-items:start;
+  padding:18px 0; min-height:44px; }
+.acc > summary::-webkit-details-marker { display:none; }
+.acc-sign { font-family:'Prata',serif; font-size:22px; line-height:1.1; color:var(--sea); justify-self:end; }
+.acc:not([open]) .acc-sign::before { content:'+'; }
+.acc[open] .acc-sign::before { content:'\2212'; }
+.acc-panel { padding:10px 0 18px; }
+.acc--card { border-top:0; }
+.acc--card > summary { padding:0; min-height:0; }
+.acc--card .acc-panel { padding-bottom:0; }
+.sec--deep .acc, .sec--ink .acc { border-top-color:var(--line-foam); }
+.sec--deep .acc-sign, .sec--ink .acc-sign { color:var(--dim); }
+@media (min-width:768px) {
+  .acc > summary { cursor:default; grid-template-columns:minmax(0,1fr); }
+  .acc-sign { display:none; }
+  /* у .acc--more шапка — только кнопка, а не часть текста: раскрытым
+     блоком «Читать больше» висело бы посреди статьи ложным подзаголовком */
+  .acc--more { border-top:0; }
+  .acc--more > summary { display:none; }
+  .acc--more .acc-panel { padding:0; }
+}
+
+/* ============================================================
+   Колода карточек (телефон)
    ============================================================ */
 @media (max-width:767px) {
   .stack { display:block; }
-  /* display:block убивает gap сетки: без рамки и отбивки карточки одного цвета
-     встают вплотную и читаются как одна сплошная плашка */
+  /* display:block убивает gap сетки: без отбивки и рамки карточки одного
+     цвета встают вплотную и читаются как одна сплошная плашка */
   .stack > * { position:sticky; min-height:168px; box-sizing:border-box;
     margin-bottom:10px; border:1px solid var(--line-soft); }
-  /* +var(--hh): иначе карточки прилипают под фиксированную шапку и прячутся за ней */
+  /* +var(--hh): иначе карточки прилипают под фиксированную шапку */
   .stack > *:nth-child(1) { top:calc(var(--hh) + 12px); }
   .stack > *:nth-child(2) { top:calc(var(--hh) + 23px); }
   .stack > *:nth-child(3) { top:calc(var(--hh) + 34px); }
@@ -280,52 +317,109 @@ h3, .h3 { font-size:20px; line-height:1.26; margin:0 0 10px; }
    ============================================================ */
 .day { position:relative; padding-left:var(--rail); }
 .rail { position:absolute; left:0; top:6px; bottom:6px; width:2px; background:rgba(110,132,150,.3); }
-.rail i { position:absolute; inset:0; background:var(--sea-ink); transform:scaleY(0); transform-origin:top; }
-.slot { display:grid; gap:4px; padding:22px 0; border-top:1px solid var(--line-soft); }
-.slot:first-child { border-top:0; padding-top:0; }
-@media (min-width:768px)  { .slot { grid-template-columns:128px 1fr; gap:8px 24px; padding:26px 0; } }
-@media (min-width:1200px) { .slot { grid-template-columns:152px 1fr; gap:8px 32px; padding:30px 0; } }
+/* по умолчанию прочерчена — в прогресс её уводит только живая прокрутка */
+.rail i { position:absolute; inset:0; background:var(--sea-ink); transform:scaleY(1); transform-origin:top; }
+.slot { border-top:1px solid var(--line-soft); }
+.slot:first-of-type { border-top:0; }
+.slot-head { display:grid; gap:2px; }
 .slot-t { font-weight:500; font-size:15px; color:var(--sea-ink); letter-spacing:.01em; }
-.slot p { margin:6px 0 0; color:var(--sea-ink); font-size:16px; }
 .slot h3 { margin:0; }
+.slot p { margin:0; color:var(--sea-ink); font-size:16px; }
+@media (min-width:768px) {
+  .slot > summary, .slot .slot-wrap { display:grid; grid-template-columns:128px minmax(0,1fr); gap:6px 24px; padding:26px 0; }
+  .slot .slot-head { display:contents; }
+  .slot .acc-panel { padding:0 0 26px 152px; }
+}
+@media (min-width:1200px) {
+  .slot > summary, .slot .slot-wrap { grid-template-columns:152px minmax(0,1fr); gap:6px 32px; padding:30px 0; }
+  .slot .acc-panel { padding-left:184px; padding-bottom:30px; }
+}
 .slot--ink {
   background:var(--ink); color:var(--foam); border-top:0; border-radius:var(--r);
   margin:14px 0; padding:26px 22px;
 }
 .slot--ink .slot-t { color:var(--gold); }
-.slot--ink p { color:rgba(246,242,236,.85); }
+.slot--ink p, .slot--ink h3 { color:var(--foam); }
+.slot--ink h3 { margin-bottom:8px; }
 @media (max-width:767px) {
-  /* единственная тёмная карточка выходит за колонку — на неё нельзя не наткнуться */
+  /* единственная тёмная карточка выходит за колонку — мимо неё не пройти */
   .slot--ink { margin-left:calc(-1 * (var(--px) + var(--rail))); margin-right:calc(-1 * var(--px));
     border-radius:0; padding-left:var(--px); padding-right:var(--px); }
 }
-@media (min-width:768px) { .slot--ink { padding:28px 30px; } }
+@media (min-width:768px) { .slot--ink { padding:6px 30px 24px; margin:16px 0; } }
 
 /* ============================================================
-   Приглашённый мастер
+   Десктопные блоки варианта 4a
    ============================================================ */
+.author-grid { display:grid; gap:28px; }
+@media (min-width:1200px) { .author-grid { grid-template-columns:560px minmax(0,1fr); gap:72px; align-items:start; } }
+.author-ph { aspect-ratio:1/1; }
+.author-ph img { object-position:50% 72%; }
+.author-nums { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin:26px 0; }
+.author-nums .eb { margin:8px 0 0; }
+.reg { list-style:none; padding:0; margin:0 0 26px; }
+.reg li { padding:14px 0; border-top:1px solid var(--line-soft); color:var(--sea-ink); font-size:16px; }
+.reg li:last-child { border-bottom:1px solid var(--line-soft); }
+
+.method-grid { display:grid; gap:28px; }
+@media (min-width:1200px) { .method-grid { grid-template-columns:minmax(0,1fr) 380px; gap:72px; align-items:start; } }
+.method-text { max-width:720px; }
+
+.res-list > div { display:grid; gap:2px; padding:20px 0; border-top:1px solid var(--line-soft); }
+.res-list > div:last-child { border-bottom:1px solid var(--line-soft); }
+@media (min-width:768px) { .res-list > div { grid-template-columns:240px minmax(0,1fr); gap:24px; } }
+.res-list h3 { margin:0; font-size:20px; }
+.res-list p { margin:0; color:var(--sea-ink); font-size:16px; }
+
+.collage { display:grid; gap:12px; grid-template-columns:1fr; }
+.collage .ph { height:200px; }
+@media (min-width:768px) {
+  .collage { grid-template-columns:2fr 1fr; grid-template-rows:200px 200px; gap:16px; }
+  .collage .ph { height:auto; }
+  .collage .ph:first-child { grid-row:span 2; }
+}
+@media (min-width:1200px) { .collage { grid-template-rows:260px 260px; } }
+
+.rev-media { position:relative; aspect-ratio:16/9; overflow:hidden; border-radius:var(--r); background:var(--pebble); }
+@media (min-width:1200px) { .rev-media { aspect-ratio:auto; height:220px; } }
+.rev-media button { position:absolute; inset:0; width:100%; height:100%; padding:0; border:0; background:none; cursor:pointer; }
+.rev-media img { width:100%; height:100%; object-fit:cover;
+  filter:saturate(1.12) contrast(1.04) brightness(1.03); }
+/* метка слева сверху: внизу кадра — вшитые в превью подписи */
+.rev-watch { position:absolute; left:10px; top:10px; background:rgba(246,242,236,.92); color:var(--ink);
+  font-weight:500; font-size:13px; line-height:1; padding:8px 12px; border-radius:var(--r); }
+.rev-media button:hover .rev-watch { background:var(--foam); }
+.rev-media iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }
+.rev-name { display:block; font-family:'Prata',serif; font-weight:400; font-size:20px; line-height:1.2; margin-top:14px; }
+@media (min-width:1200px) { .rev-name { font-size:22px; } }
+.rev-role { display:block; font-size:15px; color:var(--sea-ink); margin-top:4px; }
+.rev-note { display:block; font-size:13px; color:var(--sea); margin-top:5px; }
+
+.word-grid { display:grid; gap:28px; }
+@media (min-width:1200px) { .word-grid { grid-template-columns:minmax(0,1fr) 420px; gap:80px; align-items:start; } }
+.word-q { margin:0 0 18px; font-size:26px; line-height:1.3; }
+@media (min-width:1200px) { .word-q { font-size:38px; } }
+
 .pav { display:grid; gap:28px; }
+@media (min-width:768px) and (max-width:1199px) { .pav { grid-template-columns:300px minmax(0,1fr); gap:36px; align-items:start; } }
 @media (min-width:1200px) { .pav { grid-template-columns:480px minmax(0,1fr); gap:64px; align-items:start; } }
 .pav-portrait { height:420px; }
 @media (max-width:767px) {
-  /* портрет на телефоне — во всю ширину экрана */
   .pav-portrait { margin-left:calc(-1 * var(--px)); margin-right:calc(-1 * var(--px)); border-radius:0; }
 }
-@media (min-width:768px)  { .pav-portrait { height:400px; max-width:300px; } }
-@media (min-width:1200px) { .pav-portrait { height:660px; max-width:none; } }
+@media (min-width:768px)  { .pav-portrait { height:400px; } }
+@media (min-width:1200px) { .pav-portrait { height:660px; } }
 .pav-portrait img { object-position:50% 30%; }
-.pav-gong { height:200px; margin-bottom:0; border-bottom-left-radius:0; border-bottom-right-radius:0; }
+.pav-gong { height:200px; border-bottom-left-radius:0; border-bottom-right-radius:0; }
 @media (min-width:1200px) { .pav-gong { height:320px; } }
 .pav-gong + .card { border-top-left-radius:0; border-top-right-radius:0; }
 .pav-quote { margin:0; font-family:'Prata',serif; font-size:21px; line-height:1.34; }
 @media (min-width:1200px) { .pav-quote { font-size:24px; } }
 
-/* ============================================================
-   Волны цены
-   ============================================================ */
+/* ---- волны цены ---- */
 .wave { position:relative; }
 .wave[data-state="active"] { border:1px solid var(--gold); }
-.wave[data-state="past"]   { opacity:.5; }
+.wave[data-state="past"] { opacity:.5; }
 .wave .wave-tag { display:none; }
 .wave[data-state="active"] .wave-tag { display:flex; }
 .wave-tag { align-items:center; gap:10px; color:var(--gold-ink); font-weight:500;
@@ -337,33 +431,18 @@ h3, .h3 { font-size:20px; line-height:1.26; margin:0 0 10px; }
 .wave-deadline { font-size:15px; color:var(--sea-ink); }
 .wave[data-state="active"] .wave-deadline { color:var(--gold-ink); }
 
-/* ============================================================
-   FAQ
-   ============================================================ */
-.faq > div { padding:24px 0; border-top:1px solid var(--line-soft); }
-.faq > div:last-child { border-bottom:1px solid var(--line-soft); }
-.faq h3 { font-size:20px; margin:0 0 8px; }
-.faq p { margin:0; font-size:16px; color:var(--sea-ink); }
+/* ---- врезки CTA ---- */
+.cta-band { display:grid; gap:16px; align-items:center; }
+@media (min-width:768px) { .cta-band { grid-template-columns:minmax(0,1fr) auto; gap:32px; } }
+.cta-band .btn { justify-self:start; }
+.cta-deadline { font-weight:500; color:var(--gold-ink); }
 
-/* ============================================================
-   Отзывы
-   ============================================================ */
-.rev-media { position:relative; aspect-ratio:16/9; overflow:hidden; border-radius:var(--r); background:var(--pebble); }
-.rev-media button { position:absolute; inset:0; width:100%; height:100%; padding:0; border:0; background:none; cursor:pointer; }
-.rev-media img { width:100%; height:100%; object-fit:cover;
-  filter:saturate(1.12) contrast(1.04) brightness(1.03); }
-.rev-play { position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
-  width:52px; height:52px; border-radius:var(--r); background:var(--gold);
-  display:grid; place-items:center; }
-.rev-play svg { width:17px; height:17px; fill:var(--ink); margin-left:2px; }
-.rev-media iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }
-.rev-name { display:block; font-weight:500; font-size:17px; margin-top:14px; }
-.rev-role { display:block; font-size:15px; color:var(--sea-ink); margin-top:2px; }
-.rev-note { display:block; font-size:13px; color:var(--sea); margin-top:5px; }
+/* ---- FAQ ---- */
+.faq .acc h3 { margin:0; font-size:20px; }
+.faq .acc-panel p { margin:0; font-size:16px; color:var(--sea-ink); }
+.faq .acc:last-of-type { border-bottom:1px solid var(--line-soft); }
 
-/* ============================================================
-   Форма
-   ============================================================ */
+/* ---- форма ---- */
 #leadForm input[type=text] {
   width:100%; font-family:inherit; font-size:16px; color:var(--foam);
   background:transparent; border:1px solid rgba(246,242,236,.3); border-radius:var(--r);
@@ -371,28 +450,34 @@ h3, .h3 { font-size:20px; line-height:1.26; margin:0 0 10px; }
 }
 #leadForm input::placeholder { color:rgba(246,242,236,.6); opacity:1; }
 #leadForm input:focus { outline:none; border-color:var(--gold); }
-.form-status { margin:6px 0 0; font-size:15px; line-height:1.5; min-height:1.4em; color:rgba(246,242,236,.85); }
+.form-status { margin:6px 0 0; font-size:15px; line-height:1.5; min-height:1.4em; color:var(--foam); }
 .form-status.err { color:var(--gold); }
 .hp { position:absolute; left:-9999px; width:1px; height:1px; overflow:hidden; }
 .sr-only { position:absolute; left:-9999px; width:1px; height:1px; overflow:hidden; }
 a.sr-only:focus { left:0; top:0; width:auto; height:auto; z-index:60;
   background:var(--gold); color:var(--ink); padding:12px 20px; }
 
-/* ---- нижняя полоса CTA на телефоне ---- */
-.mobile-bar { position:fixed; left:0; right:0; bottom:0; z-index:35; height:56px;
-  display:none; align-items:center; padding:0 12px; background:rgba(246,242,236,.96);
-  border-top:1px solid var(--line-soft); transform:translateY(100%); transition:transform .2s ease; }
+/* ---- липкая панель CTA ---- */
+.mobile-bar {
+  position:fixed; left:0; right:0; bottom:0; z-index:35; display:none;
+  grid-template-columns:minmax(0,1fr) auto; gap:12px; align-items:center;
+  padding:12px 16px; background:rgba(34,48,58,.96);
+  transform:translateY(100%); transition:transform .2s ease;
+}
 .mobile-bar.show { transform:none; }
-.mobile-bar a { flex:1; min-height:44px; padding:12px 20px; font-size:16px; }
-@media (max-width:1199px) { .mobile-bar { display:flex; } body { padding-bottom:56px; } }
+.mobile-bar p { margin:0; font-size:13px; line-height:1.3; color:var(--dim); }
+.mobile-bar .btn { min-height:44px; padding:11px 18px; font-size:15px; animation:none; }
+@media (max-width:1199px) { .mobile-bar { display:grid; } body { padding-bottom:68px; } }
 
-/* ---- появление ---- */
-.rv { opacity:0; transform:translateY(16px); transition:opacity .6s var(--ease), transform .6s var(--ease); }
-.rv.in { opacity:1; transform:none; }
-/* контейнер со стаггером виден сам, прячутся и выезжают его дети */
-.stg.rv { opacity:1; transform:none; }
-.stg.rv > * { opacity:0; transform:translateY(16px); transition:opacity .6s var(--ease), transform .6s var(--ease); }
-.stg.rv.in > * { opacity:1; transform:none; }
+/* ============================================================
+   Появление. Скрытого состояния в разметке нет: класс .pre вешает JS
+   и только тем блокам, что реально ниже вьюпорта. Иначе печать,
+   скриншот, фоновая вкладка и поисковые боты видят пустые экраны.
+   ============================================================ */
+.rv  { transition:opacity .6s var(--ease), transform .6s var(--ease); }
+.rv.pre { opacity:0; transform:translateY(16px); }
+.stg.pre > * { opacity:0; transform:translateY(16px);
+  transition:opacity .6s var(--ease), transform .6s var(--ease); }
 .stg > *  { transition-delay:0ms; }
 .stg > *:nth-child(2) { transition-delay:90ms; }
 .stg > *:nth-child(3) { transition-delay:180ms; }
@@ -401,10 +486,11 @@ a.sr-only:focus { left:0; top:0; width:auto; height:auto; z-index:60;
 .stg > *:nth-child(6) { transition-delay:450ms; }
 .stg > *:nth-child(7) { transition-delay:540ms; }
 .stg > *:nth-child(8) { transition-delay:630ms; }
-/* от 768px липкой колоды нет — движение карточек несёт ступенчатый въезд,
-   поэтому там он крупнее и разнесён шире, иначе на широком экране не читается */
+/* от 768px липкой колоды нет — движение несёт ступенчатый въезд,
+   поэтому амплитуда и шаг крупнее: мелкое на широком экране не читается */
 @media (min-width:768px) {
-  .stg.rv > * { transform:translateY(28px); transition-duration:.7s; }
+  .rv.pre { transform:translateY(28px); }
+  .stg.pre > * { transform:translateY(28px); transition-duration:.7s; }
   .stg > *:nth-child(2) { transition-delay:110ms; }
   .stg > *:nth-child(3) { transition-delay:220ms; }
   .stg > *:nth-child(4) { transition-delay:330ms; }
@@ -412,28 +498,12 @@ a.sr-only:focus { left:0; top:0; width:auto; height:auto; z-index:60;
   .stg > *:nth-child(6) { transition-delay:550ms; }
   .stg > *:nth-child(7) { transition-delay:660ms; }
   .stg > *:nth-child(8) { transition-delay:770ms; }
-  .stg.rv.in > * { transform:none; }
-}
-
-.g3 > .wave:nth-child(2) { transition-delay:110ms; }
-.g3 > .wave:nth-child(3) { transition-delay:220ms; }
-.mobile-bar .btn { animation:none; }
-
-/* ---- крупные раскладки, которые не выводятся из .grid ---- */
-@media (min-width:768px) and (max-width:1199px) {
-  .pav { grid-template-columns:300px minmax(0,1fr); gap:36px; align-items:start; }
-}
-@media (min-width:1200px) {
-  .author-grid { grid-template-columns:0.85fr 1.15fr; gap:64px; align-items:center; }
-  .method-grid { grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr); gap:56px; align-items:start; }
-  #formGrid    { grid-template-columns:1.1fr 0.9fr; gap:64px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation:none !important; transition:none !important; }
-  .rv { opacity:1; transform:none; }
-  .hr { transform:none; }
-  .rail i { transform:scaleY(1) !important; }
+  .rv.pre, .stg.pre > * { opacity:1; transform:none; }
+  .hr.pre { transform:none; }
   .hero-ph img { transform:none !important; }
 }
 </style>
@@ -462,7 +532,7 @@ a.sr-only:focus { left:0; top:0; width:auto; height:auto; z-index:60;
 
 <main id="main">
 
-  <!-- ================= хиро ================= -->
+  <!-- ================= хиро · CTA 1 ================= -->
   <section class="hero">
     <div class="hero-ph"><img id="heroImg" src="photos/r/g-shore.webp" alt="Берег моря на рассвете в Вардане" width="1200" height="800" fetchpriority="high" decoding="async"></div>
     <div class="hero-scrim"></div>
@@ -486,7 +556,7 @@ a.sr-only:focus { left:0; top:0; width:auto; height:auto; z-index:60;
   <section class="sec" style="padding-bottom:0;">
     <div class="wrap">
       <div class="hr hr--sea"></div>
-      <div class="nums stg rv">
+      <div class="nums stg">
         <div><div class="num"><span class="count" data-to="7">7</span></div><p class="eb">дней</p></div>
         <div><div class="num num--gold"><span class="count" data-to="16">16</span></div><p class="eb">мест в группе</p></div>
         <div><div class="num"><span class="count" data-to="40">40</span></div><p class="eb">лет практики автора</p></div>
@@ -511,7 +581,7 @@ a.sr-only:focus { left:0; top:0; width:auto; height:auto; z-index:60;
       </div>
 
       <p class="eb rv">Если узнаёте себя хотя бы в двух пунктах</p>
-      <div class="grid g2 stack stg rv">
+      <div class="grid g2 stack stg">
         <div class="card">
           <div class="card-n">01</div>
           <p>Сил хватает до обеда, дальше — на кофе и характере.</p>
@@ -532,29 +602,7 @@ a.sr-only:focus { left:0; top:0; width:auto; height:auto; z-index:60;
 
       <div class="rv" style="margin-top:48px; padding-top:36px; border-top:1px solid var(--line-soft);">
         <p class="pr" style="font-size:26px; line-height:1.22; margin:0 0 20px; max-width:var(--w-text);">Дело не в тайм-менеджменте. Дело в том, что кончился ресурс.</p>
-        <p class="muted" style="max-width:var(--w-text);">Восстанавливается он не отпуском и не силой воли. Именно с этим работает энергоактивная психология — направление, которое сорок лет разрабатывает Андрей Захаревич. Разберём это на тренинге.</p>
-        <button type="button" class="tbtn" id="shortToggle" aria-expanded="false" aria-controls="shortBlock">
-          <span data-label>Как устроен метод</span><span data-sign>+</span>
-        </button>
-      </div>
-      <div id="shortBlock" hidden>
-        <div class="grid g3" style="margin-top:28px;">
-          <div class="card">
-            <div class="card-n">01</div>
-            <h3>Снимаем напряжение</h3>
-            <p>Первые дни — телесная работа, дыхание, сон. Пока тело на пределе, никакая стратегия не думается.</p>
-          </div>
-          <div class="card">
-            <div class="card-n">02</div>
-            <h3>Возвращаем уровень энергии</h3>
-            <p>Практики концентрации внимания и энергоактивное дыхание — то, что даёт ровный тонус без провалов.</p>
-          </div>
-          <div class="card">
-            <div class="card-n">03</div>
-            <h3>Пересобираем решения</h3>
-            <p>Только теперь — стратегия, команда и деньги. На восстановленном ресурсе они выглядят иначе.</p>
-          </div>
-        </div>
+        <p class="muted" style="max-width:var(--w-text); margin:0;">Восстанавливается он не отпуском и не силой воли. Именно с этим работает энергоактивная психология — направление, которое сорок лет разрабатывает Андрей Захаревич. Разберём это на тренинге.</p>
       </div>
     </div>
   </section>
@@ -562,122 +610,138 @@ a.sr-only:focus { left:0; top:0; width:auto; height:auto; z-index:60;
   <!-- ================= автор ================= -->
   <section class="sec sec--pebble" id="author">
     <div class="wrap">
-      <div class="grid rv author-grid" style="gap:32px;">
-          <figure style="margin:0;">
-            <div class="ph" style="aspect-ratio:1120/1015;">
-              <img src="photos/r/w-rock.webp" alt="Андрей Захаревич на берегу моря" width="1120" height="1015" loading="lazy" decoding="async">
-            </div>
-            <figcaption class="cap" style="margin-top:12px;">Ему 68. Сорок лет практики — это не только теория.</figcaption>
-          </figure>
-          <div>
-            <p class="eb">Автор и ведущий</p>
-            <h2>Захаревич Андрей Станиславович</h2>
-            <p class="lead" style="margin-bottom:24px;">Разработчик направления «Энергоактивная психология». Сорок лет практики и более тысячи семинаров в России, странах Балтии, Великобритании, Аргентине, Норвегии, Польше и Дании.</p>
-            <ul style="list-style:none; padding:0; margin:0 0 26px;">
-              <li style="padding:14px 0; border-top:1px solid var(--line-soft); color:var(--sea-ink); font-size:16px;">Доктор психологических наук, профессор</li>
-              <li style="padding:14px 0; border-top:1px solid var(--line-soft); color:var(--sea-ink); font-size:16px;">Психотерапевт Европейского и Мирового реестров</li>
-              <li style="padding:14px 0; border-top:1px solid var(--line-soft); color:var(--sea-ink); font-size:16px;">Автор 150+ научных публикаций, 10 книг и 2 патентов на изобретения</li>
-              <li style="padding:14px 0; border-top:1px solid var(--line-soft); color:var(--sea-ink); font-size:16px;">Представлял Россию во Всемирной организации здравоохранения</li>
-              <li style="padding:14px 0; border-top:1px solid var(--line-soft); color:var(--sea-ink); font-size:16px;">Руководитель Совета АНО «Международная организация развития БРИКС» по психическому здоровью</li>
-              <li style="padding:14px 0; border-top:1px solid var(--line-soft); color:var(--sea-ink); font-size:16px;">Академик Российской и Европейской академий естественных наук</li>
-              <li style="padding:14px 0; border-top:1px solid var(--line-soft); border-bottom:1px solid var(--line-soft); color:var(--sea-ink); font-size:16px;">Лектор Кембриджа и Оксфорда</li>
-            </ul>
-            <a class="link" href="https://t.me/andrey_zakharevich" target="_blank" rel="noopener">Телеграм-канал автора</a>
+      <div class="author-grid rv">
+        <figure style="margin:0;">
+          <div class="ph author-ph">
+            <img src="photos/r/w-rock.webp" alt="Андрей Захаревич, автор направления «Энергоактивная психология»" width="1120" height="1015" loading="lazy" decoding="async">
           </div>
+          <figcaption class="cap" style="margin-top:12px;">Ему 68. Сорок лет практики — это не только теория.</figcaption>
+        </figure>
+        <div>
+          <p class="eb">Автор и ведущий</p>
+          <h2>Захаревич Андрей Станиславович</h2>
+          <p class="lead">Разработчик направления «Энергоактивная психология». Сорок лет практики и более тысячи семинаров в России, странах Балтии, Великобритании, Аргентине, Норвегии, Польше и Дании.</p>
+          <div class="author-nums stg">
+            <div><div class="num num--m">40</div><p class="eb">лет практики</p></div>
+            <div><div class="num num--m">150+</div><p class="eb">научных публикаций</p></div>
+            <div><div class="num num--m">10</div><p class="eb">книг</p></div>
+          </div>
+          <ul class="reg">
+            <li>Доктор психологических наук, профессор</li>
+            <li>Психотерапевт Европейского и Мирового реестров</li>
+            <li>Представлял Россию во Всемирной организации здравоохранения</li>
+            <li>Руководитель Совета АНО «Международная организация развития БРИКС» по психическому здоровью</li>
+            <li>Академик Российской и Европейской академий естественных наук</li>
+            <li>Лектор Кембриджа и Оксфорда, автор 2 патентов на изобретения</li>
+          </ul>
+          <a class="link" href="https://t.me/andrey_zakharevich" target="_blank" rel="noopener">Телеграм-канал автора</a>
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- ================= пауза: зал ================= -->
-  <figure class="bleed rv" style="height:52vh; min-height:280px;">
-    <div class="ph" style="position:absolute; inset:0;">
+  <!-- ================= пауза: более тысячи семинаров ================= -->
+  <figure class="bleed rv">
+    <div class="ph">
       <img src="photos/r/w-hall.webp" alt="Слушатели на семинаре Андрея Захаревича" width="1400" height="780" loading="lazy" decoding="async" style="object-position:center 42%;">
     </div>
     <div class="scrim"></div>
     <figcaption>
-      <div class="pr" style="font-size:30px; line-height:1.12; margin-bottom:10px;">Более тысячи семинаров</div>
-      <p style="margin:0; font-size:16px; max-width:420px; color:rgba(246,242,236,.85);">За сорок лет через программы автора прошли десятки тысяч человек — от студентов до собственников.</p>
+      <div class="cap-split">
+        <div class="pr cap-h">Более тысячи семинаров</div>
+        <p style="margin:0; font-size:16px;">За сорок лет через программы автора прошли десятки тысяч человек — от студентов до собственников.</p>
+      </div>
     </figcaption>
   </figure>
 
-  <!-- ================= метод ================= -->
-  <section class="sec" id="method">
+  <!-- ================= метод — заливка sea-ink ================= -->
+  <section class="sec sec--deep" id="method">
     <div class="wrap">
       <p class="eb rv">Метод · 01 / 04</p>
-      <div class="grid rv method-grid" style="gap:32px;">
-        <div class="text">
+      <div class="method-grid rv">
+        <div class="method-text">
           <h2>Энергоактивная психология</h2>
-          <p class="lead" style="margin-bottom:20px;">Направление психологии и психотерапии, которое рассматривает психическую сферу человека как материальную структуру, а физическое тело — как своего рода производную психики.</p>
-          <p class="muted">С точки зрения современной физики невозможно строго обозначить грань между материей и энергией. Отсюда взгляд на человека как на единую материально-энергетическую систему, в которой психические энергии влияют и на биоэнергетическую, и на плотноматериальную составляющую. В научном сообществе всё чаще употребляется термин «психическая энергия».</p>
-          <p class="muted">Определение звучит сложно, практика — нет. Через тренинги по энергоактивной психологии прошли тысячи человек и получили результат в психологическом и физическом здоровье, состоянии энергетики и жизненном тонусе.</p>
-          <p class="muted">Автор направления — Андрей Захаревич. Это не адаптация чужого метода: подход разработан им и проверен сорока годами практики.</p>
+          <p class="lead">Направление психологии и психотерапии, которое рассматривает психическую сферу человека как материальную структуру, а физическое тело — как своего рода производную психики.</p>
+          <p>С точки зрения современной физики невозможно строго обозначить грань между материей и энергией. Отсюда взгляд на человека как на единую материально-энергетическую систему, в которой психические энергии влияют и на биоэнергетическую, и на плотноматериальную составляющую. В научном сообществе всё чаще употребляется термин «психическая энергия».</p>
+          <details class="acc acc--more">
+            <summary><span class="pr" style="font-size:18px;">Читать больше</span><span class="acc-sign" aria-hidden="true"></span></summary>
+            <div class="acc-panel">
+              <p>Определение звучит сложно, практика — нет. Через тренинги по энергоактивной психологии прошли тысячи человек и получили результат в психологическом и физическом здоровье, состоянии энергетики и жизненном тонусе.</p>
+              <p>Автор направления — Андрей Захаревич. Это не адаптация чужого метода: подход разработан им и проверен сорока годами практики.</p>
+            </div>
+          </details>
         </div>
-        <aside class="card" style="align-self:start; max-width:var(--w-text);">
-          <p class="eb">Научная проверка</p>
-          <p>Практики метода прошли проверку в Институте мозга человека им. Н. П. Бехтеревой в Санкт-Петербурге, НИИ космической медицины ФМБА России в Москве, лаборатории биоэнергетики НТФ «Биосвязь» и Университете им. П. Ф. Лесгафта.</p>
-        </aside>
-      </div>
-      <div class="rv" style="margin-top:44px; padding-top:34px; border-top:1px solid var(--line-soft);">
-        <p class="eb">Что при этом не требуется</p>
-        <div class="grid g3">
-          <p class="muted" style="margin:0; font-size:16px;">Ни особых знаний, ни опыта работы с энергетическим телом — практики осваиваются с нуля.</p>
-          <p class="muted" style="margin:0; font-size:16px;">Ни возраст, ни уровень подготовки не помеха: нагрузка подбирается по состоянию.</p>
-          <p class="muted" style="margin:0; font-size:16px;">Методика сочетает традиционные психологические подходы с управлением энергетическими процессами.</p>
-          <p class="muted" style="margin:0; font-size:16px;">Всё проверено на практике, применимо в обычной жизни и даёт ощутимый эффект почти сразу.</p>
-          <p class="muted" style="margin:0; font-size:16px;">Акцент — на концентрации внимания и практиках, а не на теоретических и эзотерических аспектах.</p>
+        <div class="grid" style="gap:16px;">
+          <div class="card">
+            <p class="eb">Научная проверка</p>
+            <p>Практики метода прошли проверку в Институте мозга человека им. Н. П. Бехтеревой в Санкт-Петербурге, НИИ космической медицины ФМБА России в Москве, лаборатории биоэнергетики НТФ «Биосвязь» и Университете им. П. Ф. Лесгафта.</p>
+          </div>
+          <div class="card">
+            <p class="eb">Что при этом не требуется</p>
+            <p>Ни особых знаний, ни опыта работы с энергетическим телом — практики осваиваются с нуля. Ни возраст, ни уровень подготовки не помеха: нагрузка подбирается по состоянию. Акцент — на концентрации внимания и практиках, а не на теоретических и эзотерических аспектах: всё применимо в обычной жизни и даёт ощутимый эффект почти сразу.</p>
+          </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ================= четыре энергетики — заливка sea ================= -->
-  <section class="sec sec--sea">
+  <!-- ================= четыре энергетики — та же заливка, один тёмный разворот ================= -->
+  <section class="sec sec--deep" style="padding-top:0;">
     <div class="wrap">
+      <div class="hr hr--foam" style="margin-bottom:var(--py);"></div>
       <p class="eb rv">С чем работаем · 02 / 04</p>
       <h2 class="rv" style="max-width:700px; margin-bottom:32px;">Четыре энергетики, с которыми работаем</h2>
-      <div class="grid g2 stg rv">
+      <div class="grid g2 stg">
         <div class="card">
           <div class="card-n">01</div>
-          <h3>Физическая</h3>
-          <p>Как обеспечивать энергию для поддержки тела и активного ведения бизнеса: сон, дыхание, подвижность, восстановление после нагрузки. База, без которой остальные три не работают.</p>
+          <details class="acc acc--card">
+            <summary><h3>Физическая</h3><span class="acc-sign" aria-hidden="true"></span></summary>
+            <div class="acc-panel"><p>Как обеспечивать энергию для поддержки тела и активного ведения бизнеса: сон, дыхание, подвижность, восстановление после нагрузки. База, без которой остальные три не работают.</p></div>
+          </details>
         </div>
         <div class="card">
           <div class="card-n">02</div>
-          <h3>Эмоциональная</h3>
-          <p>Как проработать неконтролируемые эмоции и достичь стабильности, чтобы не терять контроль в бизнес-среде. Раздражение, апатия, фоновая тревога — разбираем, куда уходит ресурс.</p>
+          <details class="acc acc--card">
+            <summary><h3>Эмоциональная</h3><span class="acc-sign" aria-hidden="true"></span></summary>
+            <div class="acc-panel"><p>Как проработать неконтролируемые эмоции и достичь стабильности, чтобы не терять контроль в бизнес-среде. Раздражение, апатия, фоновая тревога — разбираем, куда уходит ресурс.</p></div>
+          </details>
         </div>
         <div class="card">
           <div class="card-n">03</div>
-          <h3>Ментальная</h3>
-          <p>Как развить ментальную энергию и сформировать прочное мышление для стратегических решений — вместо решений на автомате, которые принимаются в состоянии истощения.</p>
+          <details class="acc acc--card">
+            <summary><h3>Ментальная</h3><span class="acc-sign" aria-hidden="true"></span></summary>
+            <div class="acc-panel"><p>Как развить ментальную энергию и сформировать прочное мышление для стратегических решений — вместо решений на автомате, которые принимаются в состоянии истощения.</p></div>
+          </details>
         </div>
         <div class="card">
           <div class="card-n">04</div>
-          <h3>Социальная</h3>
-          <p>Как направить поток на формирование эффективной команды и надёжных партнёрств. Здесь же — где в вашей компании утекает энергия.</p>
+          <details class="acc acc--card">
+            <summary><h3>Социальная</h3><span class="acc-sign" aria-hidden="true"></span></summary>
+            <div class="acc-panel"><p>Как направить поток на формирование эффективной команды и надёжных партнёрств. Здесь же — где в вашей компании утекает энергия.</p></div>
+          </details>
         </div>
       </div>
-      <div class="rv" style="margin-top:40px; padding-top:32px; border-top:1px solid rgba(246,242,236,.24);">
+      <div class="rv" style="margin-top:40px; padding-top:32px; border-top:1px solid var(--line-foam);">
         <p class="eb">Также разбираем</p>
         <div class="grid g3" style="gap:8px;">
-          <div style="font-size:16px; color:rgba(246,242,236,.85);">Энергетическое состояние руководителя</div>
-          <div style="font-size:16px; color:rgba(246,242,236,.85);">Взаимосвязи: родовые, семейные, профессиональные</div>
-          <div style="font-size:16px; color:rgba(246,242,236,.85);">Утечка энергии из организации</div>
-          <div style="font-size:16px; color:rgba(246,242,236,.85);">HR и энергетика команды</div>
-          <div style="font-size:16px; color:rgba(246,242,236,.85);">Финансы и энергетика</div>
+          <div>Энергетическое состояние руководителя</div>
+          <div>Взаимосвязи: родовые, семейные, профессиональные</div>
+          <div>Утечка энергии из организации</div>
+          <div>HR и энергетика команды</div>
+          <div>Финансы и энергетика</div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ================= результаты ================= -->
+  <!-- ================= результаты · CTA 3 ================= -->
   <section class="sec">
     <div class="wrap">
       <p class="eb rv">Результаты · через 7 дней</p>
       <h2 class="rv" style="max-width:720px;">С чем вы уезжаете</h2>
       <p class="lead rv" style="max-width:640px; margin-bottom:36px;">Не «вдохновение на пару недель». Ниже — то, что участники отмечают первым по возвращении.</p>
 
-      <div class="grid g2 stg rv" style="margin-bottom:12px;">
+      <div class="grid g2 stg" style="margin-bottom:28px;">
         <div class="card">
           <div class="num num--gold" style="margin-bottom:14px;">−50%</div>
           <h3>Экономия энергии</h3>
@@ -690,29 +754,34 @@ a.sr-only:focus { left:0; top:0; width:auto; height:auto; z-index:60;
         </div>
       </div>
 
-      <div class="grid g3 stg rv">
-        <div class="card"><h3>Ясная голова</h3><p>Уходит «туман», решения принимаются быстро — без лишнего анализа и стресса.</p></div>
-        <div class="card"><h3>Ровный уровень энергии</h3><p>Больше никаких провалов после обеда: бодрость держится с утра до вечера.</p></div>
-        <div class="card"><h3>Качество сна</h3><p>Засыпаете легко, высыпаетесь быстрее, просыпаетесь без чувства усталости.</p></div>
-        <div class="card"><h3>Лидерский ресурс</h3><p>Команда снова считывает вашу силу и уверенность — в том числе в сложных ситуациях.</p></div>
-        <div class="card"><h3>Новые возможности для дохода</h3><p>Начинаете видеть варианты, которые раньше просто проходили мимо внимания.</p></div>
-        <div class="card"><h3>Баланс с личной жизнью</h3><p>Силы остаются не только на бизнес, но и на семью, поездки и себя.</p></div>
-        <div class="card"><h3>Здоровье и стрессоустойчивость</h3><p>Уходят бессонница, головные боли и ощущение, что организм работает на пределе.</p></div>
-        <div class="card"><h3>Ощущение контроля</h3><p>Снова чувствуете себя хозяином своей жизни, а не заложником обстоятельств.</p></div>
+      <div class="res-list stg">
+        <div><h3>Ясная голова</h3><p>Уходит «туман», решения принимаются быстро — без лишнего анализа и стресса.</p></div>
+        <div><h3>Ровный уровень энергии</h3><p>Больше никаких провалов после обеда: бодрость держится с утра до вечера.</p></div>
+        <div><h3>Качество сна</h3><p>Засыпаете легко, высыпаетесь быстрее, просыпаетесь без чувства усталости.</p></div>
+        <div><h3>Лидерский ресурс</h3><p>Команда снова считывает вашу силу и уверенность — в том числе в сложных ситуациях.</p></div>
+        <div><h3>Новые возможности для дохода</h3><p>Начинаете видеть варианты, которые раньше просто проходили мимо внимания.</p></div>
+        <div><h3>Баланс с личной жизнью</h3><p>Силы остаются не только на бизнес, но и на семью, поездки и себя.</p></div>
+        <div><h3>Здоровье и стрессоустойчивость</h3><p>Уходят бессонница, головные боли и ощущение, что организм работает на пределе.</p></div>
+        <div><h3>Ощущение контроля</h3><p>Снова чувствуете себя хозяином своей жизни, а не заложником обстоятельств.</p></div>
+      </div>
+
+      <div class="cta-band rv" style="margin-top:44px;">
+        <p style="margin:0;">Группа набирается один раз в год — 16 мест.</p>
+        <a class="btn" href="#form">Забронировать место</a>
       </div>
     </div>
   </section>
 
   <!-- ================= пауза: пляж ================= -->
-  <figure class="bleed rv" style="height:52vh; min-height:260px;">
-    <div class="ph" style="position:absolute; inset:0;">
+  <figure class="bleed rv" style="height:44vh; min-height:240px;">
+    <div class="ph">
       <img src="photos/r/g-beach.webp" alt="Группа на утренней сессии на пляже" width="2200" height="940" loading="lazy" decoding="async" style="object-position:center 40%;">
     </div>
-    <div class="scrim"></div>
+    <div class="scrim scrim--light"></div>
     <figcaption><p class="eb" style="color:var(--foam); margin:0;">Утренняя сессия · пляж</p></figcaption>
   </figure>
 
-  <!-- ================= программа: ритм дня ================= -->
+  <!-- ================= программа: ритм дня · CTA 4 ================= -->
   <section class="sec" id="program">
     <div class="wrap">
       <p class="eb rv">Программа · 03 / 04</p>
@@ -721,52 +790,58 @@ a.sr-only:focus { left:0; top:0; width:auto; height:auto; z-index:60;
       <div class="day" id="day" style="max-width:900px;">
         <div class="rail" aria-hidden="true"><i id="railFill"></i></div>
 
-        <div class="slot rv">
-          <div class="slot-t">08:00</div>
-          <div>
-            <h3>Зарядка и биоактивная йога</h3>
-            <p>Мягкая физическая работа: подвижность, растяжка, дыхание в движении. После – завтрак и перерыв. Ведёт Павитра – приглашённый мастер программы.</p>
-          </div>
-        </div>
-        <div class="slot rv">
-          <div class="slot-t">11:00</div>
-          <div>
-            <h3>Утренний модуль: энергетическая система</h3>
-            <p>Работа с энергетической системой человека: меридианы, энергетические центры, потоки и каналы, биологические поля разной плотности. Принципы активации энергосистемы и методы энергетической защиты. Темы распределены по всей неделе.</p>
-          </div>
-        </div>
-        <div class="slot rv">
-          <div class="slot-t">14:00</div>
-          <div>
-            <h3>Обед и отдых</h3>
-            <p>Свободное время до вечернего модуля: море, сон, работа – по желанию.</p>
-          </div>
-        </div>
-        <div class="slot rv">
-          <div class="slot-t">16:00</div>
-          <div>
-            <h3>Бизнес-модуль</h3>
-            <p>Энергетика бизнес-процессов: как внедрить энергетические практики в управление, сформировать команду, выстроить энергетические взаимосвязи с партнёрами. Отдельная тема – духовно-энергетические источники вашего бизнеса. После – ужин и отдых.</p>
-          </div>
-        </div>
-        <div class="slot rv">
-          <div class="slot-t">18:30 – 20:00</div>
-          <div>
-            <h3>Ужин, отдых</h3>
-            <p>Свободное время до вечернего модуля: море, прогулки, общение.</p>
-          </div>
-        </div>
-        <div class="slot rv">
-          <div class="slot-t">20:00</div>
-          <div>
-            <h3>Дыхательные практики в зале</h3>
-            <p>До 22:00. Энергоактивное дыхание и практики погружения в медитативное состояние.</p>
-          </div>
-        </div>
+        <details class="acc slot rv">
+          <summary>
+            <div class="slot-head"><div class="slot-t">08:00</div><h3>Зарядка и биоактивная йога</h3></div>
+            <span class="acc-sign" aria-hidden="true"></span>
+          </summary>
+          <div class="acc-panel"><p>Мягкая физическая работа: подвижность, растяжка, дыхание в движении. После – завтрак и перерыв. Ведёт Павитра – приглашённый мастер программы.</p></div>
+        </details>
+
+        <details class="acc slot rv">
+          <summary>
+            <div class="slot-head"><div class="slot-t">11:00</div><h3>Утренний модуль: энергетическая система</h3></div>
+            <span class="acc-sign" aria-hidden="true"></span>
+          </summary>
+          <div class="acc-panel"><p>Работа с энергетической системой человека: меридианы, энергетические центры, потоки и каналы, биологические поля разной плотности. Принципы активации энергосистемы и методы энергетической защиты. Темы распределены по всей неделе.</p></div>
+        </details>
+
+        <details class="acc slot rv">
+          <summary>
+            <div class="slot-head"><div class="slot-t">14:00</div><h3>Обед и отдых</h3></div>
+            <span class="acc-sign" aria-hidden="true"></span>
+          </summary>
+          <div class="acc-panel"><p>Свободное время до вечернего модуля: море, сон, работа – по желанию.</p></div>
+        </details>
+
+        <details class="acc slot rv">
+          <summary>
+            <div class="slot-head"><div class="slot-t">16:00</div><h3>Бизнес-модуль</h3></div>
+            <span class="acc-sign" aria-hidden="true"></span>
+          </summary>
+          <div class="acc-panel"><p>Энергетика бизнес-процессов: как внедрить энергетические практики в управление, сформировать команду, выстроить энергетические взаимосвязи с партнёрами. Отдельная тема – духовно-энергетические источники вашего бизнеса. После – ужин и отдых.</p></div>
+        </details>
+
+        <details class="acc slot rv">
+          <summary>
+            <div class="slot-head"><div class="slot-t">18:30 – 20:00</div><h3>Ужин, отдых</h3></div>
+            <span class="acc-sign" aria-hidden="true"></span>
+          </summary>
+          <div class="acc-panel"><p>Свободное время до вечернего модуля: море, прогулки, общение.</p></div>
+        </details>
+
+        <details class="acc slot rv">
+          <summary>
+            <div class="slot-head"><div class="slot-t">20:00</div><h3>Дыхательные практики в зале</h3></div>
+            <span class="acc-sign" aria-hidden="true"></span>
+          </summary>
+          <div class="acc-panel"><p>До 22:00. Энергоактивное дыхание и практики погружения в медитативное состояние.</p></div>
+        </details>
+
+        <!-- крючок блока: всегда раскрыт, в аккордеон не сворачивается -->
         <div class="slot slot--ink rv">
-          <div class="slot-t">23:00</div>
-          <div>
-            <h3>Ночные трансформационные процессы</h3>
+          <div class="slot-wrap">
+            <div class="slot-head"><div class="slot-t">23:00</div><h3>Ночные трансформационные процессы</h3></div>
             <p>До 03:00, через день. Авторская методика Андрея Захаревича: набор энергии и формирование высокого энергетического потенциала. На следующее утро после ночной практики – мягкий режим.</p>
           </div>
         </div>
@@ -785,6 +860,14 @@ a.sr-only:focus { left:0; top:0; width:auto; height:auto; z-index:60;
           <div class="card"><h3>Оздоравливающее питание и сухое голодание</h3><p>Вегетарианский рацион. Два дня за тренинг – воздержание от пищи и воды (сухой голод): строго по желанию, только после анкеты здоровья и согласования с ведущим.</p></div>
           <div class="card"><h3>Банные практики и холодовые воздействия</h3><p>Контрастные процедуры. Участие добровольное, интенсивность выбираете сами.</p></div>
         </div>
+      </div>
+
+      <div class="card cta-band rv" style="margin-top:44px;">
+        <div>
+          <p style="margin:0 0 6px;">Место в группе бронируется по заявке — это ещё не оплата.</p>
+          <p class="cta-deadline" style="margin:0;">Первая волна 70 000 ₽ — до 5 августа</p>
+        </div>
+        <a class="btn" href="#form">Забронировать место</a>
       </div>
     </div>
   </section>
@@ -828,7 +911,7 @@ a.sr-only:focus { left:0; top:0; width:auto; height:auto; z-index:60;
       <h2 class="rv" style="max-width:780px;">Совместите тренинг и отдых на море</h2>
       <p class="lead rv" style="max-width:640px; margin-bottom:32px;">Что может быть лучше, чем соединить трансформационный тренинг с отдыхом на жемчужине черноморского побережья России.</p>
       <p class="eb rv">Ведь это</p>
-      <div class="grid g2 stg rv" style="max-width:1040px;">
+      <div class="grid g2 stg" style="max-width:1040px;">
         <div style="display:grid; grid-template-columns:16px 1fr; gap:12px; font-size:17px; line-height:1.5;"><span class="pr" style="color:var(--sea);">—</span><span>Тёплое и ласковое море, дендрарий, озёра и водопады</span></div>
         <div style="display:grid; grid-template-columns:16px 1fr; gap:12px; font-size:17px; line-height:1.5;"><span class="pr" style="color:var(--sea);">—</span><span>Уникальный климат — субтропический полувлажный</span></div>
         <div style="display:grid; grid-template-columns:16px 1fr; gap:12px; font-size:17px; line-height:1.5;"><span class="pr" style="color:var(--sea);">—</span><span>Потрясающие места для практик — галечные пляжи</span></div>
@@ -839,31 +922,29 @@ a.sr-only:focus { left:0; top:0; width:auto; height:auto; z-index:60;
     </div>
   </section>
 
-  <!-- ================= место ================= -->
+  <!-- ================= локация ================= -->
   <section class="sec sec--pebble" id="venue">
     <div class="wrap">
       <p class="eb rv">Место · 04 / 04</p>
       <h2 class="rv" style="max-width:640px;">Ретрит-центр «Лето», Вардане</h2>
       <p class="muted rv" style="max-width:var(--w-text); margin-bottom:32px;">Субтропики Лазаревского района: галечные пляжи, дендрарий, озёра и водопады. Закрытая территория на склоне над морем: три корпуса, бассейн, беседки и террасы, где проходят дневные сессии. Спуск к галечному пляжу — семь минут пешком. Во всех номерах кондиционер, холодильник, душ; охраняемая парковка.</p>
 
-      <div class="grid g2 rv stg" style="margin-bottom:12px;">
-        <div class="ph" style="height:240px;"><img src="photos/r/g-circle.webp" alt="Круг группы на террасе с видом на море" width="1400" height="1400" loading="lazy" decoding="async" style="object-position:center 35%;"></div>
-        <div class="ph" style="height:240px;"><img src="photos/r/v-pool.webp" alt="Бассейн и территория центра" width="1600" height="1000" loading="lazy" decoding="async"></div>
-      </div>
-      <div class="grid g3 rv stg" style="margin-bottom:36px;">
-        <div class="ph" style="height:180px;"><img src="photos/r/v-sunset.webp" alt="Закат над морем с террасы центра" width="1200" height="900" loading="lazy" decoding="async"></div>
-        <div class="ph" style="height:180px;"><img src="photos/r/v-gazebo.webp" alt="Беседка для практик с видом на море" width="1200" height="900" loading="lazy" decoding="async"></div>
-        <div class="ph" style="height:180px;"><img src="photos/r/v-loungers.webp" alt="Зона отдыха у бассейна" width="1200" height="900" loading="lazy" decoding="async"></div>
+      <div class="collage stg">
+        <div class="ph"><img src="photos/r/g-circle.webp" alt="Круг группы на террасе с видом на море" width="1400" height="1400" loading="lazy" decoding="async" style="object-position:center 35%;"></div>
+        <div class="ph"><img src="photos/r/v-pool.webp" alt="Бассейн и территория центра" width="1600" height="1000" loading="lazy" decoding="async"></div>
+        <div class="ph"><img src="photos/r/v-sunset.webp" alt="Закат над морем с террасы центра" width="1200" height="900" loading="lazy" decoding="async"></div>
       </div>
 
-      <div class="grid g4 stg rv" style="margin-bottom:36px;">
-        <div class="card" style="background:var(--foam);"><div class="card-n">3</div><p>корпуса, 8 типов номеров</p></div>
-        <div class="card" style="background:var(--foam);"><div class="card-n">300 м</div><p>до моря, спуск 7 минут</p></div>
-        <div class="card" style="background:var(--foam);"><div class="card-n">1 875 ₽</div><p>проживание с человека в сутки</p></div>
-        <div class="card" style="background:var(--foam);"><div class="card-n">1 800 ₽</div><p>трёхразовое питание в день</p></div>
+      <div class="hr" style="margin:36px 0 30px;"></div>
+
+      <div class="g4 stg" style="gap:26px 16px;">
+        <div><div class="num num--s">3</div><p class="eb">корпуса, 8 типов номеров</p></div>
+        <div><div class="num num--s">300 м</div><p class="eb">до моря, спуск 7 минут</p></div>
+        <div><div class="num num--s">1 875 ₽</div><p class="eb">проживание с человека в сутки</p></div>
+        <div><div class="num num--s">1 800 ₽</div><p class="eb">трёхразовое питание в день</p></div>
       </div>
 
-      <div class="grid g3 rv" style="padding-top:32px; border-top:1px solid var(--line-soft);">
+      <div class="grid g3 rv" style="margin-top:36px; padding-top:32px; border-top:1px solid var(--line-soft);">
         <div>
           <p class="eb">Сбор группы</p>
           <p class="muted" style="font-size:16px;">20 августа к 18:00 мск в отеле. Заселение с 14:00, выезд 27 августа до 12:00.</p>
@@ -881,11 +962,11 @@ a.sr-only:focus { left:0; top:0; width:auto; height:auto; z-index:60;
   </section>
 
   <!-- ================= пауза: костёр ================= -->
-  <figure class="bleed rv" style="height:48vh; min-height:250px;">
-    <div class="ph" style="position:absolute; inset:0;">
+  <figure class="bleed rv" style="height:44vh; min-height:240px;">
+    <div class="ph">
       <img src="photos/r/v-bonfire.webp" alt="Вечерний сбор группы у костра на берегу" width="2200" height="1000" loading="lazy" decoding="async" style="object-position:center 45%;">
     </div>
-    <div class="scrim"></div>
+    <div class="scrim scrim--light"></div>
     <figcaption><div class="pr" style="font-size:28px; line-height:1.12;">Костёр на берегу</div></figcaption>
   </figure>
 
@@ -894,12 +975,12 @@ a.sr-only:focus { left:0; top:0; width:auto; height:auto; z-index:60;
     <div class="wrap">
       <h2 class="rv" style="max-width:640px;">Что говорят те, кто уже прошёл</h2>
       <p class="muted rv" style="max-width:620px; margin-bottom:36px;">Десять видеоотзывов с семинаров и мастер-классов Андрея Захаревича. Видео открывается прямо здесь — YouTube не загружается, пока вы не нажмёте.</p>
-      <div class="grid g3 rv stg" id="revGrid" style="gap:24px 16px; margin-bottom:28px;">
+      <div class="grid g3 stg" id="revGrid" style="gap:28px 16px; margin-bottom:32px;">
         <article class="rev">
           <div class="rev-media">
             <button type="button" data-yt="HT-pJl2V1lA" aria-label="Смотреть видеоотзыв: Радислав Гандапас">
               <img decoding="async" src="photos/rev/HT-pJl2V1lA.webp" alt="Кадр из видеоотзыва: Радислав Гандапас" loading="lazy" width="640" height="360">
-              <span class="rev-play" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 4l14 8-14 8z"/></svg></span>
+              <span class="rev-watch" aria-hidden="true">Смотреть</span>
             </button>
           </div>
           <strong class="rev-name">Радислав Гандапас</strong>
@@ -910,7 +991,7 @@ a.sr-only:focus { left:0; top:0; width:auto; height:auto; z-index:60;
           <div class="rev-media">
             <button type="button" data-yt="7FYl5AsK5n4" aria-label="Смотреть видеоотзыв: Алексей Воронин">
               <img decoding="async" src="photos/rev/7FYl5AsK5n4.webp" alt="Кадр из видеоотзыва: Алексей Воронин" loading="lazy" width="640" height="360">
-              <span class="rev-play" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 4l14 8-14 8z"/></svg></span>
+              <span class="rev-watch" aria-hidden="true">Смотреть</span>
             </button>
           </div>
           <strong class="rev-name">Алексей Воронин</strong>
@@ -920,7 +1001,7 @@ a.sr-only:focus { left:0; top:0; width:auto; height:auto; z-index:60;
           <div class="rev-media">
             <button type="button" data-yt="bPc7dbjOZBY" aria-label="Смотреть видеоотзыв: Влад Бермуда">
               <img decoding="async" src="photos/rev/bPc7dbjOZBY.webp" alt="Кадр из видеоотзыва: Влад Бермуда" loading="lazy" width="640" height="360">
-              <span class="rev-play" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 4l14 8-14 8z"/></svg></span>
+              <span class="rev-watch" aria-hidden="true">Смотреть</span>
             </button>
           </div>
           <strong class="rev-name">Влад Бермуда</strong>
@@ -930,7 +1011,7 @@ a.sr-only:focus { left:0; top:0; width:auto; height:auto; z-index:60;
           <div class="rev-media">
             <button type="button" data-yt="jxVVZy1Quy4" aria-label="Смотреть видеоотзыв: Тимур Тажетдинов">
               <img decoding="async" src="photos/rev/jxVVZy1Quy4.webp" alt="Кадр из видеоотзыва: Тимур Тажетдинов" loading="lazy" width="640" height="360">
-              <span class="rev-play" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 4l14 8-14 8z"/></svg></span>
+              <span class="rev-watch" aria-hidden="true">Смотреть</span>
             </button>
           </div>
           <strong class="rev-name">Тимур Тажетдинов</strong>
@@ -940,7 +1021,7 @@ a.sr-only:focus { left:0; top:0; width:auto; height:auto; z-index:60;
           <div class="rev-media">
             <button type="button" data-yt="AD94fuwawu8" aria-label="Смотреть видеоотзыв: Андрей Богокин">
               <img decoding="async" src="photos/rev/AD94fuwawu8.webp" alt="Кадр из видеоотзыва: Андрей Богокин" loading="lazy" width="640" height="360">
-              <span class="rev-play" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 4l14 8-14 8z"/></svg></span>
+              <span class="rev-watch" aria-hidden="true">Смотреть</span>
             </button>
           </div>
           <strong class="rev-name">Андрей Богокин</strong>
@@ -950,7 +1031,7 @@ a.sr-only:focus { left:0; top:0; width:auto; height:auto; z-index:60;
           <div class="rev-media">
             <button type="button" data-yt="2j26t1aFxLY" aria-label="Смотреть видеоотзыв: Руслан Светланов">
               <img decoding="async" src="photos/rev/2j26t1aFxLY.webp" alt="Кадр из видеоотзыва: Руслан Светланов" loading="lazy" width="640" height="360">
-              <span class="rev-play" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 4l14 8-14 8z"/></svg></span>
+              <span class="rev-watch" aria-hidden="true">Смотреть</span>
             </button>
           </div>
           <strong class="rev-name">Руслан Светланов</strong>
@@ -960,7 +1041,7 @@ a.sr-only:focus { left:0; top:0; width:auto; height:auto; z-index:60;
           <div class="rev-media">
             <button type="button" data-yt="2YpDYdoa5es" aria-label="Смотреть видеоотзыв: Янис Ткаченко">
               <img decoding="async" src="photos/rev/2YpDYdoa5es.webp" alt="Кадр из видеоотзыва: Янис Ткаченко" loading="lazy" width="640" height="360">
-              <span class="rev-play" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 4l14 8-14 8z"/></svg></span>
+              <span class="rev-watch" aria-hidden="true">Смотреть</span>
             </button>
           </div>
           <strong class="rev-name">Янис Ткаченко</strong>
@@ -970,7 +1051,7 @@ a.sr-only:focus { left:0; top:0; width:auto; height:auto; z-index:60;
           <div class="rev-media">
             <button type="button" data-yt="DNJ0CBIovno" aria-label="Смотреть видеоотзыв: Ольга Малевицкая">
               <img decoding="async" src="photos/rev/DNJ0CBIovno.webp" alt="Кадр из видеоотзыва: Ольга Малевицкая" loading="lazy" width="640" height="360">
-              <span class="rev-play" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 4l14 8-14 8z"/></svg></span>
+              <span class="rev-watch" aria-hidden="true">Смотреть</span>
             </button>
           </div>
           <strong class="rev-name">Ольга Малевицкая</strong>
@@ -980,7 +1061,7 @@ a.sr-only:focus { left:0; top:0; width:auto; height:auto; z-index:60;
           <div class="rev-media">
             <button type="button" data-yt="YNvp4SExAY0" aria-label="Смотреть видеоотзыв: Ярослав">
               <img decoding="async" src="photos/rev/YNvp4SExAY0.webp" alt="Кадр из видеоотзыва: Ярослав" loading="lazy" width="640" height="360">
-              <span class="rev-play" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 4l14 8-14 8z"/></svg></span>
+              <span class="rev-watch" aria-hidden="true">Смотреть</span>
             </button>
           </div>
           <strong class="rev-name">Ярослав</strong>
@@ -990,7 +1071,7 @@ a.sr-only:focus { left:0; top:0; width:auto; height:auto; z-index:60;
           <div class="rev-media">
             <button type="button" data-yt="1mJS0m8_ObA" aria-label="Смотреть видеоотзыв: Анна Дёмина">
               <img decoding="async" src="photos/rev/1mJS0m8_ObA.webp" alt="Кадр из видеоотзыва: Анна Дёмина" loading="lazy" width="640" height="360">
-              <span class="rev-play" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 4l14 8-14 8z"/></svg></span>
+              <span class="rev-watch" aria-hidden="true">Смотреть</span>
             </button>
           </div>
           <strong class="rev-name">Анна Дёмина</strong>
@@ -998,7 +1079,7 @@ a.sr-only:focus { left:0; top:0; width:auto; height:auto; z-index:60;
         </article>
       </div>
       <div style="display:flex; justify-content:center;">
-        <button type="button" class="tbtn" id="revMore" aria-expanded="false" aria-controls="revGrid">Показать ещё отзывы</button>
+        <button type="button" class="btn-line" id="revMore" aria-expanded="false" aria-controls="revGrid">Показать ещё отзывы</button>
       </div>
       <p class="muted rv" style="margin:36px 0 0; max-width:var(--w-text); padding-top:26px; border-top:1px solid var(--line-soft); font-size:16px;">Энергетические практики Андрея Захаревича используют бизнес-спикеры Радислав Гандапас, Влад Бермуда, Андрей Коломыц, Андрей Богокин, Александр Воронин, Тимур Тажетдинов.</p>
     </div>
@@ -1010,7 +1091,7 @@ a.sr-only:focus { left:0; top:0; width:auto; height:auto; z-index:60;
       <h2 class="rv" style="max-width:640px;">Чем раньше — тем дешевле</h2>
       <p class="lead rv" style="max-width:600px; margin-bottom:32px;">Цена участия растёт по мере набора группы. Проживание и питание оплачиваются отдельно в ретрит-центре.</p>
 
-      <div class="grid g3 rv stg" style="margin-bottom:32px;">
+      <div class="grid g3 stg" style="margin-bottom:32px;">
         <div class="card wave" data-wave="2026-08-05" data-state="active" style="background:var(--foam);">
           <div class="wave-tag"><span class="pulse" aria-hidden="true"></span>Действует сейчас</div>
           <p class="eb" style="margin-bottom:6px;">Первая волна</p>
@@ -1031,7 +1112,7 @@ a.sr-only:focus { left:0; top:0; width:auto; height:auto; z-index:60;
         </div>
       </div>
 
-      <div class="grid g3 rv stg" style="margin-bottom:36px;">
+      <div class="grid g3 stg" style="margin-bottom:36px;">
         <div class="card" style="background:var(--foam);"><p>Участие в рассрочку</p></div>
         <div class="card" style="background:var(--foam);"><p>Индивидуальная консультация</p></div>
         <div class="card" style="background:var(--foam);"><p>Работа с наставником</p></div>
@@ -1068,55 +1149,60 @@ a.sr-only:focus { left:0; top:0; width:auto; height:auto; z-index:60;
     <div class="wrap">
       <h2 class="rv" style="max-width:620px; margin-bottom:32px;">О чём обычно спрашивают до оплаты</h2>
       <div class="faq rv" style="max-width:900px;">
-        <div>
-          <h3>Это не секта?</h3>
-          <p>Нет. Полное расписание известно заранее, из любой практики можно выйти, обязательных ритуалов нет, допродаж на месте не бывает.</p>
-        </div>
-        <div>
-          <h3>Кому не подойдёт?</h3>
-          <p>Часть практик имеет противопоказания: сердечно-сосудистые заболевания в острой фазе, беременность, состояния, требующие постоянного наблюдения. Перед заездом заполняется анкета здоровья — точный список согласуем с профильным специалистом.</p>
-        </div>
-        <div>
-          <h3>Можно ли работать во время ретрита?</h3>
-          <p>Да, свободное время – после обеда до 16:00. Но чем меньше вы работаете, тем выше результат.</p>
-        </div>
-        <div>
-          <h3>Ночные практики до трёх часов ночи – я не высплюсь?</h3>
-          <p>Ночные процессы проходят через день, а не ежедневно. На следующее утро – мягкий режим без ранних практик. Участники прошлых потоков отмечают, что при высоком уровне энергии восстанавливаются быстрее обычного, но режим вы регулируете сами – участие в каждой практике добровольное.</p>
-        </div>
-        <div>
-          <h3>Что если придётся отменить поездку?</h3>
-          <p>Условия возврата и переноса организаторы обсуждают индивидуально. Зафиксируйте договорённости до оплаты — письмом или по телефону +7 905 725-97-97.</p>
-        </div>
-        <div>
-          <h3>Есть рассрочка?</h3>
-          <p>Да. Отметьте это в заявке — организаторы расскажут срок, размер первого взноса и условия партнёра.</p>
-        </div>
+        <details class="acc">
+          <summary><h3>Это не секта?</h3><span class="acc-sign" aria-hidden="true"></span></summary>
+          <div class="acc-panel"><p>Нет. Полное расписание известно заранее, из любой практики можно выйти, обязательных ритуалов нет, допродаж на месте не бывает.</p></div>
+        </details>
+        <details class="acc">
+          <summary><h3>Кому не подойдёт?</h3><span class="acc-sign" aria-hidden="true"></span></summary>
+          <div class="acc-panel"><p>Часть практик имеет противопоказания: сердечно-сосудистые заболевания в острой фазе, беременность, состояния, требующие постоянного наблюдения. Перед заездом заполняется анкета здоровья — точный список согласуем с профильным специалистом.</p></div>
+        </details>
+        <details class="acc">
+          <summary><h3>Можно ли работать во время ретрита?</h3><span class="acc-sign" aria-hidden="true"></span></summary>
+          <div class="acc-panel"><p>Да, свободное время – после обеда до 16:00. Но чем меньше вы работаете, тем выше результат.</p></div>
+        </details>
+        <details class="acc">
+          <summary><h3>Ночные практики до трёх часов ночи – я не высплюсь?</h3><span class="acc-sign" aria-hidden="true"></span></summary>
+          <div class="acc-panel"><p>Ночные процессы проходят через день, а не ежедневно. На следующее утро – мягкий режим без ранних практик. Участники прошлых потоков отмечают, что при высоком уровне энергии восстанавливаются быстрее обычного, но режим вы регулируете сами – участие в каждой практике добровольное.</p></div>
+        </details>
+        <details class="acc">
+          <summary><h3>Что если придётся отменить поездку?</h3><span class="acc-sign" aria-hidden="true"></span></summary>
+          <div class="acc-panel"><p>Условия возврата и переноса организаторы обсуждают индивидуально. Зафиксируйте договорённости до оплаты — письмом или по телефону +7 905 725-97-97.</p></div>
+        </details>
+        <details class="acc">
+          <summary><h3>Есть рассрочка?</h3><span class="acc-sign" aria-hidden="true"></span></summary>
+          <div class="acc-panel"><p>Да. Отметьте это в заявке — организаторы расскажут срок, размер первого взноса и условия партнёра.</p></div>
+        </details>
       </div>
     </div>
   </section>
 
   <!-- ================= слово автора ================= -->
-  <section class="sec sec--pebble">
+  <section class="sec sec--ink">
     <div class="wrap">
-      <div class="rv" style="max-width:820px;">
-        <p class="eb">Слово автора</p>
-        <blockquote class="pr" style="margin:0 0 26px; font-size:26px; line-height:1.26;">В энергоактивной психологии нет ничего сверхъестественного или неестественного. Это не особая практика, отдельная от всего происходящего в жизни, — это особый способ жизни.</blockquote>
-        <p class="muted">Всё то, что вы и так делаете — дышите, ходите, спите, говорите, управляете, планируете, распределяете, — вы можете делать во много раз эффективнее. Помогая себе и близким быть здоровыми и счастливыми в любой ситуации. Вот, собственно, и весь секрет.</p>
-        <p class="muted" style="margin-bottom:22px;">Если чувствуете, что способны в своей жизни на большее, но нужен толчок для прорыва, — жду вас в Вардане.</p>
-        <p class="eb" style="margin:0;">Андрей Захаревич</p>
+      <p class="eb rv">Слово автора</p>
+      <div class="word-grid rv">
+        <div>
+          <blockquote class="pr word-q">В энергоактивной психологии нет ничего сверхъестественного или неестественного. Это не особая практика, отдельная от всего происходящего в жизни, — это особый способ жизни.</blockquote>
+          <p class="eb" style="margin:0;">Андрей Захаревич</p>
+        </div>
+        <div>
+          <p>Всё то, что вы и так делаете — дышите, ходите, спите, говорите, управляете, планируете, распределяете, — вы можете делать во много раз эффективнее. Помогая себе и близким быть здоровыми и счастливыми в любой ситуации. Вот, собственно, и весь секрет.</p>
+          <p>Если чувствуете, что способны в своей жизни на большее, но нужен толчок для прорыва, — жду вас в Вардане.</p>
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- ================= заявка ================= -->
-  <section class="sec sec--ink" id="form">
+  <!-- ================= заявка · CTA 5 ================= -->
+  <section class="sec sec--ink" id="form" style="padding-top:0;">
     <div class="wrap">
+      <div class="hr hr--foam" style="margin-bottom:var(--py);"></div>
       <div class="grid rv" style="gap:40px;" id="formGrid">
         <div>
           <p class="eb">Заявка</p>
           <h2>Забронировать место в группе</h2>
-          <p style="max-width:520px; color:rgba(246,242,236,.85);">Это ещё не оплата. Оставьте имя и контакт — расскажем условия, ответим на вопросы и пришлём полное расписание.</p>
+          <p style="max-width:520px;">Это ещё не оплата. Оставьте имя и контакт — расскажем условия, ответим на вопросы и пришлём полное расписание.</p>
           <p style="display:flex; align-items:center; gap:10px; color:var(--gold); font-weight:500; margin-bottom:28px;">
             <span class="pulse" aria-hidden="true"></span>Первая волна 70 000 ₽ — при оплате до 5 августа
           </p>
@@ -1127,15 +1213,15 @@ a.sr-only:focus { left:0; top:0; width:auto; height:auto; z-index:60;
             <input type="text" id="lf-contact" name="contact" autocomplete="tel" placeholder="Телефон или телеграм" required>
             <div class="hp"><label for="lf-company">Компания</label><input type="text" id="lf-company" name="company" tabindex="-1" autocomplete="off"></div>
             <button type="submit" id="lf-submit" class="btn">Отправить заявку</button>
-            <p style="margin:4px 0 0; font-size:14px; line-height:1.55; color:rgba(246,242,236,.7);">Нажимая кнопку, вы соглашаетесь с <a href="./privacy" style="border-bottom:1px solid rgba(246,242,236,.4);">обработкой персональных данных</a>.</p>
+            <p style="margin:4px 0 0; font-size:14px; line-height:1.55; color:var(--dim);">Нажимая кнопку, вы соглашаетесь с <a href="./privacy" style="border-bottom:1px solid rgba(246,242,236,.4);">обработкой персональных данных</a>.</p>
             <p id="lf-status" class="form-status" role="status" aria-live="polite"></p>
           </form>
         </div>
-        <aside style="border:1px solid rgba(246,242,236,.24); border-radius:var(--r); padding:28px 26px; align-self:start;">
+        <aside style="border:1px solid var(--line-foam); border-radius:var(--r); padding:28px 26px; align-self:start;">
           <strong style="display:block; font-weight:500; font-size:19px; margin-bottom:6px;">Юлия</strong>
-          <div style="font-size:15px; color:rgba(246,242,236,.7); margin-bottom:18px;">Организатор, бронирование номеров</div>
-          <p style="color:rgba(246,242,236,.85); font-size:16px;">Отвечаю в течение рабочего дня. Можно спросить что угодно до оплаты — включая противопоказания и условия возврата.</p>
-          <div style="margin-top:18px; padding-top:18px; border-top:1px solid rgba(246,242,236,.24);">
+          <div style="font-size:15px; color:var(--dim); margin-bottom:18px;">Организатор, бронирование номеров</div>
+          <p style="font-size:16px;">Отвечаю в течение рабочего дня. Можно спросить что угодно до оплаты — включая противопоказания и условия возврата.</p>
+          <div style="margin-top:18px; padding-top:18px; border-top:1px solid var(--line-foam);">
             <a href="tel:+79057259797" style="color:var(--gold); font-weight:500; font-size:17px;">+7 905 725-97-97</a>
           </div>
         </aside>
@@ -1151,7 +1237,11 @@ a.sr-only:focus { left:0; top:0; width:auto; height:auto; z-index:60;
 
 </main>
 
-<div class="mobile-bar" id="mobileBar"><a class="btn" href="#form">Забронировать место</a></div>
+<!-- CTA 2: липкая панель, живёт от конца первого экрана до формы -->
+<div class="mobile-bar" id="mobileBar">
+  <p>Первая волна 70 000 ₽ · до 5 августа</p>
+  <a class="btn" href="#form">Забронировать</a>
+</div>
 
 <script type="application/ld+json">
 {
@@ -1175,6 +1265,7 @@ a.sr-only:focus { left:0; top:0; width:auto; height:auto; z-index:60;
 
 <script>
 var REDUCE = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+var LIVE   = document.visibilityState === 'visible';
 
 /* ---------- бургер ---------- */
 (function(){
@@ -1190,27 +1281,59 @@ var REDUCE = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   }); });
 })();
 
-/* ---------- появление: play-once + фолбэк ----------
-   Если IntersectionObserver не отработал (фоновая вкладка, печать, бот) —
-   через 2.5s показываем всё, чтобы страница не осталась пустой.          */
+/* ---------- аккордеоны ----------
+   Разметка авторится раскрытой, <details> работает без JS и с клавиатуры.
+   Сворачиваем только на телефоне; то, что пользователь раскрыл сам, не трогаем. */
 (function(){
-  var els = [].slice.call(document.querySelectorAll('.rv,.hr'));
-  function showAll(){ els.forEach(function(e){ e.classList.add('in'); }); }
-  if (REDUCE || !('IntersectionObserver' in window)) { showAll(); return; }
-  var io = new IntersectionObserver(function(en){ en.forEach(function(e){
-    if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
-  }); }, { rootMargin:'0px 0px -8% 0px', threshold:0.08 });
-  els.forEach(function(e){ io.observe(e); });
-  setTimeout(function(){ if (document.visibilityState !== 'visible') showAll(); }, 2500);
-  window.addEventListener('beforeprint', showAll);
+  var accs = [].slice.call(document.querySelectorAll('.acc'));
+  if (!accs.length) return;
+  var wide = window.matchMedia('(min-width: 768px)');
+  function apply(){
+    accs.forEach(function(d){
+      if (wide.matches) d.open = true;
+      else if (!d.dataset.touched) d.open = false;
+    });
+  }
+  accs.forEach(function(d){
+    d.open = true;
+    d.addEventListener('toggle', function(){ if (!wide.matches) d.dataset.touched = '1'; });
+  });
+  apply();
+  wide.addEventListener('change', function(){
+    accs.forEach(function(d){ delete d.dataset.touched; });
+    apply();
+  });
 })();
 
-/* ---------- счётчики: разметка уже содержит финальное число ---------- */
+/* ---------- появление ----------
+   Скрытое состояние не живёт в разметке: .pre вешается только тем блокам,
+   что реально ниже вьюпорта, и только у живого документа с включёнными
+   анимациями. Иначе печать, скриншот, фоновая вкладка и боты видят пустоту. */
+(function(){
+  if (REDUCE || !LIVE || !('IntersectionObserver' in window)) return;
+  var els = [].slice.call(document.querySelectorAll('.rv, .hr, .stg'));
+  var edge = window.innerHeight * 0.92;
+  var hidden = els.filter(function(e){ return e.getBoundingClientRect().top > edge; });
+  if (!hidden.length) return;
+  hidden.forEach(function(e){ e.classList.add('pre'); });
+  var io = new IntersectionObserver(function(en){ en.forEach(function(x){
+    if (x.isIntersecting) { x.target.classList.remove('pre'); io.unobserve(x.target); }
+  }); }, { rootMargin:'0px 0px -8% 0px', threshold:0.08 });
+  hidden.forEach(function(e){ io.observe(e); });
+  function showAll(){ hidden.forEach(function(e){ e.classList.remove('pre'); }); }
+  window.addEventListener('beforeprint', showAll);
+  document.addEventListener('visibilitychange', function(){
+    if (document.visibilityState !== 'visible') showAll();
+  });
+})();
+
+/* ---------- счётчики: в разметке финальные числа, обнуляем перед отсчётом ---------- */
 (function(){
   var els = [].slice.call(document.querySelectorAll('.count'));
-  if (!els.length || REDUCE || !('IntersectionObserver' in window)) return;
+  if (!els.length || REDUCE || !LIVE || !('IntersectionObserver' in window)) return;
   function run(el){
     var to = parseFloat(el.dataset.to), t0 = null, dur = 900;
+    el.textContent = '0';
     function step(ts){
       if (t0 === null) t0 = ts;
       var t = Math.min((ts - t0) / dur, 1);
@@ -1223,19 +1346,6 @@ var REDUCE = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (e.isIntersecting) { run(e.target); io.unobserve(e.target); }
   }); }, { threshold:0.3 });
   els.forEach(function(e){ io.observe(e); });
-})();
-
-/* ---------- «как устроен метод» ---------- */
-(function(){
-  var btn = document.getElementById('shortToggle'), box = document.getElementById('shortBlock');
-  if (!btn || !box) return;
-  btn.addEventListener('click', function(){
-    var open = box.hidden;
-    box.hidden = !open;
-    btn.setAttribute('aria-expanded', String(open));
-    btn.querySelector('[data-label]').textContent = open ? 'Свернуть' : 'Как устроен метод';
-    btn.querySelector('[data-sign]').textContent = open ? '−' : '+';
-  });
 })();
 
 /* ---------- волны цен: статус по датам ---------- */
@@ -1275,15 +1385,15 @@ var REDUCE = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   });
 })();
 
-/* ---------- прокрутка: шапка, шкала дня, параллакс хиро, полоса CTA ---------- */
+/* ---------- прокрутка: шапка, шкала дня, параллакс, липкая панель ---------- */
 (function(){
-  var hd    = document.getElementById('hd');
-  var day   = document.getElementById('day');
-  var fill  = document.getElementById('railFill');
-  var img   = document.getElementById('heroImg');
-  var hero  = document.querySelector('.hero');
-  var bar   = document.getElementById('mobileBar');
-  var form  = document.getElementById('form');
+  var hd   = document.getElementById('hd');
+  var day  = document.getElementById('day');
+  var fill = document.getElementById('railFill');
+  var img  = document.getElementById('heroImg');
+  var hero = document.querySelector('.hero');
+  var bar  = document.getElementById('mobileBar');
+  var form = document.getElementById('form');
   var ticking = false;
 
   function frame(){
@@ -1292,7 +1402,7 @@ var REDUCE = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     if (hd) hd.classList.toggle('scrolled', y > 40);
 
-    if (day && fill && !REDUCE) {
+    if (day && fill && !REDUCE && LIVE) {
       var r = day.getBoundingClientRect();
       var p = (window.innerHeight * 0.7 - r.top) / r.height;
       fill.style.transform = 'scaleY(' + Math.max(0, Math.min(1, p)) + ')';
@@ -1305,7 +1415,7 @@ var REDUCE = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     if (bar && form && hero) {
       var pastHero = hero.getBoundingClientRect().bottom < 0;
-      var formNear = form.getBoundingClientRect().top < window.innerHeight * 0.8;
+      var formNear = form.getBoundingClientRect().top < window.innerHeight * 0.9;
       bar.classList.toggle('show', pastHero && !formNear);
     }
   }
