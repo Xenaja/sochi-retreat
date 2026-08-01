@@ -302,20 +302,30 @@ h3, .h3 { font-size:20px; line-height:1.26; margin:0 0 10px; }
    Колода карточек (телефон)
    ============================================================ */
 @media (max-width:767px) {
-  .stack { display:block; }
+  /* Шаг колоды = высота шапки карточки: следующая наезжает ровно так,
+     чтобы заголовок предыдущей остался читаемым. При прежних 11px
+     из-под карточки торчал пустой край и колода читалась как стопка
+     безымянных полосок. --step задан на контейнере, дети его наследуют. */
+  /* у «болей» заголовка нет — смысл несёт сама реплика, поэтому шаг
+     открывает номер и обе строки текста, а не один номер */
+  .stack { display:block; --step:118px; }
+  .stack--titles { --step:68px; }
   /* display:block убивает gap сетки: без отбивки и рамки карточки одного
      цвета встают вплотную и читаются как одна сплошная плашка */
   .stack > * { position:sticky; min-height:168px; box-sizing:border-box;
     margin-bottom:10px; border:1px solid var(--line-soft); }
   /* +var(--hh): иначе карточки прилипают под фиксированную шапку */
   .stack > *:nth-child(1) { top:calc(var(--hh) + 12px); }
-  .stack > *:nth-child(2) { top:calc(var(--hh) + 23px); }
-  .stack > *:nth-child(3) { top:calc(var(--hh) + 34px); }
-  .stack > *:nth-child(4) { top:calc(var(--hh) + 45px); }
-  .stack > *:nth-child(5) { top:calc(var(--hh) + 56px); }
-  .stack > *:nth-child(6) { top:calc(var(--hh) + 67px); }
-  .stack > *:nth-child(7) { top:calc(var(--hh) + 78px); }
-  .stack > *:nth-child(8) { top:calc(var(--hh) + 89px); }
+  .stack > *:nth-child(2) { top:calc(var(--hh) + 12px + var(--step)); }
+  .stack > *:nth-child(3) { top:calc(var(--hh) + 12px + var(--step) * 2); }
+  .stack > *:nth-child(4) { top:calc(var(--hh) + 12px + var(--step) * 3); }
+  .stack > *:nth-child(5) { top:calc(var(--hh) + 12px + var(--step) * 4); }
+  .stack > *:nth-child(6) { top:calc(var(--hh) + 12px + var(--step) * 5); }
+  .stack > *:nth-child(7) { top:calc(var(--hh) + 12px + var(--step) * 6); }
+  .stack > *:nth-child(8) { top:calc(var(--hh) + 12px + var(--step) * 7); }
+  /* восемь двухстрочных заголовков в шаг 68px влезают только помельче */
+  .stack--titles > * { padding-top:18px; }
+  .stack--titles h3 { font-size:17px; line-height:1.25; margin-bottom:8px; }
 }
 
 /* ============================================================
@@ -897,7 +907,7 @@ a.sr-only:focus { left:0; top:0; width:auto; height:auto; z-index:60;
       <div class="rv">
         <p class="eb">Что входит в программу</p>
         <p class="muted" style="max-width:var(--w-text); margin-bottom:26px;">Авторские названия практик — и что за ними стоит на самом деле.</p>
-        <div class="grid g3 stack stg">
+        <div class="grid g3 stack stack--titles stg">
           <div class="card"><h3>Многомерные дневные процессы</h3><p>Два модуля с автором ежедневно: утренний – энергетическая система человека, дневной – энергетика бизнеса.</p></div>
           <div class="card"><h3>Ночные трансформационные процессы</h3><p>Групповая практика с 23:00 до 03:00, проходит через день. Авторская методика набора энергии; следующее утро после неё – мягкий режим.</p></div>
           <div class="card"><h3>Энергоактивное дыхание</h3><p>Дыхание в заданном ритме под счёт ведущего — основной инструмент метода.</p></div>
