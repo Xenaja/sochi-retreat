@@ -15,7 +15,9 @@
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="theme-color" content="#22303A">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8C%85%3C/text%3E%3C/svg%3E">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Prata&family=Onest:wght@400;500&display=swap&subset=cyrillic" rel="stylesheet">
@@ -40,7 +42,9 @@
   --line-soft:rgba(110,132,150,.24);
   --line-foam:rgba(246,242,236,.26);
   --dim:rgba(246,242,236,.88);   /* второстепенное на тёмном — не светлее */
-  --card-dark:rgba(246,242,236,.1);
+  /* тёмная, не светлая: кремовый 17px на светлой подложке давал 4.48:1,
+     ниже нормы. На тёмной — 6.35:1. Замерено. */
+  --card-dark:rgba(34,48,58,.18);
 
   --w-page:1200px;
   --w-text:760px;
@@ -91,6 +95,8 @@ h3, .h3 { font-size:20px; line-height:1.26; margin:0 0 10px; }
 @media (min-width:768px)  { .num { font-size:52px; } }
 @media (min-width:1200px) { .num { font-size:76px; } }
 .num--gold { color:var(--gold); }
+/* на цветной заливке --sea-ink цифра цвета --sea-ink невидима */
+.sec--deep .num, .sec--ink .num { color:var(--foam); }
 .num--s { font-size:34px; }
 @media (min-width:768px)  { .num--s { font-size:44px; } }
 @media (min-width:1200px) { .num--s { font-size:56px; } }
@@ -301,6 +307,12 @@ h3, .h3 { font-size:20px; line-height:1.26; margin:0 0 10px; }
 .acc--card .acc-panel { padding-bottom:0; }
 .sec--deep .acc, .sec--ink .acc { border-top-color:var(--line-foam); }
 .sec--deep .acc-sign, .sec--ink .acc-sign { color:var(--dim); }
+/* .acc--keep остаётся свёрнутым на всех ширинах: JS его не раскрывает,
+   знак «+» и курсор сохраняются */
+.acc--keep > summary { cursor:pointer !important; grid-template-columns:minmax(0,1fr) 22px !important; }
+.acc--keep .acc-sign { display:block !important; }
+.acc--keep > summary h3 { margin:0; }
+
 @media (min-width:768px) {
   .acc > summary { cursor:default; grid-template-columns:minmax(0,1fr); }
   .acc-sign { display:none; }
@@ -400,9 +412,21 @@ h3, .h3 { font-size:20px; line-height:1.26; margin:0 0 10px; }
 .inv-video { width:100%; height:auto; aspect-ratio:9/16; display:block;
   border-radius:var(--r); background:var(--ink); }
 
-.method-grid { display:grid; gap:28px; }
-@media (min-width:1200px) { .method-grid { grid-template-columns:minmax(0,1fr) 380px; gap:72px; align-items:start; } }
-.method-text { max-width:720px; }
+/* ---- метод: ступенями, а не двумя колонками сплошного текста ---- */
+.method-lead { max-width:1000px; font-size:24px; line-height:1.35; margin:0 0 36px; }
+@media (min-width:768px)  { .method-lead { font-size:28px; } }
+@media (min-width:1200px) { .method-lead { font-size:34px; } }
+.method-nums { display:grid; grid-template-columns:repeat(2,1fr); gap:26px 16px; margin-bottom:28px; }
+@media (min-width:768px) { .method-nums { grid-template-columns:repeat(3,1fr); gap:24px; } }
+.method-nums .eb { margin:10px 0 0; }
+.num--72 { font-size:34px; }
+@media (min-width:768px)  { .num--72 { font-size:52px; } }
+@media (min-width:1200px) { .num--72 { font-size:72px; } }
+/* перечисления строками, не абзацем */
+.rows { list-style:none; padding:0; margin:0; }
+.rows li { padding:12px 0; border-top:1px solid rgba(246,242,236,.25); font-size:16px; line-height:1.5; }
+.rows li:first-child { border-top:0; padding-top:0; }
+.rows li:last-child { padding-bottom:0; }
 
 .res-list > div { display:grid; gap:2px; padding:20px 0; border-top:1px solid var(--line-soft); }
 .res-list > div:last-child { border-bottom:1px solid var(--line-soft); }
@@ -749,30 +773,49 @@ a.sr-only:focus { left:0; top:0; width:auto; height:auto; z-index:60;
   <section class="sec sec--deep" id="method">
     <div class="wrap">
       <p class="eb rv">Метод</p>
-      <div class="method-grid rv">
-        <div class="method-text">
-          <h2>Энергоактивная психология</h2>
-          <p class="lead">Направление психологии и психотерапии, которое рассматривает психическую сферу человека как материальную структуру, а физическое тело — как своего рода производную психики.</p>
-          <p>С точки зрения современной физики невозможно строго обозначить грань между материей и энергией. Отсюда взгляд на человека как на единую материально-энергетическую систему, в которой психические энергии влияют и на биоэнергетическую, и на плотноматериальную составляющую. В научном сообществе всё чаще употребляется термин «психическая энергия».</p>
-          <details class="acc acc--more">
-            <summary><span class="pr" style="font-size:18px;">Читать больше</span><span class="acc-sign" aria-hidden="true"></span></summary>
-            <div class="acc-panel">
-              <p>Определение звучит сложно, практика — нет. Через тренинги по энергоактивной психологии прошли тысячи человек и получили результат в психологическом и физическом здоровье, состоянии энергетики и жизненном тонусе.</p>
-              <p>Автор направления — Андрей Захаревич. Это не адаптация чужого метода: подход разработан им и проверен сорока годами практики.</p>
-            </div>
-          </details>
-        </div>
-        <div class="grid" style="gap:16px;">
-          <div class="card">
-            <p class="eb">Научная проверка</p>
-            <p>Практики метода прошли проверку в Институте мозга человека им. Н. П. Бехтеревой в Санкт-Петербурге, НИИ космической медицины ФМБА России в Москве, лаборатории биоэнергетики НТФ «Биосвязь» и Университете им. П. Ф. Лесгафта.</p>
-          </div>
-          <div class="card">
-            <p class="eb">Что при этом не требуется</p>
-            <p>Ни особых знаний, ни опыта работы с энергетическим телом — практики осваиваются с нуля. Ни возраст, ни уровень подготовки не помеха: нагрузка подбирается по состоянию. Акцент — на концентрации внимания и практиках, а не на теоретических и эзотерических аспектах: всё применимо в обычной жизни и даёт ощутимый эффект почти сразу.</p>
-          </div>
-        </div>
+      <h2 class="rv">Энергоактивная психология</h2>
+      <p class="pr method-lead rv">Направление психологии и психотерапии, которое рассматривает психическую сферу человека как материальную структуру, а физическое тело — как своего рода производную психики.</p>
+
+      <div class="method-nums stg">
+        <div><div class="num num--72">40</div><p class="eb">лет разработки — не адаптация чужого метода</p></div>
+        <div><div class="num num--72">1000+</div><p class="eb">семинаров: через тренинги прошли тысячи человек</p></div>
+        <!-- «4 центра», а не «4 НИИ»: из четырёх организаций две — не НИИ -->
+        <div><div class="num num--72">4 центра</div><p class="eb">научные организации, где проверяли практики</p></div>
       </div>
+      <div class="hr hr--foam" style="margin-bottom:36px;"></div>
+
+      <div class="grid g2 rv" style="margin-bottom:36px;">
+        <details class="acc acc--card card">
+          <summary><p class="eb" style="margin:0;">Научная проверка</p><span class="acc-sign" aria-hidden="true"></span></summary>
+          <div class="acc-panel">
+            <ul class="rows">
+              <li>Институт мозга человека им. Н. П. Бехтеревой, Санкт-Петербург</li>
+              <li>НИИ космической медицины ФМБА России, Москва</li>
+              <li>Лаборатория биоэнергетики НТФ «Биосвязь»</li>
+              <li>Университет им. П. Ф. Лесгафта</li>
+            </ul>
+          </div>
+        </details>
+        <details class="acc acc--card card">
+          <summary><p class="eb" style="margin:0;">Чтобы начать, не нужно</p><span class="acc-sign" aria-hidden="true"></span></summary>
+          <div class="acc-panel">
+            <ul class="rows">
+              <li>Особых знаний и опыта работы с энергетическим телом — практики осваиваются с нуля</li>
+              <li>Определённого возраста и уровня подготовки — нагрузка подбирается по состоянию</li>
+              <li>Интереса к теории и эзотерике — акцент на концентрации внимания и практиках</li>
+            </ul>
+          </div>
+        </details>
+      </div>
+
+      <!-- .acc--keep: этот аккордеон остаётся свёрнутым и на десктопе -->
+      <details class="acc acc--keep rv">
+        <summary><h3>Где заканчивается материя и начинается энергия</h3><span class="acc-sign" aria-hidden="true"></span></summary>
+        <div class="acc-panel" style="max-width:var(--w-text);">
+          <p>С точки зрения современной физики невозможно строго обозначить грань между материей и энергией. Отсюда взгляд на человека как на единую материально-энергетическую систему, в которой психические энергии влияют и на биоэнергетическую, и на плотноматериальную составляющую. В научном сообществе всё чаще употребляется термин «психическая энергия».</p>
+          <p>Определение звучит сложно, практика — нет. Через тренинги по энергоактивной психологии прошли тысячи человек и получили результат в психологическом и физическом здоровье, состоянии энергетики и жизненном тонусе.</p>
+        </div>
+      </details>
     </div>
   </section>
 
@@ -1381,7 +1424,7 @@ var LIVE   = document.visibilityState === 'visible';
    Разметка авторится раскрытой, <details> работает без JS и с клавиатуры.
    Сворачиваем только на телефоне; то, что пользователь раскрыл сам, не трогаем. */
 (function(){
-  var accs = [].slice.call(document.querySelectorAll('.acc'));
+  var accs = [].slice.call(document.querySelectorAll('.acc:not(.acc--keep)'));
   if (!accs.length) return;
   var wide = window.matchMedia('(min-width: 768px)');
   function apply(){
