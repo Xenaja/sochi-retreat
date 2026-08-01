@@ -158,6 +158,15 @@ h3, .h3 { font-size:20px; line-height:1.26; margin:0 0 10px; }
 }
 .sec--ink .link, .sec--deep .link { color:var(--foam); border-bottom-color:rgba(246,242,236,.5); }
 
+/* кнопки-мессенджеры в карточке менеджера */
+.cbtns { display:flex; flex-wrap:wrap; gap:10px; }
+.cbtn {
+  display:inline-flex; align-items:center; justify-content:center;
+  border:1px solid rgba(246,242,236,.4); border-radius:var(--r);
+  padding:11px 18px; min-height:44px; font-weight:500; font-size:15px; color:var(--foam);
+}
+.cbtn:hover { border-color:var(--gold); color:var(--gold); }
+
 .pulse { position:relative; width:8px; height:8px; flex:0 0 8px; border-radius:50%; background:var(--gold); }
 .pulse::after { content:''; position:absolute; inset:0; border-radius:50%; background:var(--gold);
   animation:pulse 2.4s ease-out infinite; }
@@ -1212,7 +1221,7 @@ a.sr-only:focus { left:0; top:0; width:auto; height:auto; z-index:60;
         </details>
         <details class="acc">
           <summary><h3>Что если придётся отменить поездку?</h3><span class="acc-sign" aria-hidden="true"></span></summary>
-          <div class="acc-panel"><p>Условия возврата и переноса организаторы обсуждают индивидуально. Зафиксируйте договорённости до оплаты — письмом или по телефону +7 905 725-97-97.</p></div>
+          <div class="acc-panel"><p>Условия возврата и переноса организаторы обсуждают индивидуально. Зафиксируйте договорённости до оплаты — письмом или в переписке с менеджером (телеграм @Xenaja).</p></div>
         </details>
         <details class="acc">
           <summary><h3>Есть рассрочка?</h3><span class="acc-sign" aria-hidden="true"></span></summary>
@@ -1263,11 +1272,13 @@ a.sr-only:focus { left:0; top:0; width:auto; height:auto; z-index:60;
           </form>
         </div>
         <aside style="border:1px solid var(--line-foam); border-radius:var(--r); padding:28px 26px; align-self:start;">
-          <strong style="display:block; font-weight:500; font-size:19px; margin-bottom:6px;">Юлия</strong>
-          <div style="font-size:15px; color:var(--dim); margin-bottom:18px;">Организатор, бронирование номеров</div>
+          <strong style="display:block; font-weight:500; font-size:19px; margin-bottom:6px;">Ксения</strong>
+          <div style="font-size:15px; color:var(--dim); margin-bottom:18px;">Менеджер программы, бронирование мест</div>
           <p style="font-size:16px;">Отвечаю в течение рабочего дня. Можно спросить что угодно до оплаты — включая противопоказания и условия возврата.</p>
-          <div style="margin-top:18px; padding-top:18px; border-top:1px solid var(--line-foam);">
-            <a href="tel:+79057259797" style="color:var(--gold); font-weight:500; font-size:17px;">+7 905 725-97-97</a>
+          <div class="cbtns" style="margin-top:18px; padding-top:18px; border-top:1px solid var(--line-foam);">
+            <a class="cbtn" href="https://t.me/Xenaja" target="_blank" rel="noopener">Telegram</a>
+            <a class="cbtn" href="https://vk.com/xenaja" target="_blank" rel="noopener">ВКонтакте</a>
+            <a class="cbtn" href="https://max.ru/u/f9LHodD0cOKB7v_-dN9kgBhudZLAcwE0qj5_EsJ2JLPOcIhKkouWOPjy3U0" target="_blank" rel="noopener">MAX</a>
           </div>
         </aside>
       </div>
@@ -1299,7 +1310,7 @@ a.sr-only:focus { left:0; top:0; width:auto; height:auto; z-index:60;
   "image":"https://xenaja.github.io/sochi-retreat/visual/og-cover.jpg",
   "location":{"@type":"Place","name":"Ретрит-центр «Лето»","address":{"@type":"PostalAddress","streetAddress":"ул. Рассветная, 22/14","addressLocality":"пос. Вардане, Лазаревский район, Сочи","addressRegion":"Краснодарский край","addressCountry":"RU"}},
   "performer":{"@type":"Person","name":"Андрей Станиславович Захаревич"},
-  "organizer":{"@type":"Organization","name":"Академия энергоактивной психологии Андрея Захаревича","url":"https://homounicum.org","telephone":"+7-905-725-97-97","email":"info@reshomounicum.ru"},
+  "organizer":{"@type":"Organization","name":"Академия энергоактивной психологии Андрея Захаревича","url":"https://homounicum.org","email":"info@reshomounicum.ru"},
   "offers":[
     {"@type":"Offer","name":"Первая волна","price":"70000","priceCurrency":"RUB","validThrough":"2026-08-05T23:59+03:00","availability":"https://schema.org/InStock","url":"https://xenaja.github.io/sochi-retreat/#price"},
     {"@type":"Offer","name":"Вторая волна","price":"100000","priceCurrency":"RUB","validThrough":"2026-08-15T23:59+03:00","availability":"https://schema.org/InStock","url":"https://xenaja.github.io/sochi-retreat/#price"},
@@ -1497,7 +1508,7 @@ var LIVE   = document.visibilityState === 'visible';
       form.reset();
       setStatus('Спасибо! Заявка отправлена — с вами свяжутся в течение рабочего дня.');
     } catch (err) {
-      setStatus('Не получилось отправить. Позвоните, пожалуйста: +7 905 725-97-97', 'err');
+      setStatus('Не получилось отправить. Напишите, пожалуйста, в телеграм: @Xenaja', 'err');
     } finally {
       btn.disabled = false; btn.textContent = old;
     }
