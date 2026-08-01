@@ -84,7 +84,10 @@ h3, .h3 { font-size:20px; line-height:1.26; margin:0 0 10px; }
 @media (min-width:1200px) { .eb { font-size:13px; } }
 .sec--deep .eb, .sec--ink .eb { color:var(--dim); }
 
-.num { font-family:'Prata',Georgia,serif; font-size:36px; line-height:1; color:var(--sea-ink); }
+.num { font-family:'Prata',Georgia,serif; font-size:36px; line-height:1; color:var(--sea-ink); white-space:nowrap; }
+/* «от» перед крупной ценой: мелким Onest, иначе плитка рвётся на две строки */
+.num-pre { font-family:'Onest','Golos Text',system-ui,sans-serif; font-weight:500;
+  font-size:.32em; letter-spacing:.02em; margin-right:.16em; vertical-align:.4em; color:var(--sea); }
 @media (min-width:768px)  { .num { font-size:52px; } }
 @media (min-width:1200px) { .num { font-size:76px; } }
 .num--gold { color:var(--gold); }
@@ -482,12 +485,8 @@ h3, .h3 { font-size:20px; line-height:1.26; margin:0 0 10px; }
 .wave[data-state="active"] .wave-deadline { color:var(--gold-ink); }
 
 /* ---- врезки CTA ---- */
-.cta-band { display:grid; gap:16px; align-items:center; }
-@media (min-width:768px) { .cta-band { grid-template-columns:minmax(0,1fr) auto; gap:32px; } }
-.cta-band .btn { justify-self:start; }
 .cta-center { display:flex; justify-content:center; }
 .cta-center .btn { min-width:280px; }
-.cta-deadline { font-weight:500; color:var(--gold-ink); }
 
 /* ---- FAQ ---- */
 .faq .acc h3 { margin:0; font-size:20px; }
@@ -905,8 +904,7 @@ a.sr-only:focus { left:0; top:0; width:auto; height:auto; z-index:60;
   <section class="sec">
     <div class="wrap">
       <div class="rv">
-        <p class="eb">Что входит в программу</p>
-        <p class="muted" style="max-width:var(--w-text); margin-bottom:26px;">Авторские названия практик — и что за ними стоит на самом деле.</p>
+        <p class="eb" style="margin-bottom:26px;">Что входит в программу</p>
         <div class="grid g3 stack stack--titles stg">
           <div class="card"><h3>Многомерные дневные процессы</h3><p>Два модуля с автором ежедневно: утренний – энергетическая система человека, дневной – энергетика бизнеса.</p></div>
           <div class="card"><h3>Ночные трансформационные процессы</h3><p>Групповая практика с 23:00 до 03:00, проходит через день. Авторская методика набора энергии; следующее утро после неё – мягкий режим.</p></div>
@@ -919,11 +917,7 @@ a.sr-only:focus { left:0; top:0; width:auto; height:auto; z-index:60;
         </div>
       </div>
 
-      <div class="card cta-band rv" style="margin-top:44px;">
-        <div>
-          <p style="margin:0 0 6px;">Место в группе бронируется по заявке — это ещё не оплата.</p>
-          <p class="cta-deadline" style="margin:0;">Первая волна 70 000 ₽ — до 5 августа</p>
-        </div>
+      <div class="card cta-center rv" style="margin-top:44px;">
         <a class="btn" href="#form">Забронировать место</a>
       </div>
     </div>
@@ -1003,8 +997,8 @@ a.sr-only:focus { left:0; top:0; width:auto; height:auto; z-index:60;
       <div class="g4 stg" style="gap:26px 16px;">
         <div><div class="num num--s">3</div><p class="eb">корпуса, 8 типов номеров</p></div>
         <div><div class="num num--s">300 м</div><p class="eb">до моря, спуск 7 минут</p></div>
-        <div><div class="num num--s">1 875 ₽</div><p class="eb">проживание с человека в сутки</p></div>
-        <div><div class="num num--s">1 800 ₽</div><p class="eb">трёхразовое питание в день</p></div>
+        <div><div class="num num--s"><span class="num-pre">от</span>3 000 ₽</div><p class="eb">проживание в сутки</p></div>
+        <div><div class="num num--s">1 500 ₽</div><p class="eb">питание: завтрак и обед</p></div>
       </div>
 
       <div class="grid g3 rv" style="margin-top:36px; padding-top:32px; border-top:1px solid var(--line-soft);">
@@ -1194,13 +1188,13 @@ a.sr-only:focus { left:0; top:0; width:auto; height:auto; z-index:60;
         <div>
           <p class="eb">Оплачивается отдельно</p>
           <ul style="list-style:none; padding:0; margin:0 0 24px; display:grid; gap:10px; font-size:16px; color:var(--sea-ink);">
-            <li>Проживание — от 1 875 ₽ с человека в сутки</li>
-            <li>Питание — 1 800 ₽ в день, трёхразовое в кафе при центре</li>
+            <li>Проживание — от 3 000 ₽ в сутки</li>
+            <li>Питание — 1 500 ₽ в день: вегетарианские завтрак и обед</li>
             <li>Дорога до Вардане</li>
           </ul>
           <div class="card" style="background:var(--foam);">
             <p class="eb">Пример полного бюджета</p>
-            <p>Участие 70 000 ₽ + двухместный номер 7 ночей 14 000 ₽ + питание 12 600 ₽ = <strong style="font-weight:500; color:var(--ink);">96 600 ₽</strong> на человека.</p>
+            <p>Участие 70 000 ₽ + проживание 7 ночей от 21 000 ₽ + питание 10 500 ₽ = <strong style="font-weight:500; color:var(--ink);">от 101 500 ₽</strong>.</p>
           </div>
         </div>
       </div>
@@ -1213,8 +1207,8 @@ a.sr-only:focus { left:0; top:0; width:auto; height:auto; z-index:60;
       <h2 class="rv" style="max-width:620px; margin-bottom:32px;">О чём обычно спрашивают до оплаты</h2>
       <div class="faq rv" style="max-width:900px;">
         <details class="acc">
-          <summary><h3>Это не секта?</h3><span class="acc-sign" aria-hidden="true"></span></summary>
-          <div class="acc-panel"><p>Нет. Полное расписание известно заранее, из любой практики можно выйти, обязательных ритуалов нет, допродаж на месте не бывает.</p></div>
+          <summary><h3>Насколько всё добровольно?</h3><span class="acc-sign" aria-hidden="true"></span></summary>
+          <div class="acc-panel"><p>Полное расписание известно заранее, из любой практики можно выйти, обязательных ритуалов нет, допродаж на месте не бывает.</p></div>
         </details>
         <details class="acc">
           <summary><h3>Кому не подойдёт?</h3><span class="acc-sign" aria-hidden="true"></span></summary>
