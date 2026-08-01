@@ -14,883 +14,1125 @@
 <meta property="og:image" content="https://xenaja.github.io/sochi-retreat/visual/og-cover.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta name="theme-color" content="#05242F">
+<meta name="theme-color" content="#22303A">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8C%85%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=Jost:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Prata&family=Onest:wght@400;500&display=swap&subset=cyrillic" rel="stylesheet">
 <style>
+/* ============================================================
+   Токены. Палитра снята с фотографии рассвета photos/r/g-shore.webp.
+   --gold строго функционален: действие или срочность, больше ничего.
+   ============================================================ */
 :root {
-  --bg:#05242F; --bg-light:#E9EFEF; --sun:#E9A63C; --sun-hover:#F6BC5C;
-  --fg:#E8F1F1; --fg-dim:#9FBCBE; --line-dark:rgba(232,241,241,.14);
-}
-* { box-sizing: border-box; }
-body { margin:0; background:#05242F; overflow-x:hidden; padding-bottom:56px;
-  font-family:'Jost',system-ui,sans-serif; font-weight:300; }
-img, svg { max-width:100%; }
-a { color:#E9A63C; text-decoration:none; }
-a:hover { color:#F6BC5C; }
-:focus-visible { outline:2px solid var(--sun); outline-offset:2px; }
-section[id], main [id] { scroll-margin-top:96px; }
-.sr-only { position:absolute; left:-9999px; width:1px; height:1px; overflow:hidden; }
-a.sr-only:focus { left:0; top:0; width:auto; height:auto; z-index:40;
-  background:var(--sun); color:#05242F; padding:12px 20px; }
-.hp { position:absolute; left:-9999px; width:1px; height:1px; overflow:hidden; }
+  --foam:#F6F2EC;
+  --pebble:#E3D8CD;
+  --sea:#6E8496;
+  --sea-ink:#4E6474;
+  --ink:#22303A;
+  --sand:#F6A867;
+  --gold:#F2A93B;
+  --gold-ink:#8F6B2C;
 
-/* ---- форма ---- */
+  --line:rgba(110,132,150,.4);
+  --line-soft:rgba(110,132,150,.24);
+  --line-foam:rgba(246,242,236,.24);
+  --on-dark:rgba(246,242,236,.85);
+
+  --w-page:1200px;
+  --w-text:760px;
+  --px:20px;          /* боковой паддинг */
+  --py:56px;          /* вертикальный паддинг секции */
+  --hh:60px;          /* высота шапки */
+  --rail:28px;        /* место под шкалу дня */
+  --r:8px;            /* скругления — 8px везде, больше нет */
+  --ease:cubic-bezier(.22,1,.36,1);
+}
+@media (min-width:768px)  { :root { --px:48px;  --py:72px;  --hh:68px; --rail:34px; } }
+@media (min-width:1200px) { :root { --px:120px; --py:118px; --hh:76px; } }
+
+*, *::before, *::after { box-sizing:border-box; }
+html { -webkit-text-size-adjust:100%; }
+body {
+  margin:0; background:var(--foam); color:var(--ink); overflow-x:hidden;
+  font-family:'Onest','Golos Text',system-ui,sans-serif; font-weight:400;
+  font-size:16px; line-height:1.58; text-wrap:pretty;
+}
+@media (min-width:1200px) { body { font-size:17px; line-height:1.6; } }
+img { max-width:100%; display:block; }
+p { margin:0 0 1em; }
+p:last-child { margin-bottom:0; }
+a { color:var(--sea-ink); text-decoration:none; }
+:focus-visible { outline:2px solid var(--gold); outline-offset:3px; }
+section[id], main [id] { scroll-margin-top:calc(var(--hh) + 14px); }
+
+h1, h2, h3, h4, blockquote, .pr {
+  font-family:'Prata',Georgia,'Times New Roman',serif; font-weight:400; font-style:normal;
+}
+h2, .h2 { font-size:28px; line-height:1.18; letter-spacing:-.01em; margin:0 0 18px; }
+h3, .h3 { font-size:20px; line-height:1.26; margin:0 0 10px; }
+@media (min-width:768px)  { h2,.h2 { font-size:40px; line-height:1.14; } h3,.h3 { font-size:24px; } }
+@media (min-width:1200px) { h2,.h2 { font-size:50px; line-height:1.12; margin-bottom:22px; } h3,.h3 { font-size:26px; } }
+
+/* эйбрау / лейблы */
+.eb {
+  font-family:'Onest','Golos Text',system-ui,sans-serif; font-weight:500;
+  font-size:12px; letter-spacing:.08em; text-transform:uppercase; line-height:1.4;
+  color:var(--sea); margin:0 0 16px;
+}
+@media (min-width:1200px) { .eb { font-size:13px; } }
+.on-dark .eb, .sec--sea .eb, .sec--ink .eb { color:rgba(246,242,236,.8); }
+
+.num { font-family:'Prata',Georgia,serif; font-size:36px; line-height:1; color:var(--sea-ink); }
+@media (min-width:768px)  { .num { font-size:52px; } }
+@media (min-width:1200px) { .num { font-size:76px; } }
+.num--gold { color:var(--gold); }
+
+.lead { font-size:18px; line-height:1.55; color:var(--sea-ink); }
+@media (min-width:1200px) { .lead { font-size:21px; } }
+.muted { color:var(--sea-ink); }
+.on-dark .muted, .sec--sea .muted, .sec--ink .muted { color:var(--on-dark); }
+.cap { font-size:14px; line-height:1.5; color:var(--sea); }
+
+/* ---- сетка ---- */
+.wrap { max-width:var(--w-page); margin:0 auto; width:100%; }
+.sec  { padding:var(--py) var(--px); }
+.sec--pebble { background:var(--pebble); }
+.sec--sea    { background:var(--sea);  color:var(--foam); }
+.sec--ink    { background:var(--ink);  color:var(--foam); }
+.sec--sea a, .sec--ink a { color:var(--foam); }
+.text { max-width:var(--w-text); }
+.hr { height:1px; background:var(--line); transform:scaleX(0); transform-origin:left;
+      transition:transform .9s var(--ease); }
+.hr.in { transform:none; }
+
+/* ---- карточки ---- */
+.card { background:var(--pebble); border-radius:var(--r); padding:24px 22px; }
+@media (min-width:768px)  { .card { padding:28px 26px; } }
+@media (min-width:1200px) { .card { padding:34px 32px; } }
+.card h3 { display:block; }
+.card p { color:var(--sea-ink); font-size:16px; }
+.card-n { font-family:'Prata',serif; font-size:28px; line-height:1; color:var(--sea-ink); margin-bottom:14px; }
+@media (min-width:1200px) { .card-n { font-size:34px; } }
+.sec--sea .card { background:rgba(246,242,236,.12); }
+.sec--sea .card p { color:rgba(246,242,236,.85); }
+.sec--sea .card-n, .sec--sea .card h3 { color:var(--foam); }
+
+.grid { display:grid; gap:12px; }
+@media (min-width:768px)  { .grid { gap:16px; } }
+.g2 { grid-template-columns:1fr; }
+.g3 { grid-template-columns:1fr; }
+.g4 { grid-template-columns:repeat(2,1fr); }
+@media (min-width:768px)  { .g2 { grid-template-columns:repeat(2,1fr); }
+                            .g3 { grid-template-columns:repeat(2,1fr); }
+                            .g4 { grid-template-columns:repeat(4,1fr); } }
+@media (min-width:1200px) { .g3 { grid-template-columns:repeat(3,1fr); } }
+
+/* ---- кнопки ---- */
+.btn {
+  display:inline-flex; align-items:center; justify-content:center; text-align:center;
+  background:var(--gold); color:var(--ink); border:0; border-radius:var(--r); cursor:pointer;
+  font-family:inherit; font-weight:500; font-size:17px; line-height:1.2;
+  padding:17px 24px; min-height:56px;
+  animation:breathe 4.5s ease-in-out infinite;
+}
+.btn:hover { background:#F5B85A; color:var(--ink); }
+.btn[disabled] { opacity:.6; cursor:default; animation:none; }
+@keyframes breathe { 0%,100% { transform:scale(1); } 50% { transform:scale(1.025); } }
+.link {
+  display:inline-block; font-weight:500; font-size:17px; color:var(--sea-ink);
+  border-bottom:1px solid rgba(110,132,150,.5); padding-bottom:3px;
+}
+.sec--ink .link, .sec--sea .link { color:var(--foam); border-bottom-color:rgba(246,242,236,.5); }
+.tbtn {
+  background:none; border:0; padding:0 0 4px; cursor:pointer; font-family:inherit;
+  font-weight:500; font-size:16px; color:var(--sea-ink);
+  border-bottom:1px solid rgba(110,132,150,.5);
+  display:inline-flex; align-items:center; gap:10px; min-height:44px;
+}
+
+/* ---- пульс: только у дедлайна первой волны ---- */
+.pulse { position:relative; width:8px; height:8px; flex:0 0 8px; border-radius:50%; background:var(--gold); }
+.pulse::after { content:''; position:absolute; inset:0; border-radius:50%; background:var(--gold);
+  animation:pulse 2.4s ease-out infinite; }
+@keyframes pulse { 0% { transform:scale(1); opacity:1; } 100% { transform:scale(1.9); opacity:.35; } }
+
+/* ---- фото: единое тонирование ---- */
+.ph { position:relative; overflow:hidden; border-radius:var(--r);
+      filter:saturate(1.12) contrast(1.04) brightness(1.03); }
+.ph::after { content:''; position:absolute; inset:0; background:rgba(14,124,134,.06); pointer-events:none; }
+.ph img { width:100%; height:100%; object-fit:cover; }
+.bleed { position:relative; margin:0; }
+.bleed .ph { border-radius:0; }
+.bleed figcaption { position:absolute; left:var(--px); right:var(--px); bottom:34px; z-index:2; color:var(--foam); }
+.bleed .scrim { position:absolute; inset:0; z-index:1;
+  background:linear-gradient(to top,rgba(34,48,58,.82),rgba(34,48,58,.34) 34%,rgba(34,48,58,0) 66%); }
+
+/* ============================================================
+   Шапка
+   ============================================================ */
+.hd {
+  position:fixed; top:0; left:0; right:0; z-index:40; height:var(--hh);
+  display:flex; align-items:center; justify-content:space-between;
+  padding:0 var(--px); transition:background .25s ease, border-color .25s ease;
+  border-bottom:1px solid transparent;
+}
+.hd-logo { font-family:'Prata',serif; font-size:15px; color:var(--foam); letter-spacing:.01em; }
+.hd nav { display:none; gap:30px; }
+.hd nav a, .hd .hd-cta { font-size:15px; color:var(--foam); }
+.hd .hd-cta { display:none; font-weight:500; border-bottom:1px solid rgba(246,242,236,.5); padding-bottom:2px; }
+.hd.scrolled { background:rgba(246,242,236,.94); backdrop-filter:blur(10px); border-bottom-color:var(--line-soft); }
+.hd.scrolled .hd-logo, .hd.scrolled nav a, .hd.scrolled .hd-cta { color:var(--ink); }
+.hd.scrolled .hd-cta { border-bottom-color:rgba(34,48,58,.4); }
+.hd.scrolled .burger span { background:var(--ink); }
+@media (min-width:1200px) { .hd nav { display:flex; } .hd .hd-cta { display:inline-block; } }
+
+.burger { display:inline-flex; flex-direction:column; justify-content:center; gap:5px;
+  width:44px; height:44px; margin-right:-10px; border:0; background:none; cursor:pointer; padding:0 10px; }
+.burger span { display:block; height:2px; background:var(--foam); transition:transform .2s ease, opacity .2s ease; }
+.burger[aria-expanded="true"] span:nth-child(1) { transform:translateY(3.5px) rotate(45deg); }
+.burger[aria-expanded="true"] span:nth-child(2) { transform:translateY(-3.5px) rotate(-45deg); }
+@media (min-width:1200px) { .burger { display:none; } }
+#navPanel { display:none; }
+#navPanel.open {
+  display:flex; position:fixed; top:var(--hh); left:0; right:0; z-index:39;
+  flex-direction:column; gap:0; background:var(--foam); padding:4px var(--px) 16px;
+  border-bottom:1px solid var(--line-soft);
+}
+#navPanel.open a { color:var(--ink); padding:15px 0; border-bottom:1px solid var(--line-soft); font-size:16px; }
+
+/* ============================================================
+   Хиро — эталон 2a (390px)
+   ============================================================ */
+.hero { position:relative; height:700px; overflow:hidden; }
+@media (min-width:768px)  { .hero { height:620px; } }
+@media (min-width:1200px) { .hero { height:760px; } }
+.hero-ph { position:absolute; inset:0; overflow:hidden;
+  filter:saturate(1.12) contrast(1.04) brightness(1.03); }
+.hero-ph img { position:absolute; left:0; top:-8%; width:100%; height:116%;
+  object-fit:cover; object-position:50% 34%; will-change:transform; }
+.hero-ph::after { content:''; position:absolute; inset:0; background:rgba(14,124,134,.06); }
+.hero-scrim { position:absolute; inset:0;
+  background:linear-gradient(180deg,
+    rgba(34,48,58,.62) 0%, rgba(34,48,58,.12) 26%, rgba(34,48,58,.3) 48%,
+    rgba(34,48,58,.86) 78%, rgba(34,48,58,.95) 100%); }
+.hero-in {
+  position:relative; height:100%; display:flex; flex-direction:column; justify-content:flex-end;
+  padding:var(--hh) var(--px) 34px; color:var(--foam);
+  max-width:calc(var(--w-page) + var(--px) * 2); margin:0 auto;
+}
+@media (min-width:1200px) { .hero-in { padding-bottom:72px; } }
+.hero-bot { display:flex; flex-direction:column; gap:26px; max-width:640px; }
+@media (min-width:1200px) { .hero-bot { max-width:800px; } }
+.hero-eb { margin-bottom:-12px; color:rgba(246,242,236,.8); }
+.hero-h1 { margin:0; letter-spacing:-.015em; }
+.hero-h1 b { display:block; font-weight:400; font-size:73px; line-height:.98; }
+.hero-h1 i { display:block; font-style:normal; font-size:30px; line-height:1.15;
+  padding-left:3px; opacity:.92; }
+@media (min-width:768px) {
+  .hero-h1 b { font-size:52px; line-height:1.06; }
+  .hero-h1 i { font-size:52px; line-height:1.06; padding-left:0; }
+}
+@media (min-width:1200px) {
+  .hero-h1 b, .hero-h1 i { font-size:72px; line-height:1.08; }
+}
+.hero-sub { margin:0; font-size:17px; line-height:1.5; color:rgba(246,242,236,.9); }
+.hero-list { list-style:none; margin:0; padding:0; display:grid; gap:5px; }
+.hero-list li { display:grid; grid-template-columns:14px 1fr; gap:6px; font-size:17px; line-height:1.45; }
+.hero-list span { font-family:'Prata',serif; font-size:19px; line-height:1; color:var(--sand); }
+.hero-cta { width:100%; margin-top:8px; }
+@media (min-width:768px) { .hero-cta { width:auto; align-self:flex-start; padding-left:44px; padding-right:44px; } }
+.hero-note { display:none; margin:-14px 0 0; font-size:15px; color:rgba(246,242,236,.75); }
+@media (min-width:768px) { .hero-note { display:block; } }
+
+/* ============================================================
+   Полоса ключевых цифр
+   ============================================================ */
+.nums { display:grid; grid-template-columns:repeat(2,1fr); gap:26px 16px; padding-top:26px; }
+@media (min-width:768px) { .nums { grid-template-columns:repeat(4,1fr); gap:24px; padding-top:34px; } }
+.nums .eb { margin:10px 0 0; }
+.hr--sea { background:var(--sea); opacity:.35; }
+
+/* ============================================================
+   Колода карточек на телефоне: блок занимает один экран вместо восьми
+   ============================================================ */
+@media (max-width:767px) {
+  .stack { display:block; }
+  .stack > * { position:sticky; min-height:168px; box-sizing:border-box; }
+  /* +var(--hh): иначе карточки прилипают под фиксированную шапку и прячутся за ней */
+  .stack > *:nth-child(1) { top:calc(var(--hh) + 12px); }
+  .stack > *:nth-child(2) { top:calc(var(--hh) + 23px); }
+  .stack > *:nth-child(3) { top:calc(var(--hh) + 34px); }
+  .stack > *:nth-child(4) { top:calc(var(--hh) + 45px); }
+  .stack > *:nth-child(5) { top:calc(var(--hh) + 56px); }
+  .stack > *:nth-child(6) { top:calc(var(--hh) + 67px); }
+  .stack > *:nth-child(7) { top:calc(var(--hh) + 78px); }
+  .stack > *:nth-child(8) { top:calc(var(--hh) + 89px); }
+}
+
+/* ============================================================
+   Шкала дня
+   ============================================================ */
+.day { position:relative; padding-left:var(--rail); }
+.rail { position:absolute; left:0; top:6px; bottom:6px; width:2px; background:rgba(110,132,150,.3); }
+.rail i { position:absolute; inset:0; background:var(--sea-ink); transform:scaleY(0); transform-origin:top; }
+.slot { display:grid; gap:4px; padding:22px 0; border-top:1px solid var(--line-soft); }
+.slot:first-child { border-top:0; padding-top:0; }
+@media (min-width:768px)  { .slot { grid-template-columns:128px 1fr; gap:8px 24px; padding:26px 0; } }
+@media (min-width:1200px) { .slot { grid-template-columns:152px 1fr; gap:8px 32px; padding:30px 0; } }
+.slot-t { font-weight:500; font-size:15px; color:var(--sea-ink); letter-spacing:.01em; }
+.slot p { margin:6px 0 0; color:var(--sea-ink); font-size:16px; }
+.slot h3 { margin:0; }
+.slot--ink {
+  background:var(--ink); color:var(--foam); border-top:0; border-radius:var(--r);
+  margin:14px 0; padding:26px 22px;
+}
+.slot--ink .slot-t { color:var(--gold); }
+.slot--ink p { color:rgba(246,242,236,.85); }
+@media (max-width:767px) {
+  /* единственная тёмная карточка выходит за колонку — на неё нельзя не наткнуться */
+  .slot--ink { margin-left:calc(-1 * (var(--px) + var(--rail))); margin-right:calc(-1 * var(--px));
+    border-radius:0; padding-left:var(--px); padding-right:var(--px); }
+}
+@media (min-width:768px) { .slot--ink { padding:28px 30px; } }
+
+/* ============================================================
+   Приглашённый мастер
+   ============================================================ */
+.pav { display:grid; gap:28px; }
+@media (min-width:1200px) { .pav { grid-template-columns:480px minmax(0,1fr); gap:64px; align-items:start; } }
+.pav-portrait { height:420px; }
+@media (max-width:767px) {
+  /* портрет на телефоне — во всю ширину экрана */
+  .pav-portrait { margin-left:calc(-1 * var(--px)); margin-right:calc(-1 * var(--px)); border-radius:0; }
+}
+@media (min-width:768px)  { .pav-portrait { height:400px; max-width:300px; } }
+@media (min-width:1200px) { .pav-portrait { height:660px; max-width:none; } }
+.pav-portrait img { object-position:50% 30%; }
+.pav-gong { height:200px; margin-bottom:0; border-bottom-left-radius:0; border-bottom-right-radius:0; }
+@media (min-width:1200px) { .pav-gong { height:320px; } }
+.pav-gong + .card { border-top-left-radius:0; border-top-right-radius:0; }
+.pav-quote { margin:0; font-family:'Prata',serif; font-size:21px; line-height:1.34; }
+@media (min-width:1200px) { .pav-quote { font-size:24px; } }
+
+/* ============================================================
+   Волны цены
+   ============================================================ */
+.wave { position:relative; }
+.wave[data-state="active"] { border:1px solid var(--gold); }
+.wave[data-state="past"]   { opacity:.5; }
+.wave .wave-tag { display:none; }
+.wave[data-state="active"] .wave-tag { display:flex; }
+.wave-tag { align-items:center; gap:10px; color:var(--gold-ink); font-weight:500;
+  font-size:13px; letter-spacing:.04em; margin-bottom:14px; }
+.wave-price { font-family:'Prata',serif; font-size:36px; line-height:1; margin:8px 0 12px; }
+@media (min-width:1200px) { .wave-price { font-size:46px; } }
+.wave--dim .wave-price { color:var(--ink); opacity:.55; }
+.wave--dim .wave-deadline { opacity:.6; }
+.wave-deadline { font-size:15px; color:var(--sea-ink); }
+.wave[data-state="active"] .wave-deadline { color:var(--gold-ink); }
+
+/* ============================================================
+   FAQ
+   ============================================================ */
+.faq > div { padding:24px 0; border-top:1px solid var(--line-soft); }
+.faq > div:last-child { border-bottom:1px solid var(--line-soft); }
+.faq h3 { font-size:20px; margin:0 0 8px; }
+.faq p { margin:0; font-size:16px; color:var(--sea-ink); }
+
+/* ============================================================
+   Отзывы
+   ============================================================ */
+.rev-media { position:relative; aspect-ratio:16/9; overflow:hidden; border-radius:var(--r); background:var(--pebble); }
+.rev-media button { position:absolute; inset:0; width:100%; height:100%; padding:0; border:0; background:none; cursor:pointer; }
+.rev-media img { width:100%; height:100%; object-fit:cover;
+  filter:saturate(1.12) contrast(1.04) brightness(1.03); }
+.rev-play { position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
+  width:52px; height:52px; border-radius:var(--r); background:var(--gold);
+  display:grid; place-items:center; }
+.rev-play svg { width:17px; height:17px; fill:var(--ink); margin-left:2px; }
+.rev-media iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }
+.rev-name { display:block; font-weight:500; font-size:17px; margin-top:14px; }
+.rev-role { display:block; font-size:15px; color:var(--sea-ink); margin-top:2px; }
+.rev-note { display:block; font-size:13px; color:var(--sea); margin-top:5px; }
+
+/* ============================================================
+   Форма
+   ============================================================ */
 #leadForm input[type=text] {
-  width:100%; font-family:'Jost',system-ui,sans-serif; font-size:16px; font-weight:300; color:#E8F1F1;
-  background:rgba(9,63,82,.24); border:1px solid rgba(232,241,241,.24); border-radius:0;
+  width:100%; font-family:inherit; font-size:16px; color:var(--foam);
+  background:transparent; border:1px solid rgba(246,242,236,.3); border-radius:var(--r);
   padding:18px 20px; min-height:56px; transition:border-color .18s ease;
 }
-#leadForm input::placeholder { color:#9FBCBE; opacity:1; }
-#leadForm input:focus { outline:none; border-color:var(--sun); }
-.btn-sun {
-  background:var(--sun); color:#05242F; border:0; border-radius:0; cursor:pointer;
-  font-family:'Jost',system-ui,sans-serif; font-weight:500; font-size:15px;
-  letter-spacing:.14em; text-transform:uppercase; padding:20px 32px; min-height:56px;
-  transition:background .18s ease, color .18s ease;
-}
-.btn-sun:hover { background:var(--sun-hover); }
-.btn-sun[disabled] { opacity:.6; cursor:default; }
-.form-status { margin:6px 0 0; font-size:14px; line-height:1.5; min-height:1.4em; color:#C0D5D6; }
-.form-status.err { color:#F6BC5C; }
+#leadForm input::placeholder { color:rgba(246,242,236,.6); opacity:1; }
+#leadForm input:focus { outline:none; border-color:var(--gold); }
+.form-status { margin:6px 0 0; font-size:15px; line-height:1.5; min-height:1.4em; color:rgba(246,242,236,.85); }
+.form-status.err { color:var(--gold); }
+.hp { position:absolute; left:-9999px; width:1px; height:1px; overflow:hidden; }
+.sr-only { position:absolute; left:-9999px; width:1px; height:1px; overflow:hidden; }
+a.sr-only:focus { left:0; top:0; width:auto; height:auto; z-index:60;
+  background:var(--gold); color:var(--ink); padding:12px 20px; }
 
-/* ---- видеоотзывы ---- */
-.rev-play { position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
-  width:54px; height:54px; background:rgba(233,166,60,.94); display:grid; place-items:center;
-  transition:background .18s ease; }
-.rev-media button:hover .rev-play, .rev-media button:focus-visible .rev-play { background:var(--sun-hover); }
-.rev-play svg { width:18px; height:18px; fill:#05242F; margin-left:2px; }
-.rev-media iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }
-
-/* ---- волны цен ---- */
-.wave .wave-tag { display:none; }
-.wave[data-state="active"] { border-color:rgba(233,166,60,.7) !important; background:rgba(9,63,82,.4); }
-.wave[data-state="active"] .wave-tag { display:block; }
-.wave[data-state="past"] { opacity:.45; }
-
-/* ---- шапка и мобильная полоса ---- */
-.burger { display:none; flex-direction:column; justify-content:center; gap:5px;
-  width:44px; height:44px; border:0; background:none; cursor:pointer; padding:0 8px; }
-.burger span { display:block; height:1px; background:#9FBCBE; transition:transform .18s ease, opacity .18s ease; }
-.burger[aria-expanded="true"] span:nth-child(1) { transform:translateY(6px) rotate(45deg); }
-.burger[aria-expanded="true"] span:nth-child(2) { opacity:0; }
-.burger[aria-expanded="true"] span:nth-child(3) { transform:translateY(-6px) rotate(-45deg); }
-.mobile-bar { position:fixed; left:0; right:0; bottom:0; z-index:30; height:56px;
-  display:none; align-items:center; padding:0 20px; background:rgba(5,36,47,.96);
-  border-top:1px solid var(--line-dark); transform:translateY(100%); transition:transform .18s ease; }
+/* ---- нижняя полоса CTA на телефоне ---- */
+.mobile-bar { position:fixed; left:0; right:0; bottom:0; z-index:35; height:56px;
+  display:none; align-items:center; padding:0 12px; background:rgba(246,242,236,.96);
+  border-top:1px solid var(--line-soft); transform:translateY(100%); transition:transform .2s ease; }
 .mobile-bar.show { transform:none; }
-.mobile-bar a { flex:1; text-align:center; background:var(--sun); color:#05242F; font-weight:500;
-  font-size:14px; letter-spacing:.14em; text-transform:uppercase; padding:12px 20px; min-height:44px;
-  display:flex; align-items:center; justify-content:center; }
+.mobile-bar a { flex:1; min-height:44px; padding:12px 20px; font-size:16px; }
+@media (max-width:1199px) { .mobile-bar { display:flex; } body { padding-bottom:56px; } }
 
 /* ---- появление ---- */
-.reveal { opacity:0; transform:translateY(16px); transition:opacity .5s ease, transform .5s ease; }
-.reveal.in { opacity:1; transform:none; }
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after { animation:none !important; transition:none !important; }
-  .reveal { opacity:1; transform:none; }
+.rv { opacity:0; transform:translateY(16px); transition:opacity .6s var(--ease), transform .6s var(--ease); }
+.rv.in { opacity:1; transform:none; }
+/* контейнер со стаггером виден сам, прячутся и выезжают его дети */
+.stg.rv { opacity:1; transform:none; }
+.stg.rv > * { opacity:0; transform:translateY(16px); transition:opacity .6s var(--ease), transform .6s var(--ease); }
+.stg.rv.in > * { opacity:1; transform:none; }
+.stg > *  { transition-delay:0ms; }
+.stg > *:nth-child(2) { transition-delay:90ms; }
+.stg > *:nth-child(3) { transition-delay:180ms; }
+.stg > *:nth-child(4) { transition-delay:270ms; }
+.stg > *:nth-child(5) { transition-delay:360ms; }
+.stg > *:nth-child(6) { transition-delay:450ms; }
+.stg > *:nth-child(7) { transition-delay:540ms; }
+.stg > *:nth-child(8) { transition-delay:630ms; }
+.g3 > .wave:nth-child(2) { transition-delay:110ms; }
+.g3 > .wave:nth-child(3) { transition-delay:220ms; }
+.mobile-bar .btn { animation:none; }
+
+/* ---- крупные раскладки, которые не выводятся из .grid ---- */
+@media (min-width:768px) and (max-width:1199px) {
+  .pav { grid-template-columns:300px minmax(0,1fr); gap:36px; align-items:start; }
+}
+@media (min-width:1200px) {
+  .author-grid { grid-template-columns:0.85fr 1.15fr; gap:64px; align-items:center; }
+  .method-grid { grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr); gap:56px; align-items:start; }
+  #formGrid    { grid-template-columns:1.1fr 0.9fr; gap:64px; }
 }
 
-/* ---- мобильная вёрстка: перекрываем инлайновые стили эталона ---- */
-@media (max-width: 860px) {
-  body { font-size:16px; }
-  header { padding:14px 20px !important; }
-  .burger { display:inline-flex; }
-  #navPanel { display:none !important; position:absolute; left:0; right:0; top:100%;
-    flex-direction:column; gap:0 !important; background:#05242F;
-    border-bottom:1px solid var(--line-dark); padding:6px 20px 18px; }
-  #navPanel.open { display:flex !important; }
-  #navPanel a { padding:14px 0; border-bottom:1px solid var(--line-dark); font-size:14px; }
-  header > a:last-child { display:none; }
-  .mobile-bar { display:flex; }
-
-  section { padding:72px 20px !important; }
-  footer { padding:36px 20px !important; }
-  figcaption { left:20px !important; right:20px !important; }
-  [style*="max-width:1240px"] { padding-left:0 !important; padding-right:0 !important; }
-
-  /* сетки эталона, которые не сворачиваются сами */
-  [style*="grid-template-columns:repeat(4,1fr)"] { grid-template-columns:repeat(2,1fr) !important; }
-  [style*="grid-template-columns:repeat(3,1fr)"] { grid-template-columns:1fr !important; }
-  [style*="grid-template-columns:150px 1fr"],
-  [style*="grid-template-columns:1.6fr 1fr"],
-  [style*="grid-template-columns:minmax(0,1.6fr) minmax(0,1fr)"] { grid-template-columns:1fr !important; gap:20px !important; }
-  [style*="grid-template-columns:120px 1fr"] { grid-template-columns:70px 1fr !important; gap:16px !important; }
-  [style*="grid-template-columns:1fr 1px 1fr"] { grid-template-columns:1fr !important; gap:36px !important; }
-  [style*="grid-template-columns:1fr 1px 1fr"] > [style*="width:1px"] { display:none; }
-
-  /* фиксированные высоты снимков */
-  [style*="height:480px"] { height:260px !important; }
-  [style*="height:340px"] { height:210px !important; }
-  [style*="height:232px"], [style*="height:230px"] { height:170px !important; }
-  figure[style*="height:52vh"], figure[style*="height:56vh"] { height:42vh !important; }
-
-  /* hero */
-  section:first-of-type { min-height:auto !important; }
-  section:first-of-type > div:last-child { padding:80px 20px 56px !important; }
-  figure[style*="margin-right:-40px"] { margin-right:0 !important; justify-self:center !important; }
-  /* орбиты не прячем: секция с overflow:hidden их обрезает сама.
-     Селекторы по width здесь опасны — они цепляют и max-width. */
-
-  /* интерактив не мельче 44px */
-  a[href="#form"], .btn-sun, button { min-height:44px; }
-  a[style*="letter-spacing:.18em"], footer a, aside a[href^="tel:"] {
-    display:inline-flex; align-items:center; min-height:44px; }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation:none !important; transition:none !important; }
+  .rv { opacity:1; transform:none; }
+  .hr { transform:none; }
+  .rail i { transform:scaleY(1) !important; }
+  .hero-ph img { transform:none !important; }
 }
 </style>
 </head>
 <body>
 <a class="sr-only" href="#main">Перейти к содержанию</a>
+
+<header class="hd" id="hd">
+  <span class="hd-logo">Homo Unicum</span>
+  <nav id="navDesk">
+    <a href="#author">Автор</a>
+    <a href="#method">Метод</a>
+    <a href="#program">Программа</a>
+    <a href="#price">Стоимость</a>
+  </nav>
+  <a class="hd-cta" href="#form">Участвовать</a>
+  <button class="burger" id="burger" aria-label="Меню" aria-expanded="false" aria-controls="navPanel"><span></span><span></span></button>
+</header>
+<nav id="navPanel">
+  <a href="#author">Автор</a>
+  <a href="#method">Метод</a>
+  <a href="#program">Программа</a>
+  <a href="#price">Стоимость</a>
+  <a href="#form">Участвовать</a>
+</nav>
+
 <main id="main">
-<div style="background:#05242F; color:#E8F1F1; font-family:'Jost',system-ui,sans-serif; font-size:17px; line-height:1.65; font-weight:300; text-wrap:pretty;">
 
-  <header style="position:sticky; top:0; z-index:20; display:flex; justify-content:space-between; align-items:center; padding:18px 48px; background:rgba(5,36,47,.86); backdrop-filter:blur(10px); border-bottom:1px solid rgba(232,241,241,.12); font-size:12px; letter-spacing:.2em; text-transform:uppercase; color:#9FBCBE;">
-    <span style="color:#E9A63C; letter-spacing:.28em;">Homo Unicum</span>
-    <button class="burger" id="burger" aria-label="Меню" aria-expanded="false" aria-controls="navPanel"><span></span><span></span><span></span></button>
-    <nav id="navPanel" style="display:flex; gap:32px;">
-      <a href="#author" style="color:#9FBCBE;">Автор</a>
-      <a href="#method" style="color:#9FBCBE;">Метод</a>
-      <a href="#program" style="color:#9FBCBE;">Программа</a>
-      <a href="#price" style="color:#9FBCBE;">Стоимость</a>
-    </nav>
-    <a href="#form" style="border:1px solid rgba(233,166,60,.5); color:#E9A63C; padding:10px 20px; letter-spacing:.16em; white-space:nowrap;">Участвовать</a>
-  </header>
-
-  <section class="reveal" style="position:relative; overflow:hidden; min-height:88vh; display:flex; flex-direction:column; justify-content:center;">
-    <div style="position:absolute; inset:0; background:linear-gradient(#083344,#05242F 60%,#062A36);"></div>
-    <div style="position:absolute; inset:0; background:radial-gradient(58% 48% at 50% 38%, rgba(55,174,178,.34) 0%, rgba(11,78,96,.22) 40%, rgba(5,36,47,0) 74%);"></div>
-    <div style="position:absolute; inset:0; background:radial-gradient(38% 44% at 86% 16%, rgba(233,166,60,.26) 0%, rgba(233,166,60,.08) 42%, rgba(5,36,47,0) 72%);"></div>
-    <div style="position:absolute; left:50%; top:38%; width:760px; height:760px; margin:-380px 0 0 -380px; border-radius:50%; border:1px solid rgba(233,166,60,.14);"></div>
-    <div style="position:absolute; left:50%; top:38%; width:520px; height:520px; margin:-260px 0 0 -260px; border-radius:50%; border:1px solid rgba(233,166,60,.18);"></div>
-    <div style="position:absolute; left:50%; top:38%; width:280px; height:280px; margin:-140px 0 0 -140px; border-radius:50%; border:1px solid rgba(233,166,60,.28);"></div>
-
-    <div style="position:relative; padding:96px 48px 64px; max-width:1240px; margin:0 auto; width:100%; box-sizing:border-box;">
-      <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,360px),1fr)); gap:40px; align-items:center; margin-bottom:56px;">
-        <div>
-          <div style="font-size:12px; letter-spacing:.34em; text-transform:uppercase; color:#7FC3C6; margin-bottom:26px;">Вардане · Сочи · 20—27 августа 2026</div>
-          <h1 style="font-family:'Cormorant Garamond',Georgia,serif; font-weight:400; font-size:clamp(48px,6.4vw,92px); line-height:1.0; margin:0 0 26px; letter-spacing:.01em;">Энергия моря<br>и личной силы</h1>
-          <div style="display:flex; align-items:center; gap:18px; margin:0 0 30px; max-width:420px;">
-            <span style="width:7px; height:7px; border-radius:50%; background:#E9A63C;"></span>
-            <span style="flex:1; height:1px; background:linear-gradient(90deg,rgba(233,166,60,.6),rgba(233,166,60,0));"></span>
-          </div>
-          <p style="margin:0 0 40px; font-size:21px; line-height:1.6; color:#C0D5D6; max-width:520px;">Выездной тренинг по энергоактивной психологии. Семь дней, чтобы снять выгорание, пересобрать бизнес-стратегию и выйти на кратный доход.</p>
-          <div style="display:flex;">
-            <a href="#form" style="background:#E9A63C; color:#05242F; font-weight:500; font-size:15px; letter-spacing:.14em; text-transform:uppercase; padding:20px 42px; white-space:nowrap;">Забронировать место</a>
-          </div>
-        </div>
-        <figure style="margin:0; position:relative; width:100%; max-width:760px; justify-self:end; margin-right:-40px;">
-          <div style="position:relative; width:100%; aspect-ratio:1380/1386; -webkit-mask-image:linear-gradient(to bottom,transparent 0,#000 11%),linear-gradient(to right,transparent 0,#000 14%),linear-gradient(to left,transparent 0,#000 14%),linear-gradient(to top,transparent 0,rgba(0,0,0,.45) 15%,#000 40%); -webkit-mask-composite:source-in,source-in,source-in; mask-image:linear-gradient(to bottom,transparent 0,#000 11%),linear-gradient(to right,transparent 0,#000 14%),linear-gradient(to left,transparent 0,#000 14%),linear-gradient(to top,transparent 0,rgba(0,0,0,.45) 15%,#000 40%); mask-composite:intersect;">
-            <img src="photos/r/hero-sea.webp" alt="Андрей Захаревич, ведущий ретрита" width="1380" height="1386" fetchpriority="high" decoding="async" style="position:absolute; inset:0; width:100%; height:100%; display:block; object-fit:cover;">
-          </div>
-        </figure>
-      </div>
-      <div style="display:grid; grid-template-columns:repeat(4,1fr); border-top:1px solid rgba(232,241,241,.12);">
-        <div style="padding:26px 12px 0; border-right:1px solid rgba(232,241,241,.12);">
-          <div style="font-family:'Cormorant Garamond',serif; font-size:48px; line-height:1; color:#E9A63C;">7</div>
-          <div style="font-size:11px; letter-spacing:.2em; text-transform:uppercase; color:#85A5A8; margin-top:8px;">дней</div>
-        </div>
-        <div style="padding:26px 12px; border-right:1px solid rgba(232,241,241,.12);">
-          <div style="font-family:'Cormorant Garamond',serif; font-size:48px; line-height:1; color:#E9A63C;">16</div>
-          <div style="font-size:11px; letter-spacing:.2em; text-transform:uppercase; color:#85A5A8; margin-top:8px;">мест в группе</div>
-        </div>
-        <div style="padding:26px 12px; border-right:1px solid rgba(232,241,241,.12);">
-          <div style="font-family:'Cormorant Garamond',serif; font-size:48px; line-height:1; color:#E9A63C;">40</div>
-          <div style="font-size:11px; letter-spacing:.2em; text-transform:uppercase; color:#85A5A8; margin-top:8px;">лет практики автора</div>
-        </div>
-        <div style="padding:26px 12px;">
-          <div style="font-family:'Cormorant Garamond',serif; font-size:48px; line-height:1; color:#E9A63C;">20.08</div>
-          <div style="font-size:11px; letter-spacing:.2em; text-transform:uppercase; color:#85A5A8; margin-top:8px;">заезд</div>
-        </div>
+  <!-- ================= хиро ================= -->
+  <section class="hero">
+    <div class="hero-ph"><img id="heroImg" src="photos/r/g-shore.webp" alt="Берег моря на рассвете в Вардане" width="1200" height="800" fetchpriority="high" decoding="async"></div>
+    <div class="hero-scrim"></div>
+    <div class="hero-in">
+      <div class="hero-bot">
+        <p class="eb hero-eb">Вардане · Сочи · 20—27 августа 2026</p>
+        <h1 class="hero-h1"><b>Энергия</b><i>моря и личной силы</i></h1>
+        <p class="hero-sub">Тренинг по энергоактивной психологии с Андреем Захаревичем</p>
+        <ul class="hero-list">
+          <li><span>+</span>снять выгорание, выйти в ресурс</li>
+          <li><span>+</span>пересобрать бизнес-стратегию</li>
+          <li><span>+</span>кратно увеличить доходы</li>
+        </ul>
+        <a class="btn hero-cta" href="#form">Забронировать место</a>
+        <p class="hero-note">16 мест в группе · заезд 20.08 к 18:00</p>
       </div>
     </div>
   </section>
 
-  <section class="reveal" style="background:#E9EFEF; color:#06242E; padding:120px 48px;">
-    <div style="max-width:1240px; margin:0 auto;">
-      <div style="max-width:680px; margin-bottom:56px;">
-        <div style="font-size:11px; letter-spacing:.28em; text-transform:uppercase; color:#4A6469; margin-bottom:22px;">Начнём с главного</div>
-        <h2 style="font-family:'Cormorant Garamond',Georgia,serif; font-weight:400; font-size:clamp(34px,4.4vw,56px); line-height:1.08; margin:0 0 20px;">Энергия находится везде</h2>
-        <p style="margin:0; font-size:20px; line-height:1.6; color:#2F4A50;">По сути, вокруг нас — бесконечный источник энергии.</p>
+  <!-- ================= полоса ключевых цифр ================= -->
+  <section class="sec" style="padding-bottom:0;">
+    <div class="wrap">
+      <div class="hr hr--sea"></div>
+      <div class="nums stg rv">
+        <div><div class="num"><span class="count" data-to="7">7</span></div><p class="eb">дней</p></div>
+        <div><div class="num num--gold"><span class="count" data-to="16">16</span></div><p class="eb">мест в группе</p></div>
+        <div><div class="num"><span class="count" data-to="40">40</span></div><p class="eb">лет практики автора</p></div>
+        <div><div class="num">20.08</div><p class="eb">заезд</p></div>
       </div>
-      <div style="display:grid; gap:0; max-width:900px; margin-bottom:64px;">
-        <p style="margin:0; padding:24px 0; border-top:1px solid #B9CBCB; font-family:'Cormorant Garamond',Georgia,serif; font-size:clamp(24px,2.6vw,34px); line-height:1.25; color:#06242E;">Так почему же тогда человеку не хватает энергии?</p>
-        <p style="margin:0; padding:24px 0; border-top:1px solid #B9CBCB; font-family:'Cormorant Garamond',Georgia,serif; font-size:clamp(24px,2.6vw,34px); line-height:1.25; color:#06242E;">Где взять жизненные силы для здоровья, успешности и активного долголетия?</p>
-        <p style="margin:0; padding:24px 0; border-top:1px solid #B9CBCB; border-bottom:1px solid #B9CBCB; font-family:'Cormorant Garamond',Georgia,serif; font-size:clamp(24px,2.6vw,34px); line-height:1.25; color:#06242E;">Как развить свои энергетические способности?</p>
+    </div>
+  </section>
+
+  <!-- ================= энергия находится везде + боли ================= -->
+  <section class="sec">
+    <div class="wrap">
+      <div class="text rv" style="margin-bottom:40px;">
+        <p class="eb">Начнём с главного</p>
+        <h2>Энергия находится везде</h2>
+        <p class="lead">По сути, вокруг нас — бесконечный источник энергии.</p>
       </div>
-      <div style="font-size:11px; letter-spacing:.28em; text-transform:uppercase; color:#4A6469; margin-bottom:26px;">Если узнаёте себя хотя бы в двух пунктах</div>
-      <div style="display:grid; gap:1px; grid-template-columns:repeat(auto-fit,minmax(280px,1fr));">
-        <div style="background:#F6F9F8; box-shadow:0 0 0 1px #CBD9D9; padding:32px 34px;">
-          <div style="font-family:'Cormorant Garamond',serif; font-size:34px; color:#0E7C86; line-height:1; margin-bottom:16px;">01</div>
-          <p style="margin:0; font-size:17px; line-height:1.6; color:#223E45;">Сил хватает до обеда, дальше — на кофе и характере.</p>
+
+      <div class="text rv" style="margin-bottom:48px;">
+        <p class="pr" style="font-size:22px; line-height:1.28; margin:0; padding:20px 0; border-top:1px solid var(--line-soft);">Так почему же тогда человеку не хватает энергии?</p>
+        <p class="pr" style="font-size:22px; line-height:1.28; margin:0; padding:20px 0; border-top:1px solid var(--line-soft);">Где взять жизненные силы для здоровья, успешности и активного долголетия?</p>
+        <p class="pr" style="font-size:22px; line-height:1.28; margin:0; padding:20px 0; border-top:1px solid var(--line-soft); border-bottom:1px solid var(--line-soft);">Как развить свои энергетические способности?</p>
+      </div>
+
+      <p class="eb rv">Если узнаёте себя хотя бы в двух пунктах</p>
+      <div class="grid g2 stack stg rv">
+        <div class="card">
+          <div class="card-n">01</div>
+          <p>Сил хватает до обеда, дальше — на кофе и характере.</p>
         </div>
-        <div style="background:#F6F9F8; box-shadow:0 0 0 1px #CBD9D9; padding:32px 34px;">
-          <div style="font-family:'Cormorant Garamond',serif; font-size:34px; color:#0E7C86; line-height:1; margin-bottom:16px;">02</div>
-          <p style="margin:0; font-size:17px; line-height:1.6; color:#223E45;">Бизнес стоит на месте, хотя вы работаете больше, чем год назад.</p>
+        <div class="card">
+          <div class="card-n">02</div>
+          <p>Бизнес стоит на месте, хотя вы работаете больше, чем год назад.</p>
         </div>
-        <div style="background:#F6F9F8; box-shadow:0 0 0 1px #CBD9D9; padding:32px 34px;">
-          <div style="font-family:'Cormorant Garamond',serif; font-size:34px; color:#0E7C86; line-height:1; margin-bottom:16px;">03</div>
-          <p style="margin:0; font-size:17px; line-height:1.6; color:#223E45;">Отпуск больше не восстанавливает: возвращаетесь таким же уставшим.</p>
+        <div class="card">
+          <div class="card-n">03</div>
+          <p>Отпуск больше не восстанавливает: возвращаетесь таким же уставшим.</p>
         </div>
-        <div style="background:#F6F9F8; box-shadow:0 0 0 1px #CBD9D9; padding:32px 34px;">
-          <div style="font-family:'Cormorant Garamond',serif; font-size:34px; color:#0E7C86; line-height:1; margin-bottom:16px;">04</div>
-          <p style="margin:0; font-size:17px; line-height:1.6; color:#223E45;">Тело подаёт сигналы, которые вы привыкли не замечать.</p>
+        <div class="card">
+          <div class="card-n">04</div>
+          <p>Тело подаёт сигналы, которые вы привыкли не замечать.</p>
         </div>
       </div>
-      <div style="margin-top:64px; border-top:1px solid #B9CBCB; padding-top:44px; display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr)); gap:40px; align-items:start;">
-        <p style="margin:0; font-family:'Cormorant Garamond',Georgia,serif; font-size:clamp(26px,2.8vw,38px); line-height:1.2; color:#06242E;">Дело не в тайм-менеджменте. Дело в том, что кончился ресурс.</p>
-        <div>
-          <p style="margin:0 0 26px; font-size:18px; line-height:1.65; color:#2F4A50;">Восстанавливается он не отпуском и не силой воли. Именно с этим работает энергоактивная психология — направление, которое сорок лет разрабатывает Андрей Захаревич. Разберём это на тренинге.</p>
-          <button type="button" id="shortToggle" aria-expanded="false" aria-controls="shortBlock" style="display:inline-flex; align-items:center; gap:12px; background:none; border:0; padding:0 0 5px; cursor:pointer; font-family:'Jost',system-ui,sans-serif; font-size:13px; letter-spacing:.18em; text-transform:uppercase; color:#0A3D4E; border-bottom:1px solid #B9CBCB;">
-            <span data-label>Как устроен метод</span><span data-sign style="font-size:16px; line-height:1;">+</span>
-          </button>
-        </div>
+
+      <div class="rv" style="margin-top:48px; padding-top:36px; border-top:1px solid var(--line-soft);">
+        <p class="pr" style="font-size:26px; line-height:1.22; margin:0 0 20px; max-width:var(--w-text);">Дело не в тайм-менеджменте. Дело в том, что кончился ресурс.</p>
+        <p class="muted" style="max-width:var(--w-text);">Восстанавливается он не отпуском и не силой воли. Именно с этим работает энергоактивная психология — направление, которое сорок лет разрабатывает Андрей Захаревич. Разберём это на тренинге.</p>
+        <button type="button" class="tbtn" id="shortToggle" aria-expanded="false" aria-controls="shortBlock">
+          <span data-label>Как устроен метод</span><span data-sign>+</span>
+        </button>
       </div>
       <div id="shortBlock" hidden>
-        <div style="margin-top:40px; border-top:1px solid #B9CBCB; padding-top:44px; display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr)); gap:1px;">
-          <div style="background:#F6F9F8; box-shadow:0 0 0 1px #CBD9D9; padding:30px 32px;">
-            <div style="font-family:'Cormorant Garamond',serif; font-size:34px; line-height:1; color:#0E7C86; margin-bottom:16px;">01</div>
-            <strong style="display:block; font-weight:500; font-size:18px; margin-bottom:10px;">Снимаем напряжение</strong>
-            <p style="margin:0; font-size:16px; line-height:1.6; color:#405A5F;">Первые дни — телесная работа, дыхание, сон. Пока тело на пределе, никакая стратегия не думается.</p>
+        <div class="grid g3" style="margin-top:28px;">
+          <div class="card">
+            <div class="card-n">01</div>
+            <h3>Снимаем напряжение</h3>
+            <p>Первые дни — телесная работа, дыхание, сон. Пока тело на пределе, никакая стратегия не думается.</p>
           </div>
-          <div style="background:#F6F9F8; box-shadow:0 0 0 1px #CBD9D9; padding:30px 32px;">
-            <div style="font-family:'Cormorant Garamond',serif; font-size:34px; line-height:1; color:#0E7C86; margin-bottom:16px;">02</div>
-            <strong style="display:block; font-weight:500; font-size:18px; margin-bottom:10px;">Возвращаем уровень энергии</strong>
-            <p style="margin:0; font-size:16px; line-height:1.6; color:#405A5F;">Практики концентрации внимания и энергоактивное дыхание — то, что даёт ровный тонус без провалов.</p>
+          <div class="card">
+            <div class="card-n">02</div>
+            <h3>Возвращаем уровень энергии</h3>
+            <p>Практики концентрации внимания и энергоактивное дыхание — то, что даёт ровный тонус без провалов.</p>
           </div>
-          <div style="background:#F6F9F8; box-shadow:0 0 0 1px #CBD9D9; padding:30px 32px;">
-            <div style="font-family:'Cormorant Garamond',serif; font-size:34px; line-height:1; color:#0E7C86; margin-bottom:16px;">03</div>
-            <strong style="display:block; font-weight:500; font-size:18px; margin-bottom:10px;">Пересобираем решения</strong>
-            <p style="margin:0; font-size:16px; line-height:1.6; color:#405A5F;">Только теперь — стратегия, команда и деньги. На восстановленном ресурсе они выглядят иначе.</p>
+          <div class="card">
+            <div class="card-n">03</div>
+            <h3>Пересобираем решения</h3>
+            <p>Только теперь — стратегия, команда и деньги. На восстановленном ресурсе они выглядят иначе.</p>
           </div>
         </div>
       </div>
     </div>
   </section>
 
-  <section class="reveal" id="author" style="padding:130px 48px;">
-    <div style="max-width:1240px; margin:0 auto; display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,400px),1fr)); gap:72px; align-items:center;">
-      <figure style="margin:0;">
-        <div style="position:relative; aspect-ratio:1120/1015; overflow:hidden;">
-          <img src="photos/r/w-rock.webp" alt="Андрей Захаревич на берегу моря" width="1120" height="1015" loading="lazy" decoding="async" style="position:absolute; inset:0; width:100%; height:100%; display:block; object-fit:cover;">
-        </div>
-        <figcaption style="margin-top:14px; font-size:14px; line-height:1.55; color:#85A5A8;">Ему 68. Сорок лет практики — это не только теория.</figcaption>
-      </figure>
-      <div style="max-width:560px;">
-        <div style="font-size:11px; letter-spacing:.28em; text-transform:uppercase; color:#85A5A8; margin-bottom:24px;">Автор и ведущий</div>
-        <h2 style="font-family:'Cormorant Garamond',Georgia,serif; font-weight:400; font-size:clamp(34px,4vw,52px); line-height:1.06; margin:0 0 28px;">Захаревич Андрей Станиславович</h2>
-        <p style="margin:0 0 32px; font-size:20px; line-height:1.6; color:#CFDFDF;">Разработчик направления «Энергоактивная психология». Сорок лет практики и более тысячи семинаров в России, странах Балтии, Великобритании, Аргентине, Норвегии, Польше и Дании.</p>
-        <ul style="list-style:none; padding:0; margin:0; display:grid; gap:0;">
-          <li style="padding:16px 0; border-top:1px solid rgba(232,241,241,.14); font-size:16px; color:#9FBCBE;">Доктор психологических наук, профессор</li>
-          <li style="padding:16px 0; border-top:1px solid rgba(232,241,241,.14); font-size:16px; color:#9FBCBE;">Психотерапевт Европейского и Мирового реестров</li>
-          <li style="padding:16px 0; border-top:1px solid rgba(232,241,241,.14); font-size:16px; color:#9FBCBE;">Автор 150+ научных публикаций, 10 книг и 2 патентов на изобретения</li>
-          <li style="padding:16px 0; border-top:1px solid rgba(232,241,241,.14); font-size:16px; color:#9FBCBE;">Представлял Россию во Всемирной организации здравоохранения</li>
-          <li style="padding:16px 0; border-top:1px solid rgba(232,241,241,.14); font-size:16px; color:#9FBCBE;">Руководитель Совета АНО «Международная организация развития БРИКС» по психическому здоровью</li>
-          <li style="padding:16px 0; border-top:1px solid rgba(232,241,241,.14); font-size:16px; color:#9FBCBE;">Академик Российской и Европейской академий естественных наук</li>
-          <li style="padding:16px 0; border-top:1px solid rgba(232,241,241,.14); border-bottom:1px solid rgba(232,241,241,.14); font-size:16px; color:#9FBCBE;">Лектор Кембриджа и Оксфорда</li>
-        </ul>
-        <a href="https://t.me/andrey_zakharevich" style="display:inline-block; margin-top:28px; font-size:13px; letter-spacing:.18em; text-transform:uppercase; color:#E9A63C; border-bottom:1px solid rgba(233,166,60,.5); padding-bottom:5px;">Телеграм-канал автора</a>
+  <!-- ================= автор ================= -->
+  <section class="sec sec--pebble" id="author">
+    <div class="wrap">
+      <div class="grid rv author-grid" style="gap:32px;">
+          <figure style="margin:0;">
+            <div class="ph" style="aspect-ratio:1120/1015;">
+              <img src="photos/r/w-rock.webp" alt="Андрей Захаревич на берегу моря" width="1120" height="1015" loading="lazy" decoding="async">
+            </div>
+            <figcaption class="cap" style="margin-top:12px;">Ему 68. Сорок лет практики — это не только теория.</figcaption>
+          </figure>
+          <div>
+            <p class="eb">Автор и ведущий</p>
+            <h2>Захаревич Андрей Станиславович</h2>
+            <p class="lead" style="margin-bottom:24px;">Разработчик направления «Энергоактивная психология». Сорок лет практики и более тысячи семинаров в России, странах Балтии, Великобритании, Аргентине, Норвегии, Польше и Дании.</p>
+            <ul style="list-style:none; padding:0; margin:0 0 26px;">
+              <li style="padding:14px 0; border-top:1px solid var(--line-soft); color:var(--sea-ink); font-size:16px;">Доктор психологических наук, профессор</li>
+              <li style="padding:14px 0; border-top:1px solid var(--line-soft); color:var(--sea-ink); font-size:16px;">Психотерапевт Европейского и Мирового реестров</li>
+              <li style="padding:14px 0; border-top:1px solid var(--line-soft); color:var(--sea-ink); font-size:16px;">Автор 150+ научных публикаций, 10 книг и 2 патентов на изобретения</li>
+              <li style="padding:14px 0; border-top:1px solid var(--line-soft); color:var(--sea-ink); font-size:16px;">Представлял Россию во Всемирной организации здравоохранения</li>
+              <li style="padding:14px 0; border-top:1px solid var(--line-soft); color:var(--sea-ink); font-size:16px;">Руководитель Совета АНО «Международная организация развития БРИКС» по психическому здоровью</li>
+              <li style="padding:14px 0; border-top:1px solid var(--line-soft); color:var(--sea-ink); font-size:16px;">Академик Российской и Европейской академий естественных наук</li>
+              <li style="padding:14px 0; border-top:1px solid var(--line-soft); border-bottom:1px solid var(--line-soft); color:var(--sea-ink); font-size:16px;">Лектор Кембриджа и Оксфорда</li>
+            </ul>
+            <a class="link" href="https://t.me/andrey_zakharevich" target="_blank" rel="noopener">Телеграм-канал автора</a>
+          </div>
       </div>
     </div>
   </section>
 
-  <figure class="reveal" style="margin:0; position:relative; height:52vh; overflow:hidden; border-top:1px solid rgba(232,241,241,.1); border-bottom:1px solid rgba(232,241,241,.1);">
-    <img src="photos/r/w-hall.webp" alt="Слушатели на семинаре Андрея Захаревича" width="1400" height="780" loading="lazy" decoding="async" style="width:100%; height:100%; display:block; object-fit:cover; object-position:center 42%;">
-    <div style="position:absolute; inset:0; background:linear-gradient(to right,rgba(5,36,47,.9) 0%,rgba(5,36,47,.62) 32%,rgba(5,36,47,.14) 62%,rgba(5,36,47,.4) 100%);"></div>
-    <figcaption style="position:absolute; left:48px; top:50%; transform:translateY(-50%); max-width:340px;">
-      <div style="font-family:'Cormorant Garamond',serif; font-size:clamp(30px,3.4vw,46px); line-height:1.1; color:#E8F1F1; margin-bottom:14px;">Более тысячи семинаров</div>
-      <p style="margin:0; font-size:17px; line-height:1.65; color:#C0D5D6;">За сорок лет через программы автора прошли десятки тысяч человек — от студентов до собственников.</p>
+  <!-- ================= пауза: зал ================= -->
+  <figure class="bleed rv" style="height:52vh; min-height:280px;">
+    <div class="ph" style="position:absolute; inset:0;">
+      <img src="photos/r/w-hall.webp" alt="Слушатели на семинаре Андрея Захаревича" width="1400" height="780" loading="lazy" decoding="async" style="object-position:center 42%;">
+    </div>
+    <div class="scrim"></div>
+    <figcaption>
+      <div class="pr" style="font-size:30px; line-height:1.12; margin-bottom:10px;">Более тысячи семинаров</div>
+      <p style="margin:0; font-size:16px; max-width:420px; color:rgba(246,242,236,.85);">За сорок лет через программы автора прошли десятки тысяч человек — от студентов до собственников.</p>
     </figcaption>
   </figure>
 
-  <section class="reveal" id="method" style="position:relative; overflow:hidden; padding:130px 48px;">
-    <div style="position:absolute; inset:0; background:radial-gradient(46% 60% at 78% 30%, rgba(55,174,178,.24) 0%, rgba(5,36,47,0) 70%);"></div>
-    <div style="position:relative; max-width:1240px; margin:0 auto;">
-      <div style="display:flex; align-items:center; gap:20px; margin-bottom:44px; font-size:11px; letter-spacing:.28em; text-transform:uppercase; color:#85A5A8;">
-        <span style="white-space:nowrap;">Метод</span><span style="flex:1; height:1px; background:rgba(232,241,241,.16);"></span><span style="white-space:nowrap;">01 / 04</span>
-      </div>
-      <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr)); gap:80px; align-items:start;">
-        <div style="max-width:680px;">
-          <h2 style="font-family:'Cormorant Garamond',Georgia,serif; font-weight:400; font-size:clamp(34px,4.4vw,58px); line-height:1.06; margin:0 0 28px;">Энергоактивная психология</h2>
-          <p style="margin:0 0 22px; font-size:21px; line-height:1.6; color:#CFDFDF;">Направление психологии и психотерапии, которое рассматривает психическую сферу человека как материальную структуру, а физическое тело — как своего рода производную психики.</p>
-          <p style="margin:0 0 22px; font-size:17px; line-height:1.7; color:#9FBCBE;">С точки зрения современной физики невозможно строго обозначить грань между материей и энергией. Отсюда взгляд на человека как на единую материально-энергетическую систему, в которой психические энергии влияют и на биоэнергетическую, и на плотноматериальную составляющую. В научном сообществе всё чаще употребляется термин «психическая энергия».</p>
-          <p style="margin:0 0 22px; font-size:17px; line-height:1.7; color:#9FBCBE;">Определение звучит сложно, практика — нет. Через тренинги по энергоактивной психологии прошли тысячи человек и получили результат в психологическом и физическом здоровье, состоянии энергетики и жизненном тонусе.</p>
-          <p style="margin:0; font-size:17px; line-height:1.7; color:#9FBCBE;">Автор направления — Андрей Захаревич. Это не адаптация чужого метода: подход разработан им и проверен сорока годами практики.</p>
+  <!-- ================= метод ================= -->
+  <section class="sec" id="method">
+    <div class="wrap">
+      <p class="eb rv">Метод · 01 / 04</p>
+      <div class="grid rv method-grid" style="gap:32px;">
+        <div class="text">
+          <h2>Энергоактивная психология</h2>
+          <p class="lead" style="margin-bottom:20px;">Направление психологии и психотерапии, которое рассматривает психическую сферу человека как материальную структуру, а физическое тело — как своего рода производную психики.</p>
+          <p class="muted">С точки зрения современной физики невозможно строго обозначить грань между материей и энергией. Отсюда взгляд на человека как на единую материально-энергетическую систему, в которой психические энергии влияют и на биоэнергетическую, и на плотноматериальную составляющую. В научном сообществе всё чаще употребляется термин «психическая энергия».</p>
+          <p class="muted">Определение звучит сложно, практика — нет. Через тренинги по энергоактивной психологии прошли тысячи человек и получили результат в психологическом и физическом здоровье, состоянии энергетики и жизненном тонусе.</p>
+          <p class="muted">Автор направления — Андрей Захаревич. Это не адаптация чужого метода: подход разработан им и проверен сорока годами практики.</p>
         </div>
-        
-          <aside style="border:1px solid rgba(233,166,60,.28); padding:34px 32px; background:rgba(9,63,82,.34);">
-            <div style="font-size:11px; letter-spacing:.24em; text-transform:uppercase; color:#E9A63C; margin-bottom:20px;">Научная проверка</div>
-            <p style="margin:0 0 18px; font-size:16px; line-height:1.65; color:#CFDFDF;">Практики метода прошли проверку в Институте мозга человека им. Н. П. Бехтеревой в Санкт-Петербурге, НИИ космической медицины ФМБА России в Москве, лаборатории биоэнергетики НТФ «Биосвязь» и Университете им. П. Ф. Лесгафта.</p>
-            
-          </aside>
-        
+        <aside class="card" style="align-self:start; max-width:var(--w-text);">
+          <p class="eb">Научная проверка</p>
+          <p>Практики метода прошли проверку в Институте мозга человека им. Н. П. Бехтеревой в Санкт-Петербурге, НИИ космической медицины ФМБА России в Москве, лаборатории биоэнергетики НТФ «Биосвязь» и Университете им. П. Ф. Лесгафта.</p>
+        </aside>
       </div>
-      <div style="margin-top:64px; border-top:1px solid rgba(232,241,241,.14); padding-top:44px;">
-        <div style="font-size:11px; letter-spacing:.28em; text-transform:uppercase; color:#E9A63C; margin-bottom:28px;">Что при этом не требуется</div>
-        <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr)); gap:32px;">
-          <p style="margin:0; font-size:16px; line-height:1.65; color:#CFDFDF;">Ни особых знаний, ни опыта работы с энергетическим телом — практики осваиваются с нуля.</p>
-          <p style="margin:0; font-size:16px; line-height:1.65; color:#CFDFDF;">Ни возраст, ни уровень подготовки не помеха: нагрузка подбирается по состоянию.</p>
-          <p style="margin:0; font-size:16px; line-height:1.65; color:#CFDFDF;">Методика сочетает традиционные психологические подходы с управлением энергетическими процессами.</p>
-          <p style="margin:0; font-size:16px; line-height:1.65; color:#CFDFDF;">Всё проверено на практике, применимо в обычной жизни и даёт ощутимый эффект почти сразу.</p>
-          <p style="margin:0; font-size:16px; line-height:1.65; color:#CFDFDF;">Акцент — на концентрации внимания и практиках, а не на теоретических и эзотерических аспектах.</p>
+      <div class="rv" style="margin-top:44px; padding-top:34px; border-top:1px solid var(--line-soft);">
+        <p class="eb">Что при этом не требуется</p>
+        <div class="grid g3">
+          <p class="muted" style="margin:0; font-size:16px;">Ни особых знаний, ни опыта работы с энергетическим телом — практики осваиваются с нуля.</p>
+          <p class="muted" style="margin:0; font-size:16px;">Ни возраст, ни уровень подготовки не помеха: нагрузка подбирается по состоянию.</p>
+          <p class="muted" style="margin:0; font-size:16px;">Методика сочетает традиционные психологические подходы с управлением энергетическими процессами.</p>
+          <p class="muted" style="margin:0; font-size:16px;">Всё проверено на практике, применимо в обычной жизни и даёт ощутимый эффект почти сразу.</p>
+          <p class="muted" style="margin:0; font-size:16px;">Акцент — на концентрации внимания и практиках, а не на теоретических и эзотерических аспектах.</p>
         </div>
       </div>
     </div>
   </section>
 
-  <section class="reveal" style="padding:0 48px 130px;">
-    <div style="max-width:1240px; margin:0 auto;">
-      <div style="display:flex; align-items:center; gap:20px; margin-bottom:44px; font-size:11px; letter-spacing:.28em; text-transform:uppercase; color:#85A5A8;">
-        <span style="white-space:nowrap;">С чем работаем</span><span style="flex:1; height:1px; background:rgba(232,241,241,.16);"></span><span style="white-space:nowrap;">02 / 04</span>
-      </div>
-      <h2 style="font-family:'Cormorant Garamond',Georgia,serif; font-weight:400; font-size:clamp(32px,4vw,52px); line-height:1.08; margin:0 0 56px; max-width:700px;">Четыре энергетики, с которыми работаем</h2>
-      <div style="display:grid; gap:0;">
-        <div style="display:grid; grid-template-columns:150px 1fr; gap:48px; padding:40px 0; border-top:1px solid rgba(232,241,241,.14); align-items:start;">
-          <div style="font-family:'Cormorant Garamond',serif; font-size:88px; line-height:.9; color:rgba(233,166,60,.35);">01</div>
-          <div style="max-width:640px;">
-            <h3 style="font-family:'Cormorant Garamond',serif; font-weight:400; font-size:30px; margin:0 0 12px; color:#E8F1F1;">Физическая</h3>
-            <p style="margin:0; font-size:17px; line-height:1.7; color:#9FBCBE;">Как обеспечивать энергию для поддержки тела и активного ведения бизнеса: сон, дыхание, подвижность, восстановление после нагрузки. База, без которой остальные три не работают.</p>
-          </div>
+  <!-- ================= четыре энергетики — заливка sea ================= -->
+  <section class="sec sec--sea">
+    <div class="wrap">
+      <p class="eb rv">С чем работаем · 02 / 04</p>
+      <h2 class="rv" style="max-width:700px; margin-bottom:32px;">Четыре энергетики, с которыми работаем</h2>
+      <div class="grid g2 stg rv">
+        <div class="card">
+          <div class="card-n">01</div>
+          <h3>Физическая</h3>
+          <p>Как обеспечивать энергию для поддержки тела и активного ведения бизнеса: сон, дыхание, подвижность, восстановление после нагрузки. База, без которой остальные три не работают.</p>
         </div>
-        <div style="display:grid; grid-template-columns:150px 1fr; gap:48px; padding:40px 0; border-top:1px solid rgba(232,241,241,.14); align-items:start;">
-          <div style="font-family:'Cormorant Garamond',serif; font-size:88px; line-height:.9; color:rgba(233,166,60,.35);">02</div>
-          <div style="max-width:640px;">
-            <h3 style="font-family:'Cormorant Garamond',serif; font-weight:400; font-size:30px; margin:0 0 12px; color:#E8F1F1;">Эмоциональная</h3>
-            <p style="margin:0; font-size:17px; line-height:1.7; color:#9FBCBE;">Как проработать неконтролируемые эмоции и достичь стабильности, чтобы не терять контроль в бизнес-среде. Раздражение, апатия, фоновая тревога — разбираем, куда уходит ресурс.</p>
-          </div>
+        <div class="card">
+          <div class="card-n">02</div>
+          <h3>Эмоциональная</h3>
+          <p>Как проработать неконтролируемые эмоции и достичь стабильности, чтобы не терять контроль в бизнес-среде. Раздражение, апатия, фоновая тревога — разбираем, куда уходит ресурс.</p>
         </div>
-        <div style="display:grid; grid-template-columns:150px 1fr; gap:48px; padding:40px 0; border-top:1px solid rgba(232,241,241,.14); align-items:start;">
-          <div style="font-family:'Cormorant Garamond',serif; font-size:88px; line-height:.9; color:rgba(233,166,60,.35);">03</div>
-          <div style="max-width:640px;">
-            <h3 style="font-family:'Cormorant Garamond',serif; font-weight:400; font-size:30px; margin:0 0 12px; color:#E8F1F1;">Ментальная</h3>
-            <p style="margin:0; font-size:17px; line-height:1.7; color:#9FBCBE;">Как развить ментальную энергию и сформировать прочное мышление для стратегических решений — вместо решений на автомате, которые принимаются в состоянии истощения.</p>
-          </div>
+        <div class="card">
+          <div class="card-n">03</div>
+          <h3>Ментальная</h3>
+          <p>Как развить ментальную энергию и сформировать прочное мышление для стратегических решений — вместо решений на автомате, которые принимаются в состоянии истощения.</p>
         </div>
-        <div style="display:grid; grid-template-columns:150px 1fr; gap:48px; padding:40px 0; border-top:1px solid rgba(232,241,241,.14); border-bottom:1px solid rgba(232,241,241,.14); align-items:start;">
-          <div style="font-family:'Cormorant Garamond',serif; font-size:88px; line-height:.9; color:rgba(233,166,60,.35);">04</div>
-          <div style="max-width:640px;">
-            <h3 style="font-family:'Cormorant Garamond',serif; font-weight:400; font-size:30px; margin:0 0 12px; color:#E8F1F1;">Социальная</h3>
-            <p style="margin:0; font-size:17px; line-height:1.7; color:#9FBCBE;">Как направить поток на формирование эффективной команды и надёжных партнёрств. Здесь же — где в вашей компании утекает энергия.</p>
-          </div>
+        <div class="card">
+          <div class="card-n">04</div>
+          <h3>Социальная</h3>
+          <p>Как направить поток на формирование эффективной команды и надёжных партнёрств. Здесь же — где в вашей компании утекает энергия.</p>
         </div>
       </div>
-      <div style="margin-top:56px; border-top:1px solid rgba(232,241,241,.14); padding-top:40px;">
-        <div style="font-size:11px; letter-spacing:.28em; text-transform:uppercase; color:#85A5A8; margin-bottom:26px;">Также разбираем</div>
-        <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,215px),1fr)); gap:1px;">
-          <div style="background:#05242F; box-shadow:0 0 0 1px rgba(232,241,241,.14); padding:22px 24px; font-size:16px; line-height:1.55; color:#9FBCBE;">Энергетическое состояние руководителя</div>
-          <div style="background:#05242F; box-shadow:0 0 0 1px rgba(232,241,241,.14); padding:22px 24px; font-size:16px; line-height:1.55; color:#9FBCBE;">Взаимосвязи: родовые, семейные, профессиональные</div>
-          <div style="background:#05242F; box-shadow:0 0 0 1px rgba(232,241,241,.14); padding:22px 24px; font-size:16px; line-height:1.55; color:#9FBCBE;">Утечка энергии из организации</div>
-          <div style="background:#05242F; box-shadow:0 0 0 1px rgba(232,241,241,.14); padding:22px 24px; font-size:16px; line-height:1.55; color:#9FBCBE;">HR и энергетика команды</div>
-          <div style="background:#05242F; box-shadow:0 0 0 1px rgba(232,241,241,.14); padding:22px 24px; font-size:16px; line-height:1.55; color:#9FBCBE;">Финансы и энергетика</div>
+      <div class="rv" style="margin-top:40px; padding-top:32px; border-top:1px solid rgba(246,242,236,.24);">
+        <p class="eb">Также разбираем</p>
+        <div class="grid g3" style="gap:8px;">
+          <div style="font-size:16px; color:rgba(246,242,236,.85);">Энергетическое состояние руководителя</div>
+          <div style="font-size:16px; color:rgba(246,242,236,.85);">Взаимосвязи: родовые, семейные, профессиональные</div>
+          <div style="font-size:16px; color:rgba(246,242,236,.85);">Утечка энергии из организации</div>
+          <div style="font-size:16px; color:rgba(246,242,236,.85);">HR и энергетика команды</div>
+          <div style="font-size:16px; color:rgba(246,242,236,.85);">Финансы и энергетика</div>
         </div>
       </div>
     </div>
   </section>
 
-  <section class="reveal" style="background:#E9EFEF; color:#06242E; padding:120px 48px;">
-    <div style="max-width:1240px; margin:0 auto;">
-      <div style="display:flex; align-items:center; gap:20px; margin-bottom:44px; font-size:11px; letter-spacing:.28em; text-transform:uppercase; color:#4A6469;">
-        <span style="white-space:nowrap;">Результаты</span><span style="flex:1; height:1px; background:#B9CBCB;"></span><span style="white-space:nowrap;">через 7 дней</span>
-      </div>
-      <h2 style="font-family:'Cormorant Garamond',Georgia,serif; font-weight:400; font-size:clamp(34px,4.4vw,56px); line-height:1.06; margin:0 0 18px; max-width:720px;">С чем вы уезжаете</h2>
-      <p style="margin:0 0 56px; font-size:20px; line-height:1.6; color:#2F4A50; max-width:640px;">Не «вдохновение на пару недель». Ниже — то, что участники отмечают первым по возвращении.</p>
+  <!-- ================= результаты ================= -->
+  <section class="sec">
+    <div class="wrap">
+      <p class="eb rv">Результаты · через 7 дней</p>
+      <h2 class="rv" style="max-width:720px;">С чем вы уезжаете</h2>
+      <p class="lead rv" style="max-width:640px; margin-bottom:36px;">Не «вдохновение на пару недель». Ниже — то, что участники отмечают первым по возвращении.</p>
 
-      <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr)); gap:20px; margin-bottom:20px;">
-        <div style="background:#F6F9F8; border:1px solid #B9CBCB; padding:38px 36px;">
-          <div style="font-family:'Cormorant Garamond',serif; font-size:72px; line-height:.9; color:#0E7C86; margin-bottom:18px;">−50%</div>
-          <strong style="display:block; font-weight:500; font-size:20px; margin-bottom:10px;">Экономия энергии</strong>
-          <p style="margin:0; font-size:17px; line-height:1.6; color:#2F4A50;">Научитесь избегать истощения и сохранять силы даже после сложных переговоров и длинного рабочего дня.</p>
+      <div class="grid g2 stg rv" style="margin-bottom:12px;">
+        <div class="card">
+          <div class="num num--gold" style="margin-bottom:14px;">−50%</div>
+          <h3>Экономия энергии</h3>
+          <p>Научитесь избегать истощения и сохранять силы даже после сложных переговоров и длинного рабочего дня.</p>
         </div>
-        <div style="background:#F6F9F8; border:1px solid #B9CBCB; padding:38px 36px;">
-          <div style="font-family:'Cormorant Garamond',serif; font-size:72px; line-height:.9; color:#0E7C86; margin-bottom:18px;">+30%</div>
-          <strong style="display:block; font-weight:500; font-size:20px; margin-bottom:10px;">Рост продуктивности</strong>
-          <p style="margin:0; font-size:17px; line-height:1.6; color:#2F4A50;">Справляетесь с задачами быстрее, освобождая время для семьи, отдыха и личных проектов.</p>
+        <div class="card">
+          <div class="num" style="margin-bottom:14px;">+30%</div>
+          <h3>Рост продуктивности</h3>
+          <p>Справляетесь с задачами быстрее, освобождая время для семьи, отдыха и личных проектов.</p>
         </div>
       </div>
 
-      <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,270px),1fr)); gap:1px;">
-        <div style="background:#F6F9F8; box-shadow:0 0 0 1px #CBD9D9; padding:28px 30px;">
-          <strong style="display:block; font-weight:500; font-size:18px; margin-bottom:8px;">Ясная голова</strong>
-          <p style="margin:0; font-size:16px; line-height:1.6; color:#405A5F;">Уходит «туман», решения принимаются быстро — без лишнего анализа и стресса.</p>
-        </div>
-        <div style="background:#F6F9F8; box-shadow:0 0 0 1px #CBD9D9; padding:28px 30px;">
-          <strong style="display:block; font-weight:500; font-size:18px; margin-bottom:8px;">Ровный уровень энергии</strong>
-          <p style="margin:0; font-size:16px; line-height:1.6; color:#405A5F;">Больше никаких провалов после обеда: бодрость держится с утра до вечера.</p>
-        </div>
-        <div style="background:#F6F9F8; box-shadow:0 0 0 1px #CBD9D9; padding:28px 30px;">
-          <strong style="display:block; font-weight:500; font-size:18px; margin-bottom:8px;">Качество сна</strong>
-          <p style="margin:0; font-size:16px; line-height:1.6; color:#405A5F;">Засыпаете легко, высыпаетесь быстрее, просыпаетесь без чувства усталости.</p>
-        </div>
-        <div style="background:#F6F9F8; box-shadow:0 0 0 1px #CBD9D9; padding:28px 30px;">
-          <strong style="display:block; font-weight:500; font-size:18px; margin-bottom:8px;">Лидерский ресурс</strong>
-          <p style="margin:0; font-size:16px; line-height:1.6; color:#405A5F;">Команда снова считывает вашу силу и уверенность — в том числе в сложных ситуациях.</p>
-        </div>
-        <div style="background:#F6F9F8; box-shadow:0 0 0 1px #CBD9D9; padding:28px 30px;">
-          <strong style="display:block; font-weight:500; font-size:18px; margin-bottom:8px;">Новые возможности для дохода</strong>
-          <p style="margin:0; font-size:16px; line-height:1.6; color:#405A5F;">Начинаете видеть варианты, которые раньше просто проходили мимо внимания.</p>
-        </div>
-        <div style="background:#F6F9F8; box-shadow:0 0 0 1px #CBD9D9; padding:28px 30px;">
-          <strong style="display:block; font-weight:500; font-size:18px; margin-bottom:8px;">Баланс с личной жизнью</strong>
-          <p style="margin:0; font-size:16px; line-height:1.6; color:#405A5F;">Силы остаются не только на бизнес, но и на семью, поездки и себя.</p>
-        </div>
-        <div style="background:#F6F9F8; box-shadow:0 0 0 1px #CBD9D9; padding:28px 30px;">
-          <strong style="display:block; font-weight:500; font-size:18px; margin-bottom:8px;">Здоровье и стрессоустойчивость</strong>
-          <p style="margin:0; font-size:16px; line-height:1.6; color:#405A5F;">Уходят бессонница, головные боли и ощущение, что организм работает на пределе.</p>
-        </div>
-        <div style="background:#F6F9F8; box-shadow:0 0 0 1px #CBD9D9; padding:28px 30px;">
-          <strong style="display:block; font-weight:500; font-size:18px; margin-bottom:8px;">Ощущение контроля</strong>
-          <p style="margin:0; font-size:16px; line-height:1.6; color:#405A5F;">Снова чувствуете себя хозяином своей жизни, а не заложником обстоятельств.</p>
-        </div>
+      <div class="grid g3 stg rv">
+        <div class="card"><h3>Ясная голова</h3><p>Уходит «туман», решения принимаются быстро — без лишнего анализа и стресса.</p></div>
+        <div class="card"><h3>Ровный уровень энергии</h3><p>Больше никаких провалов после обеда: бодрость держится с утра до вечера.</p></div>
+        <div class="card"><h3>Качество сна</h3><p>Засыпаете легко, высыпаетесь быстрее, просыпаетесь без чувства усталости.</p></div>
+        <div class="card"><h3>Лидерский ресурс</h3><p>Команда снова считывает вашу силу и уверенность — в том числе в сложных ситуациях.</p></div>
+        <div class="card"><h3>Новые возможности для дохода</h3><p>Начинаете видеть варианты, которые раньше просто проходили мимо внимания.</p></div>
+        <div class="card"><h3>Баланс с личной жизнью</h3><p>Силы остаются не только на бизнес, но и на семью, поездки и себя.</p></div>
+        <div class="card"><h3>Здоровье и стрессоустойчивость</h3><p>Уходят бессонница, головные боли и ощущение, что организм работает на пределе.</p></div>
+        <div class="card"><h3>Ощущение контроля</h3><p>Снова чувствуете себя хозяином своей жизни, а не заложником обстоятельств.</p></div>
       </div>
     </div>
   </section>
 
-  <figure class="reveal" style="margin:0; position:relative; height:56vh; overflow:hidden; border-top:1px solid rgba(232,241,241,.1); border-bottom:1px solid rgba(232,241,241,.1);">
-    <img src="photos/r/g-beach.webp" alt="Группа на утренней сессии на пляже" width="2200" height="940" loading="lazy" decoding="async" style="width:100%; height:100%; display:block; object-fit:cover; object-position:center 40%;">
-    <div style="position:absolute; inset:0; background:linear-gradient(to top,rgba(5,36,47,.82),rgba(5,36,47,.5) 30%,rgba(5,36,47,0) 62%,rgba(5,36,47,.14));"></div>
-    <figcaption style="position:absolute; left:48px; bottom:40px; font-size:12px; letter-spacing:.22em; text-transform:uppercase; color:#E8F1F1;">Утренняя сессия · пляж</figcaption>
+  <!-- ================= пауза: пляж ================= -->
+  <figure class="bleed rv" style="height:52vh; min-height:260px;">
+    <div class="ph" style="position:absolute; inset:0;">
+      <img src="photos/r/g-beach.webp" alt="Группа на утренней сессии на пляже" width="2200" height="940" loading="lazy" decoding="async" style="object-position:center 40%;">
+    </div>
+    <div class="scrim"></div>
+    <figcaption><p class="eb" style="color:var(--foam); margin:0;">Утренняя сессия · пляж</p></figcaption>
   </figure>
 
-  <section class="reveal" id="program" style="background:#E9EFEF; color:#06242E; padding:120px 48px;">
-    <div style="max-width:1240px; margin:0 auto;">
-      <div style="display:flex; align-items:center; gap:20px; margin-bottom:44px; font-size:11px; letter-spacing:.28em; text-transform:uppercase; color:#4A6469;">
-        <span style="white-space:nowrap;">Программа</span><span style="flex:1; height:1px; background:#B9CBCB;"></span><span style="white-space:nowrap;">03 / 04</span>
-      </div>
-      <h2 style="font-family:'Cormorant Garamond',Georgia,serif; font-weight:400; font-size:clamp(34px,4.4vw,56px); line-height:1.06; margin:0 0 18px; max-width:700px;">Ритм дня на тренинге</h2>
-      <p style="margin:0 0 56px; font-size:20px; line-height:1.6; color:#2F4A50; max-width:620px;">Один день из семи. Расписание одинаковое каждый день — это и есть терапевтический эффект.</p>
-      <div style="display:grid; gap:0; max-width:900px;">
-        <div style="display:grid; grid-template-columns:120px 1fr; gap:36px; padding:26px 0; border-top:1px solid #CBD9D9;">
-          <div style="font-family:'IBM Plex Mono',monospace; font-size:16px; color:#7A5310; letter-spacing:.04em;">06:30</div>
-          <div><strong style="font-weight:500; font-size:18px;">Подъём и дыхательная практика</strong><p style="margin:6px 0 0; color:#405A5F; font-size:16px;">40 минут на террасе. Дыхание в заданном ритме под счёт ведущего — снимает утреннюю тяжесть.</p></div>
-        </div>
-        <div style="display:grid; grid-template-columns:120px 1fr; gap:36px; padding:26px 0; border-top:1px solid #CBD9D9;">
-          <div style="font-family:'IBM Plex Mono',monospace; font-size:16px; color:#7A5310; letter-spacing:.04em;">08:00</div>
-          <div><strong style="font-weight:500; font-size:18px;">Море и телесная работа</strong><p style="margin:6px 0 0; color:#405A5F; font-size:16px;">Плавание, растяжка, контрастные процедуры. Нагрузка подбирается по состоянию.</p></div>
-        </div>
-        <div style="display:grid; grid-template-columns:120px 1fr; gap:36px; padding:26px 0; border-top:1px solid #CBD9D9;">
-          <div style="font-family:'IBM Plex Mono',monospace; font-size:16px; color:#7A5310; letter-spacing:.04em;">10:30</div>
-          <div><strong style="font-weight:500; font-size:18px;">Групповая сессия с автором</strong><p style="margin:6px 0 0; color:#405A5F; font-size:16px;">Два часа: теория и разбор конкретных ситуаций участников. Формат — круг, не лекция.</p></div>
-        </div>
-        <div style="display:grid; grid-template-columns:120px 1fr; gap:36px; padding:26px 0; border-top:1px solid #CBD9D9;">
-          <div style="font-family:'IBM Plex Mono',monospace; font-size:16px; color:#7A5310; letter-spacing:.04em;">14:00</div>
-          <div><strong style="font-weight:500; font-size:18px;">Обед и свободное время</strong><p style="margin:6px 0 0; color:#405A5F; font-size:16px;">Три часа без программы: сон, море, работа с ноутбуком — по желанию.</p></div>
-        </div>
-        <div style="display:grid; grid-template-columns:120px 1fr; gap:36px; padding:26px 0; border-top:1px solid #CBD9D9;">
-          <div style="font-family:'IBM Plex Mono',monospace; font-size:16px; color:#7A5310; letter-spacing:.04em;">17:00</div>
-          <div><strong style="font-weight:500; font-size:18px;">Работа со стратегией</strong><p style="margin:6px 0 0; color:#405A5F; font-size:16px;">Индивидуальный разбор: где в бизнесе утекает ресурс и какие решения переносятся годами.</p></div>
-        </div>
-        <div style="display:grid; grid-template-columns:120px 1fr; gap:36px; padding:26px 0; border-top:1px solid #CBD9D9; border-bottom:1px solid #CBD9D9;">
-          <div style="font-family:'IBM Plex Mono',monospace; font-size:16px; color:#7A5310; letter-spacing:.04em;">21:00</div>
-          <div><strong style="font-weight:500; font-size:18px;">Вечерняя практика</strong><p style="margin:6px 0 0; color:#405A5F; font-size:16px;">Полтора часа групповой работы с дыханием и вниманием при свечах. Отбой не позже 23:30.</p></div>
-        </div>
-      </div>
-      <div style="margin-top:64px; border-top:1px solid #B9CBCB; padding-top:44px;">
-        <div style="font-size:11px; letter-spacing:.28em; text-transform:uppercase; color:#4A6469; margin-bottom:16px;">Что входит в программу</div>
-        <p style="margin:0 0 36px; font-size:17px; line-height:1.65; color:#2F4A50; max-width:640px;">Авторские названия практик — и что за ними стоит на самом деле.</p>
-        <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,290px),1fr)); gap:1px;">
-          <div style="background:#F6F9F8; box-shadow:0 0 0 1px #CBD9D9; padding:26px 28px;"><strong style="display:block; font-weight:500; font-size:17px; margin-bottom:8px;">Многомерные дневные процессы</strong><p style="margin:0; font-size:16px; line-height:1.55; color:#405A5F;">Групповые сессии по 2–3 часа: работа с вниманием и состоянием под руководством автора.</p></div>
-          <div style="background:#F6F9F8; box-shadow:0 0 0 1px #CBD9D9; padding:26px 28px;"><strong style="display:block; font-weight:500; font-size:17px; margin-bottom:8px;">Ночные трансформационные процессы</strong><p style="margin:0; font-size:16px; line-height:1.55; color:#405A5F;">Вечерняя групповая практика дыхания и концентрации при свечах. Отбой не позже 23:30.</p></div>
-          <div style="background:#F6F9F8; box-shadow:0 0 0 1px #CBD9D9; padding:26px 28px;"><strong style="display:block; font-weight:500; font-size:17px; margin-bottom:8px;">Энергоактивное дыхание</strong><p style="margin:0; font-size:16px; line-height:1.55; color:#405A5F;">Дыхание в заданном ритме под счёт ведущего — основной инструмент метода.</p></div>
-          <div style="background:#F6F9F8; box-shadow:0 0 0 1px #CBD9D9; padding:26px 28px;"><strong style="display:block; font-weight:500; font-size:17px; margin-bottom:8px;">Практики привлечения энергии и разгрузки</strong><p style="margin:0; font-size:16px; line-height:1.55; color:#405A5F;">Упражнения на снятие накопленного напряжения — телесные и на концентрацию внимания.</p></div>
-          <div style="background:#F6F9F8; box-shadow:0 0 0 1px #CBD9D9; padding:26px 28px;"><strong style="display:block; font-weight:500; font-size:17px; margin-bottom:8px;">Биоэнергетическая йога и упражнения</strong><p style="margin:0; font-size:16px; line-height:1.55; color:#405A5F;">Мягкая физическая работа утром: растяжка, подвижность, дыхание в движении.</p></div>
-          <div style="background:#F6F9F8; box-shadow:0 0 0 1px #CBD9D9; padding:26px 28px;"><strong style="display:block; font-weight:500; font-size:17px; margin-bottom:8px;">Взаимодействие с природной энергетикой</strong><p style="margin:0; font-size:16px; line-height:1.55; color:#405A5F;">Практики на берегу и в воде: бег, ходьба, плавание в заданном режиме.</p></div>
-          <div style="background:#F6F9F8; box-shadow:0 0 0 1px #CBD9D9; padding:26px 28px;"><strong style="display:block; font-weight:500; font-size:17px; margin-bottom:8px;">Оздоравливающее питание и сухое голодание</strong><p style="margin:0; font-size:16px; line-height:1.55; color:#405A5F;">Вегетарианский рацион; короткое голодание — по желанию и после анкеты здоровья.</p></div>
-          <div style="background:#F6F9F8; box-shadow:0 0 0 1px #CBD9D9; padding:26px 28px;"><strong style="display:block; font-weight:500; font-size:17px; margin-bottom:8px;">Банные практики и холодовые воздействия</strong><p style="margin:0; font-size:16px; line-height:1.55; color:#405A5F;">Контрастные процедуры. Участие добровольное, интенсивность выбираете сами.</p></div>
-        </div>
-      </div>
-      
-    </div>
-  </section>
+  <!-- ================= программа: ритм дня ================= -->
+  <section class="sec" id="program">
+    <div class="wrap">
+      <p class="eb rv">Программа · 03 / 04</p>
+      <h2 class="rv" style="max-width:700px; margin-bottom:36px;">Ритм дня на тренинге</h2>
 
-  <section class="reveal" style="position:relative; overflow:hidden; padding:120px 48px;">
-    <div style="position:absolute; inset:0; background:radial-gradient(50% 60% at 22% 40%, rgba(55,174,178,.2) 0%, rgba(5,36,47,0) 70%);"></div>
-    <div style="position:relative; max-width:1240px; margin:0 auto;">
-      <h2 style="font-family:'Cormorant Garamond',Georgia,serif; font-weight:400; font-size:clamp(34px,4.4vw,56px); line-height:1.06; margin:0 0 18px; max-width:780px;">Совместите тренинг и отдых на море</h2>
-      <p style="margin:0 0 56px; font-size:20px; line-height:1.6; color:#C0D5D6; max-width:640px;">Что может быть лучше, чем соединить трансформационный тренинг с отдыхом на жемчужине черноморского побережья России.</p>
-      <div style="font-size:11px; letter-spacing:.28em; text-transform:uppercase; color:#E9A63C; margin-bottom:30px;">Ведь это</div>
-      <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr)); gap:26px 56px; max-width:1040px;">
-        <div style="display:grid; grid-template-columns:22px 1fr; gap:14px; font-size:18px; line-height:1.55; color:#CFDFDF;"><span style="color:#E9A63C;">—</span><span>Тёплое и ласковое море, дендрарий, озёра и водопады</span></div>
-        <div style="display:grid; grid-template-columns:22px 1fr; gap:14px; font-size:18px; line-height:1.55; color:#CFDFDF;"><span style="color:#E9A63C;">—</span><span>Уникальный климат — субтропический полувлажный</span></div>
-        <div style="display:grid; grid-template-columns:22px 1fr; gap:14px; font-size:18px; line-height:1.55; color:#CFDFDF;"><span style="color:#E9A63C;">—</span><span>Потрясающие места для практик — галечные пляжи</span></div>
-        <div style="display:grid; grid-template-columns:22px 1fr; gap:14px; font-size:18px; line-height:1.55; color:#CFDFDF;"><span style="color:#E9A63C;">—</span><span>Активные энергетические практики при беге, ходьбе, плавании</span></div>
-        <div style="display:grid; grid-template-columns:22px 1fr; gap:14px; font-size:18px; line-height:1.55; color:#CFDFDF;"><span style="color:#E9A63C;">—</span><span>Здоровое вегетарианское питание</span></div>
-        <div style="display:grid; grid-template-columns:22px 1fr; gap:14px; font-size:18px; line-height:1.55; color:#CFDFDF;"><span style="color:#E9A63C;">—</span><span>Солнце, море, горы и масса психологического позитива</span></div>
-      </div>
-    </div>
-  </section>
+      <div class="day" id="day" style="max-width:900px;">
+        <div class="rail" aria-hidden="true"><i id="railFill"></i></div>
 
-  <section class="reveal" style="background:#E9EFEF; color:#06242E; padding:120px 48px;">
-    <div style="max-width:1240px; margin:0 auto;">
-      <div style="display:flex; align-items:center; gap:20px; margin-bottom:44px; font-size:11px; letter-spacing:.28em; text-transform:uppercase; color:#4A6469;">
-        <span style="white-space:nowrap;">Место</span><span style="flex:1; height:1px; background:#B9CBCB;"></span><span style="white-space:nowrap;">04 / 04</span>
-      </div>
-      <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,400px),1fr)); gap:64px; align-items:end; margin-bottom:40px;">
-        <h2 style="font-family:'Cormorant Garamond',Georgia,serif; font-weight:400; font-size:clamp(34px,4.4vw,56px); line-height:1.06; margin:0; max-width:600px;">Ретрит-центр «Лето», Вардане</h2>
-        <p style="margin:0; font-size:17px; line-height:1.65; color:#405A5F;">Субтропики Лазаревского района: галечные пляжи, дендрарий, озёра и водопады. Закрытая территория, три корпуса, бассейн и террасы для практик, здоровое вегетарианское питание в кафе при центре.</p>
-      </div>
-      <div style="display:grid; grid-template-columns:1.6fr 1fr; gap:16px; margin-bottom:16px;">
-        <img src="photos/r/g-circle.webp" alt="Круг группы на террасе с видом на море" width="1400" height="1400" loading="lazy" decoding="async" style="width:100%; height:480px; display:block; object-fit:cover; object-position:center 35%;">
-        <div style="display:grid; gap:16px;">
-          <img src="photos/r/g-shore.webp" alt="Берег на рассвете, 300 метров от центра" width="1200" height="800" loading="lazy" decoding="async" style="width:100%; height:232px; display:block; object-fit:cover;">
-          <img src="photos/r/g-beachcircle.webp" alt="Группа в кругу на пляже" width="1200" height="800" loading="lazy" decoding="async" style="width:100%; height:232px; display:block; object-fit:cover;">
+        <div class="slot rv">
+          <div class="slot-t">08:00</div>
+          <div>
+            <h3>Зарядка и биоактивная йога</h3>
+            <p>Мягкая физическая работа: подвижность, растяжка, дыхание в движении. После – завтрак и перерыв. Ведёт Павитра – приглашённый мастер программы.</p>
+          </div>
+        </div>
+        <div class="slot rv">
+          <div class="slot-t">11:00</div>
+          <div>
+            <h3>Утренний модуль: энергетическая система</h3>
+            <p>Работа с энергетической системой человека: меридианы, энергетические центры, потоки и каналы, биологические поля разной плотности. Принципы активации энергосистемы и методы энергетической защиты. Темы распределены по всей неделе.</p>
+          </div>
+        </div>
+        <div class="slot rv">
+          <div class="slot-t">14:00</div>
+          <div>
+            <h3>Обед и отдых</h3>
+            <p>Свободное время до вечернего модуля: море, сон, работа – по желанию.</p>
+          </div>
+        </div>
+        <div class="slot rv">
+          <div class="slot-t">16:00</div>
+          <div>
+            <h3>Бизнес-модуль</h3>
+            <p>Энергетика бизнес-процессов: как внедрить энергетические практики в управление, сформировать команду, выстроить энергетические взаимосвязи с партнёрами. Отдельная тема – духовно-энергетические источники вашего бизнеса. После – ужин и отдых.</p>
+          </div>
+        </div>
+        <div class="slot rv">
+          <div class="slot-t">18:30 – 20:00</div>
+          <div>
+            <h3>Ужин, отдых</h3>
+            <p>Свободное время до вечернего модуля: море, прогулки, общение.</p>
+          </div>
+        </div>
+        <div class="slot rv">
+          <div class="slot-t">20:00</div>
+          <div>
+            <h3>Дыхательные практики в зале</h3>
+            <p>До 22:00. Энергоактивное дыхание и практики погружения в медитативное состояние.</p>
+          </div>
+        </div>
+        <div class="slot slot--ink rv">
+          <div class="slot-t">23:00</div>
+          <div>
+            <h3>Ночные трансформационные процессы</h3>
+            <p>До 03:00, через день. Авторская методика Андрея Захаревича: набор энергии и формирование высокого энергетического потенциала. На следующее утро после ночной практики – мягкий режим.</p>
+          </div>
         </div>
       </div>
-      <div style="display:flex; flex-wrap:wrap; gap:28px; margin-top:24px;">
-        <a href="#venue" style="font-size:13px; letter-spacing:.18em; text-transform:uppercase; color:#0A3D4E; border-bottom:1px solid #9FBCBE; padding-bottom:5px;">Смотреть фото центра</a>
-        <a href="#price" style="font-size:13px; letter-spacing:.18em; text-transform:uppercase; color:#0A3D4E; border-bottom:1px solid #9FBCBE; padding-bottom:5px;">Прайс номеров</a>
+
+      <div class="rv" style="margin-top:48px; padding-top:36px; border-top:1px solid var(--line-soft);">
+        <p class="eb">Что входит в программу</p>
+        <p class="muted" style="max-width:var(--w-text); margin-bottom:26px;">Авторские названия практик — и что за ними стоит на самом деле.</p>
+        <div class="grid g3 stack stg">
+          <div class="card"><h3>Многомерные дневные процессы</h3><p>Два модуля с автором ежедневно: утренний – энергетическая система человека, дневной – энергетика бизнеса.</p></div>
+          <div class="card"><h3>Ночные трансформационные процессы</h3><p>Групповая практика с 23:00 до 03:00, проходит через день. Авторская методика набора энергии; следующее утро после неё – мягкий режим.</p></div>
+          <div class="card"><h3>Энергоактивное дыхание</h3><p>Дыхание в заданном ритме под счёт ведущего — основной инструмент метода.</p></div>
+          <div class="card"><h3>Практики привлечения энергии и разгрузки</h3><p>Упражнения на снятие накопленного напряжения — телесные и на концентрацию внимания.</p></div>
+          <div class="card"><h3>Биоэнергетическая йога и упражнения</h3><p>Мягкая физическая работа утром: растяжка, подвижность, дыхание в движении. Утренние практики ведёт приглашённый мастер Павитра.</p></div>
+          <div class="card"><h3>Взаимодействие с природной энергетикой</h3><p>Практики на берегу и в воде: бег, ходьба, плавание в заданном режиме.</p></div>
+          <div class="card"><h3>Оздоравливающее питание и сухое голодание</h3><p>Вегетарианский рацион. Два дня за тренинг – воздержание от пищи и воды (сухой голод): строго по желанию, только после анкеты здоровья и согласования с ведущим.</p></div>
+          <div class="card"><h3>Банные практики и холодовые воздействия</h3><p>Контрастные процедуры. Участие добровольное, интенсивность выбираете сами.</p></div>
+        </div>
       </div>
     </div>
   </section>
 
-  <section class="reveal" id="venue" style="padding:130px 48px; position:relative; overflow:hidden;">
-    <div style="position:absolute; right:-14%; top:14%; width:760px; height:760px; border-radius:50%; background:radial-gradient(circle,rgba(55,174,178,.22) 0%,rgba(55,174,178,0) 68%); pointer-events:none;"></div>
-    <div style="max-width:1240px; margin:0 auto; position:relative;">
-      <div style="display:flex; align-items:center; gap:20px; margin-bottom:44px; font-size:11px; letter-spacing:.28em; text-transform:uppercase; color:#85A5A8;">
-        <span style="white-space:nowrap;">Ретрит-центр</span><span style="flex:1; height:1px; background:rgba(232,241,241,.14);"></span><span style="white-space:nowrap;">«Лето» · Вардане</span>
-      </div>
-      <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr)); gap:64px; align-items:end; margin-bottom:48px;">
-        <h2 style="font-family:'Cormorant Garamond',Georgia,serif; font-weight:400; font-size:clamp(34px,4.4vw,56px); line-height:1.06; margin:0;">Где вы будете жить<br>эти семь дней</h2>
-        <p style="margin:0; font-size:18px; line-height:1.65; color:#9FBCBE;">Закрытая территория на склоне над морем: три корпуса, бассейн, беседки и террасы, где проходят дневные сессии. Спуск к галечному пляжу — семь минут пешком. Во всех номерах кондиционер, холодильник, душ; охраняемая парковка.</p>
-      </div>
-      <div style="display:grid; grid-template-columns:minmax(0,1.6fr) minmax(0,1fr); gap:16px; margin-bottom:16px;">
-        <img src="photos/r/v-pool.webp" alt="Бассейн и территория центра" width="1600" height="1000" loading="lazy" decoding="async" style="width:100%; height:340px; display:block; object-fit:cover;">
-        <img src="photos/r/v-sunset.webp" alt="Закат над морем с террасы центра" width="1200" height="900" loading="lazy" decoding="async" style="width:100%; height:340px; display:block; object-fit:cover;">
-      </div>
-      <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr)); gap:16px;">
-        <img src="photos/r/v-gazebo.webp" alt="Беседка для практик с видом на море" width="1200" height="900" loading="lazy" decoding="async" style="width:100%; height:230px; display:block; object-fit:cover;">
-        <img src="photos/r/v-court.webp" alt="Внутренний двор и корпуса" width="1200" height="900" loading="lazy" decoding="async" style="width:100%; height:230px; display:block; object-fit:cover;">
-        <img src="photos/r/v-loungers.webp" alt="Зона отдыха у бассейна" width="1200" height="900" loading="lazy" decoding="async" style="width:100%; height:230px; display:block; object-fit:cover;">
-      </div>
-      <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr)); gap:1px; margin-top:48px;">
-        <div style="background:#05242F; box-shadow:0 0 0 1px rgba(232,241,241,.14); padding:24px 26px;"><div style="font-family:'Cormorant Garamond',serif; font-size:34px; line-height:1; color:#E9A63C; margin-bottom:10px;">3</div><div style="font-size:15px; color:#9FBCBE;">корпуса, 8 типов номеров</div></div>
-        <div style="background:#05242F; box-shadow:0 0 0 1px rgba(232,241,241,.14); padding:24px 26px;"><div style="font-family:'Cormorant Garamond',serif; font-size:34px; line-height:1; color:#E9A63C; margin-bottom:10px;">300 м</div><div style="font-size:15px; color:#9FBCBE;">до моря, спуск 7 минут</div></div>
-        <div style="background:#05242F; box-shadow:0 0 0 1px rgba(232,241,241,.14); padding:24px 26px;"><div style="font-family:'Cormorant Garamond',serif; font-size:34px; line-height:1; color:#E9A63C; margin-bottom:10px;">от 1 875 ₽</div><div style="font-size:15px; color:#9FBCBE;">проживание с человека в сутки</div></div>
-        <div style="background:#05242F; box-shadow:0 0 0 1px rgba(232,241,241,.14); padding:24px 26px;"><div style="font-family:'Cormorant Garamond',serif; font-size:34px; line-height:1; color:#E9A63C; margin-bottom:10px;">1 800 ₽</div><div style="font-size:15px; color:#9FBCBE;">трёхразовое питание в день</div></div>
-      </div>
-      <div style="margin-top:48px; display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr)); gap:36px; border-top:1px solid rgba(232,241,241,.14); padding-top:40px;">
-        <div>
-          <div style="font-size:11px; letter-spacing:.24em; text-transform:uppercase; color:#E9A63C; margin-bottom:16px;">Сбор группы</div>
-          <p style="margin:0; font-size:16px; line-height:1.65; color:#9FBCBE;">20 августа к 18:00 мск в отеле. Заселение с 14:00, выезд 27 августа до 12:00.</p>
+  <!-- ================= приглашённый мастер ================= -->
+  <section class="sec sec--pebble" id="pavitra">
+    <div class="wrap">
+      <div class="pav">
+        <div class="ph pav-portrait rv">
+          <img src="photos/r/p-portrait.webp" alt="Павитра, приглашённый мастер программы" width="854" height="1280" loading="lazy" decoding="async">
         </div>
         <div>
-          <div style="font-size:11px; letter-spacing:.24em; text-transform:uppercase; color:#E9A63C; margin-bottom:16px;">Как добраться</div>
-          <p style="margin:0; font-size:16px; line-height:1.65; color:#9FBCBE;">Из аэропорта — скоростной электричкой до станции Вардане (или до Лоо), дальше такси. Адрес: ул. Рассветная 22/14, пос. Вардане.</p>
-        </div>
-        <div>
-          <div style="font-size:11px; letter-spacing:.24em; text-transform:uppercase; color:#E9A63C; margin-bottom:16px;">Взять с собой</div>
-          <p style="margin:0; font-size:16px; line-height:1.65; color:#9FBCBE;">Туристический коврик, спортивную одежду (в том числе тёплую) и обувь, купальник для моря и бани.</p>
+          <p class="eb rv">Приглашённый мастер</p>
+          <h2 class="rv">Павитра</h2>
+          <p class="pr rv" style="font-size:20px; line-height:1.3; color:var(--sea-ink); margin-bottom:22px;">Проводник Три йоги, парной йоги и гонг-медитации. 25 лет практики.</p>
+          <p class="rv" style="max-width:var(--w-text); margin-bottom:32px;">Ведёт утренние практики йоги и проводит гонг-медитацию – звуковую практику глубокого расслабления. Сочетает телесную, дыхательную и медитативную работу, подбирая нагрузку под особенности тела и состояния каждого участника. Акцент – на верном и безопасном выполнении, расслаблении и осознанности.</p>
+
+          <div class="rv" style="max-width:var(--w-text); margin-bottom:32px;">
+            <div class="ph pav-gong">
+              <img src="photos/r/p-gong.webp" alt="Павитра проводит гонг-медитацию" width="1280" height="720" loading="lazy" decoding="async">
+            </div>
+            <div class="card" style="background:var(--foam);">
+              <h3>Гонг-медитация</h3>
+              <p>Групповая звуковая практика: участники лежат, Павитра играет на гонге. Вибрации звука дают глубокое мышечное и нервное расслабление – многие сравнивают состояние после с эффектом полноценного дневного сна.</p>
+            </div>
+          </div>
+
+          <div class="rv" style="max-width:var(--w-text); padding-top:26px; border-top:1px solid var(--line);">
+            <blockquote class="pav-quote">Представьте, что вы стоите на берегу океана, и на вас накатывают волны звука. Напряжение уходит, оставляя место покою – вы как чистый холст, готовый принять новые краски.</blockquote>
+            <p class="eb" style="margin:16px 0 24px;">Павитра</p>
+            <a class="link" href="http://t.me/pavitrayog" target="_blank" rel="noopener">Телеграм Павитры</a>
+          </div>
         </div>
       </div>
     </div>
   </section>
 
-  <figure class="reveal" style="margin:0; position:relative; height:56vh; overflow:hidden; border-top:1px solid rgba(232,241,241,.1); border-bottom:1px solid rgba(232,241,241,.1);">
-    <img src="photos/r/v-bonfire.webp" alt="Вечерний сбор группы у костра на берегу" width="2200" height="1000" loading="lazy" decoding="async" style="width:100%; height:100%; display:block; object-fit:cover; object-position:center 45%;">
-    <div style="position:absolute; inset:0; background:linear-gradient(to top,rgba(5,36,47,.72),rgba(5,36,47,.06) 52%,rgba(5,36,47,.3));"></div>
-    <figcaption style="position:absolute; left:48px; bottom:44px; max-width:420px;">
-      <div style="font-family:'Cormorant Garamond',serif; font-size:clamp(26px,3vw,40px); line-height:1.12; color:#E8F1F1;">Костёр на берегу</div>
-    </figcaption>
+  <!-- ================= тренинг и море ================= -->
+  <section class="sec">
+    <div class="wrap">
+      <h2 class="rv" style="max-width:780px;">Совместите тренинг и отдых на море</h2>
+      <p class="lead rv" style="max-width:640px; margin-bottom:32px;">Что может быть лучше, чем соединить трансформационный тренинг с отдыхом на жемчужине черноморского побережья России.</p>
+      <p class="eb rv">Ведь это</p>
+      <div class="grid g2 stg rv" style="max-width:1040px;">
+        <div style="display:grid; grid-template-columns:16px 1fr; gap:12px; font-size:17px; line-height:1.5;"><span class="pr" style="color:var(--sea);">—</span><span>Тёплое и ласковое море, дендрарий, озёра и водопады</span></div>
+        <div style="display:grid; grid-template-columns:16px 1fr; gap:12px; font-size:17px; line-height:1.5;"><span class="pr" style="color:var(--sea);">—</span><span>Уникальный климат — субтропический полувлажный</span></div>
+        <div style="display:grid; grid-template-columns:16px 1fr; gap:12px; font-size:17px; line-height:1.5;"><span class="pr" style="color:var(--sea);">—</span><span>Потрясающие места для практик — галечные пляжи</span></div>
+        <div style="display:grid; grid-template-columns:16px 1fr; gap:12px; font-size:17px; line-height:1.5;"><span class="pr" style="color:var(--sea);">—</span><span>Активные энергетические практики при беге, ходьбе, плавании</span></div>
+        <div style="display:grid; grid-template-columns:16px 1fr; gap:12px; font-size:17px; line-height:1.5;"><span class="pr" style="color:var(--sea);">—</span><span>Здоровое вегетарианское питание</span></div>
+        <div style="display:grid; grid-template-columns:16px 1fr; gap:12px; font-size:17px; line-height:1.5;"><span class="pr" style="color:var(--sea);">—</span><span>Солнце, море, горы и масса психологического позитива</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= место ================= -->
+  <section class="sec sec--pebble" id="venue">
+    <div class="wrap">
+      <p class="eb rv">Место · 04 / 04</p>
+      <h2 class="rv" style="max-width:640px;">Ретрит-центр «Лето», Вардане</h2>
+      <p class="muted rv" style="max-width:var(--w-text); margin-bottom:32px;">Субтропики Лазаревского района: галечные пляжи, дендрарий, озёра и водопады. Закрытая территория на склоне над морем: три корпуса, бассейн, беседки и террасы, где проходят дневные сессии. Спуск к галечному пляжу — семь минут пешком. Во всех номерах кондиционер, холодильник, душ; охраняемая парковка.</p>
+
+      <div class="grid g2 rv" style="margin-bottom:12px;">
+        <div class="ph" style="height:240px;"><img src="photos/r/g-circle.webp" alt="Круг группы на террасе с видом на море" width="1400" height="1400" loading="lazy" decoding="async" style="object-position:center 35%;"></div>
+        <div class="ph" style="height:240px;"><img src="photos/r/v-pool.webp" alt="Бассейн и территория центра" width="1600" height="1000" loading="lazy" decoding="async"></div>
+      </div>
+      <div class="grid g3 rv" style="margin-bottom:36px;">
+        <div class="ph" style="height:180px;"><img src="photos/r/v-sunset.webp" alt="Закат над морем с террасы центра" width="1200" height="900" loading="lazy" decoding="async"></div>
+        <div class="ph" style="height:180px;"><img src="photos/r/v-gazebo.webp" alt="Беседка для практик с видом на море" width="1200" height="900" loading="lazy" decoding="async"></div>
+        <div class="ph" style="height:180px;"><img src="photos/r/v-loungers.webp" alt="Зона отдыха у бассейна" width="1200" height="900" loading="lazy" decoding="async"></div>
+      </div>
+
+      <div class="grid g4 stg rv" style="margin-bottom:36px;">
+        <div class="card" style="background:var(--foam);"><div class="card-n">3</div><p>корпуса, 8 типов номеров</p></div>
+        <div class="card" style="background:var(--foam);"><div class="card-n">300 м</div><p>до моря, спуск 7 минут</p></div>
+        <div class="card" style="background:var(--foam);"><div class="card-n">1 875 ₽</div><p>проживание с человека в сутки</p></div>
+        <div class="card" style="background:var(--foam);"><div class="card-n">1 800 ₽</div><p>трёхразовое питание в день</p></div>
+      </div>
+
+      <div class="grid g3 rv" style="padding-top:32px; border-top:1px solid var(--line-soft);">
+        <div>
+          <p class="eb">Сбор группы</p>
+          <p class="muted" style="font-size:16px;">20 августа к 18:00 мск в отеле. Заселение с 14:00, выезд 27 августа до 12:00.</p>
+        </div>
+        <div>
+          <p class="eb">Как добраться</p>
+          <p class="muted" style="font-size:16px;">Из аэропорта — скоростной электричкой до станции Вардане (или до Лоо), дальше такси. Адрес: ул. Рассветная 22/14, пос. Вардане.</p>
+        </div>
+        <div>
+          <p class="eb">Взять с собой</p>
+          <p class="muted" style="font-size:16px;">Туристический коврик, спортивную одежду (в том числе тёплую) и обувь, купальник для моря и бани.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= пауза: костёр ================= -->
+  <figure class="bleed rv" style="height:48vh; min-height:250px;">
+    <div class="ph" style="position:absolute; inset:0;">
+      <img src="photos/r/v-bonfire.webp" alt="Вечерний сбор группы у костра на берегу" width="2200" height="1000" loading="lazy" decoding="async" style="object-position:center 45%;">
+    </div>
+    <div class="scrim"></div>
+    <figcaption><div class="pr" style="font-size:28px; line-height:1.12;">Костёр на берегу</div></figcaption>
   </figure>
 
-  <section class="reveal" style="background:#E9EFEF; color:#06242E; padding:120px 48px;">
-    <div style="max-width:1240px; margin:0 auto;">
-      <h2 style="font-family:'Cormorant Garamond',Georgia,serif; font-weight:400; font-size:clamp(34px,4.4vw,56px); line-height:1.06; margin:0 0 18px; max-width:640px;">Что говорят те, кто уже прошёл</h2>
-      <p style="margin:0 0 56px; font-size:18px; color:#405A5F; max-width:620px;">Десять видеоотзывов с семинаров и мастер-классов Андрея Захаревича. Видео открывается прямо здесь — YouTube не загружается, пока вы не нажмёте.</p>
-      <div id="revGrid" style="display:grid; gap:26px 20px; grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr)); margin-bottom:36px;">
-        <article class="rev" style="">
-          <div class="rev-media" style="position:relative; aspect-ratio:16/9; overflow:hidden; background:#D4E0E0; border:1px solid #CBD9D9;">
-            <button type="button" data-yt="HT-pJl2V1lA" aria-label="Смотреть видеоотзыв: Радислав Гандапас" style="position:absolute; inset:0; width:100%; height:100%; padding:0; border:0; background:none; cursor:pointer;">
-              <img decoding="async" src="photos/rev/HT-pJl2V1lA.webp" alt="Кадр из видеоотзыва: Радислав Гандапас" loading="lazy" width="640" height="360" style="width:100%; height:100%; display:block; object-fit:cover;">
+  <!-- ================= отзывы ================= -->
+  <section class="sec">
+    <div class="wrap">
+      <h2 class="rv" style="max-width:640px;">Что говорят те, кто уже прошёл</h2>
+      <p class="muted rv" style="max-width:620px; margin-bottom:36px;">Десять видеоотзывов с семинаров и мастер-классов Андрея Захаревича. Видео открывается прямо здесь — YouTube не загружается, пока вы не нажмёте.</p>
+      <div class="grid g3 rv" id="revGrid" style="gap:24px 16px; margin-bottom:28px;">
+        <article class="rev">
+          <div class="rev-media">
+            <button type="button" data-yt="HT-pJl2V1lA" aria-label="Смотреть видеоотзыв: Радислав Гандапас">
+              <img decoding="async" src="photos/rev/HT-pJl2V1lA.webp" alt="Кадр из видеоотзыва: Радислав Гандапас" loading="lazy" width="640" height="360">
               <span class="rev-play" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 4l14 8-14 8z"/></svg></span>
             </button>
           </div>
-          <div style="margin-top:14px;">
-            <strong style="display:block; font-weight:500; font-size:17px; color:#06242E;">Радислав Гандапас</strong>
-            <span style="display:block; font-size:15px; color:#405A5F; margin-top:3px;">Бизнес-спикер</span>
-            <span style="display:block; font-size:13px; letter-spacing:.1em; color:#647E82; margin-top:6px;">о книге «Энергетика лидера», 2016</span>
-          </div>
+          <strong class="rev-name">Радислав Гандапас</strong>
+          <span class="rev-role">Бизнес-спикер</span>
+          <span class="rev-note">о книге «Энергетика лидера», 2016</span>
         </article>
-        <article class="rev" style="">
-          <div class="rev-media" style="position:relative; aspect-ratio:16/9; overflow:hidden; background:#D4E0E0; border:1px solid #CBD9D9;">
-            <button type="button" data-yt="7FYl5AsK5n4" aria-label="Смотреть видеоотзыв: Алексей Воронин" style="position:absolute; inset:0; width:100%; height:100%; padding:0; border:0; background:none; cursor:pointer;">
-              <img decoding="async" src="photos/rev/7FYl5AsK5n4.webp" alt="Кадр из видеоотзыва: Алексей Воронин" loading="lazy" width="640" height="360" style="width:100%; height:100%; display:block; object-fit:cover;">
+        <article class="rev">
+          <div class="rev-media">
+            <button type="button" data-yt="7FYl5AsK5n4" aria-label="Смотреть видеоотзыв: Алексей Воронин">
+              <img decoding="async" src="photos/rev/7FYl5AsK5n4.webp" alt="Кадр из видеоотзыва: Алексей Воронин" loading="lazy" width="640" height="360">
               <span class="rev-play" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 4l14 8-14 8z"/></svg></span>
             </button>
           </div>
-          <div style="margin-top:14px;">
-            <strong style="display:block; font-weight:500; font-size:17px; color:#06242E;">Алексей Воронин</strong>
-            <span style="display:block; font-size:15px; color:#405A5F; margin-top:3px;">Бизнес-спикер</span>
-            
-          </div>
+          <strong class="rev-name">Алексей Воронин</strong>
+          <span class="rev-role">Бизнес-спикер</span>
         </article>
-        <article class="rev" style="">
-          <div class="rev-media" style="position:relative; aspect-ratio:16/9; overflow:hidden; background:#D4E0E0; border:1px solid #CBD9D9;">
-            <button type="button" data-yt="bPc7dbjOZBY" aria-label="Смотреть видеоотзыв: Влад Бермуда" style="position:absolute; inset:0; width:100%; height:100%; padding:0; border:0; background:none; cursor:pointer;">
-              <img decoding="async" src="photos/rev/bPc7dbjOZBY.webp" alt="Кадр из видеоотзыва: Влад Бермуда" loading="lazy" width="640" height="360" style="width:100%; height:100%; display:block; object-fit:cover;">
+        <article class="rev">
+          <div class="rev-media">
+            <button type="button" data-yt="bPc7dbjOZBY" aria-label="Смотреть видеоотзыв: Влад Бермуда">
+              <img decoding="async" src="photos/rev/bPc7dbjOZBY.webp" alt="Кадр из видеоотзыва: Влад Бермуда" loading="lazy" width="640" height="360">
               <span class="rev-play" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 4l14 8-14 8z"/></svg></span>
             </button>
           </div>
-          <div style="margin-top:14px;">
-            <strong style="display:block; font-weight:500; font-size:17px; color:#06242E;">Влад Бермуда</strong>
-            <span style="display:block; font-size:15px; color:#405A5F; margin-top:3px;">Международный бизнес-спикер</span>
-            
-          </div>
+          <strong class="rev-name">Влад Бермуда</strong>
+          <span class="rev-role">Международный бизнес-спикер</span>
         </article>
-        <article class="rev" style="">
-          <div class="rev-media" style="position:relative; aspect-ratio:16/9; overflow:hidden; background:#D4E0E0; border:1px solid #CBD9D9;">
-            <button type="button" data-yt="jxVVZy1Quy4" aria-label="Смотреть видеоотзыв: Тимур Тажетдинов" style="position:absolute; inset:0; width:100%; height:100%; padding:0; border:0; background:none; cursor:pointer;">
-              <img decoding="async" src="photos/rev/jxVVZy1Quy4.webp" alt="Кадр из видеоотзыва: Тимур Тажетдинов" loading="lazy" width="640" height="360" style="width:100%; height:100%; display:block; object-fit:cover;">
+        <article class="rev">
+          <div class="rev-media">
+            <button type="button" data-yt="jxVVZy1Quy4" aria-label="Смотреть видеоотзыв: Тимур Тажетдинов">
+              <img decoding="async" src="photos/rev/jxVVZy1Quy4.webp" alt="Кадр из видеоотзыва: Тимур Тажетдинов" loading="lazy" width="640" height="360">
               <span class="rev-play" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 4l14 8-14 8z"/></svg></span>
             </button>
           </div>
-          <div style="margin-top:14px;">
-            <strong style="display:block; font-weight:500; font-size:17px; color:#06242E;">Тимур Тажетдинов</strong>
-            <span style="display:block; font-size:15px; color:#405A5F; margin-top:3px;">Участник мастер-классов в Москве</span>
-            
-          </div>
+          <strong class="rev-name">Тимур Тажетдинов</strong>
+          <span class="rev-role">Участник мастер-классов в Москве</span>
         </article>
-        <article class="rev" style="">
-          <div class="rev-media" style="position:relative; aspect-ratio:16/9; overflow:hidden; background:#D4E0E0; border:1px solid #CBD9D9;">
-            <button type="button" data-yt="AD94fuwawu8" aria-label="Смотреть видеоотзыв: Андрей Богокин" style="position:absolute; inset:0; width:100%; height:100%; padding:0; border:0; background:none; cursor:pointer;">
-              <img decoding="async" src="photos/rev/AD94fuwawu8.webp" alt="Кадр из видеоотзыва: Андрей Богокин" loading="lazy" width="640" height="360" style="width:100%; height:100%; display:block; object-fit:cover;">
+        <article class="rev">
+          <div class="rev-media">
+            <button type="button" data-yt="AD94fuwawu8" aria-label="Смотреть видеоотзыв: Андрей Богокин">
+              <img decoding="async" src="photos/rev/AD94fuwawu8.webp" alt="Кадр из видеоотзыва: Андрей Богокин" loading="lazy" width="640" height="360">
               <span class="rev-play" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 4l14 8-14 8z"/></svg></span>
             </button>
           </div>
-          <div style="margin-top:14px;">
-            <strong style="display:block; font-weight:500; font-size:17px; color:#06242E;">Андрей Богокин</strong>
-            <span style="display:block; font-size:15px; color:#405A5F; margin-top:3px;">Бизнес-консультант</span>
-            
-          </div>
+          <strong class="rev-name">Андрей Богокин</strong>
+          <span class="rev-role">Бизнес-консультант</span>
         </article>
-        <article class="rev" style="">
-          <div class="rev-media" style="position:relative; aspect-ratio:16/9; overflow:hidden; background:#D4E0E0; border:1px solid #CBD9D9;">
-            <button type="button" data-yt="2j26t1aFxLY" aria-label="Смотреть видеоотзыв: Руслан Светланов" style="position:absolute; inset:0; width:100%; height:100%; padding:0; border:0; background:none; cursor:pointer;">
-              <img decoding="async" src="photos/rev/2j26t1aFxLY.webp" alt="Кадр из видеоотзыва: Руслан Светланов" loading="lazy" width="640" height="360" style="width:100%; height:100%; display:block; object-fit:cover;">
+        <article class="rev">
+          <div class="rev-media">
+            <button type="button" data-yt="2j26t1aFxLY" aria-label="Смотреть видеоотзыв: Руслан Светланов">
+              <img decoding="async" src="photos/rev/2j26t1aFxLY.webp" alt="Кадр из видеоотзыва: Руслан Светланов" loading="lazy" width="640" height="360">
               <span class="rev-play" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 4l14 8-14 8z"/></svg></span>
             </button>
           </div>
-          <div style="margin-top:14px;">
-            <strong style="display:block; font-weight:500; font-size:17px; color:#06242E;">Руслан Светланов</strong>
-            <span style="display:block; font-size:15px; color:#405A5F; margin-top:3px;">Президент БК «Таратау»</span>
-            
-          </div>
+          <strong class="rev-name">Руслан Светланов</strong>
+          <span class="rev-role">Президент БК «Таратау»</span>
         </article>
         <article class="rev rev-more" style="display:none;">
-          <div class="rev-media" style="position:relative; aspect-ratio:16/9; overflow:hidden; background:#D4E0E0; border:1px solid #CBD9D9;">
-            <button type="button" data-yt="2YpDYdoa5es" aria-label="Смотреть видеоотзыв: Янис Ткаченко" style="position:absolute; inset:0; width:100%; height:100%; padding:0; border:0; background:none; cursor:pointer;">
-              <img decoding="async" src="photos/rev/2YpDYdoa5es.webp" alt="Кадр из видеоотзыва: Янис Ткаченко" loading="lazy" width="640" height="360" style="width:100%; height:100%; display:block; object-fit:cover;">
+          <div class="rev-media">
+            <button type="button" data-yt="2YpDYdoa5es" aria-label="Смотреть видеоотзыв: Янис Ткаченко">
+              <img decoding="async" src="photos/rev/2YpDYdoa5es.webp" alt="Кадр из видеоотзыва: Янис Ткаченко" loading="lazy" width="640" height="360">
               <span class="rev-play" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 4l14 8-14 8z"/></svg></span>
             </button>
           </div>
-          <div style="margin-top:14px;">
-            <strong style="display:block; font-weight:500; font-size:17px; color:#06242E;">Янис Ткаченко</strong>
-            <span style="display:block; font-size:15px; color:#405A5F; margin-top:3px;">Участник семинара в Крыму</span>
-            
-          </div>
+          <strong class="rev-name">Янис Ткаченко</strong>
+          <span class="rev-role">Участник семинара в Крыму</span>
         </article>
         <article class="rev rev-more" style="display:none;">
-          <div class="rev-media" style="position:relative; aspect-ratio:16/9; overflow:hidden; background:#D4E0E0; border:1px solid #CBD9D9;">
-            <button type="button" data-yt="DNJ0CBIovno" aria-label="Смотреть видеоотзыв: Ольга Малевицкая" style="position:absolute; inset:0; width:100%; height:100%; padding:0; border:0; background:none; cursor:pointer;">
-              <img decoding="async" src="photos/rev/DNJ0CBIovno.webp" alt="Кадр из видеоотзыва: Ольга Малевицкая" loading="lazy" width="640" height="360" style="width:100%; height:100%; display:block; object-fit:cover;">
+          <div class="rev-media">
+            <button type="button" data-yt="DNJ0CBIovno" aria-label="Смотреть видеоотзыв: Ольга Малевицкая">
+              <img decoding="async" src="photos/rev/DNJ0CBIovno.webp" alt="Кадр из видеоотзыва: Ольга Малевицкая" loading="lazy" width="640" height="360">
               <span class="rev-play" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 4l14 8-14 8z"/></svg></span>
             </button>
           </div>
-          <div style="margin-top:14px;">
-            <strong style="display:block; font-weight:500; font-size:17px; color:#06242E;">Ольга Малевицкая</strong>
-            <span style="display:block; font-size:15px; color:#405A5F; margin-top:3px;">Участница тренингов в Крыму и на Путоранах</span>
-            
-          </div>
+          <strong class="rev-name">Ольга Малевицкая</strong>
+          <span class="rev-role">Участница тренингов в Крыму и на Путоранах</span>
         </article>
         <article class="rev rev-more" style="display:none;">
-          <div class="rev-media" style="position:relative; aspect-ratio:16/9; overflow:hidden; background:#D4E0E0; border:1px solid #CBD9D9;">
-            <button type="button" data-yt="YNvp4SExAY0" aria-label="Смотреть видеоотзыв: Ярослав" style="position:absolute; inset:0; width:100%; height:100%; padding:0; border:0; background:none; cursor:pointer;">
-              <img decoding="async" src="photos/rev/YNvp4SExAY0.webp" alt="Кадр из видеоотзыва: Ярослав" loading="lazy" width="640" height="360" style="width:100%; height:100%; display:block; object-fit:cover;">
+          <div class="rev-media">
+            <button type="button" data-yt="YNvp4SExAY0" aria-label="Смотреть видеоотзыв: Ярослав">
+              <img decoding="async" src="photos/rev/YNvp4SExAY0.webp" alt="Кадр из видеоотзыва: Ярослав" loading="lazy" width="640" height="360">
               <span class="rev-play" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 4l14 8-14 8z"/></svg></span>
             </button>
           </div>
-          <div style="margin-top:14px;">
-            <strong style="display:block; font-weight:500; font-size:17px; color:#06242E;">Ярослав</strong>
-            <span style="display:block; font-size:15px; color:#405A5F; margin-top:3px;">Участник семинара в Москве</span>
-            
-          </div>
+          <strong class="rev-name">Ярослав</strong>
+          <span class="rev-role">Участник семинара в Москве</span>
         </article>
         <article class="rev rev-more" style="display:none;">
-          <div class="rev-media" style="position:relative; aspect-ratio:16/9; overflow:hidden; background:#D4E0E0; border:1px solid #CBD9D9;">
-            <button type="button" data-yt="1mJS0m8_ObA" aria-label="Смотреть видеоотзыв: Анна Дёмина" style="position:absolute; inset:0; width:100%; height:100%; padding:0; border:0; background:none; cursor:pointer;">
-              <img decoding="async" src="photos/rev/1mJS0m8_ObA.webp" alt="Кадр из видеоотзыва: Анна Дёмина" loading="lazy" width="640" height="360" style="width:100%; height:100%; display:block; object-fit:cover;">
+          <div class="rev-media">
+            <button type="button" data-yt="1mJS0m8_ObA" aria-label="Смотреть видеоотзыв: Анна Дёмина">
+              <img decoding="async" src="photos/rev/1mJS0m8_ObA.webp" alt="Кадр из видеоотзыва: Анна Дёмина" loading="lazy" width="640" height="360">
               <span class="rev-play" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 4l14 8-14 8z"/></svg></span>
             </button>
           </div>
-          <div style="margin-top:14px;">
-            <strong style="display:block; font-weight:500; font-size:17px; color:#06242E;">Анна Дёмина</strong>
-            <span style="display:block; font-size:15px; color:#405A5F; margin-top:3px;">Владелец онлайн-школы</span>
-            
-          </div>
+          <strong class="rev-name">Анна Дёмина</strong>
+          <span class="rev-role">Владелец онлайн-школы</span>
         </article>
       </div>
-      <div style="display:flex; justify-content:center; margin-bottom:44px;">
-        <button type="button" id="revMore" aria-expanded="false" aria-controls="revGrid" style="background:none; border:0; padding:0 0 5px; cursor:pointer; font-family:'Jost',system-ui,sans-serif; font-size:13px; letter-spacing:.18em; text-transform:uppercase; color:#0A3D4E; border-bottom:1px solid #B9CBCB;">Показать ещё отзывы</button>
+      <div style="display:flex; justify-content:center;">
+        <button type="button" class="tbtn" id="revMore" aria-expanded="false" aria-controls="revGrid">Показать ещё отзывы</button>
       </div>
-      <p style="margin:36px 0 0; font-size:17px; line-height:1.65; color:#2F4A50; max-width:760px; border-top:1px solid #B9CBCB; padding-top:28px;">Энергетические практики Андрея Захаревича используют бизнес-спикеры Радислав Гандапас, Влад Бермуда, Андрей Коломыц, Андрей Богокин, Александр Воронин, Тимур Тажетдинов.</p>
+      <p class="muted rv" style="margin:36px 0 0; max-width:var(--w-text); padding-top:26px; border-top:1px solid var(--line-soft); font-size:16px;">Энергетические практики Андрея Захаревича используют бизнес-спикеры Радислав Гандапас, Влад Бермуда, Андрей Коломыц, Андрей Богокин, Александр Воронин, Тимур Тажетдинов.</p>
     </div>
   </section>
 
-  <section class="reveal" id="price" style="position:relative; overflow:hidden; padding:130px 48px;">
-    <div style="position:absolute; inset:0; background:radial-gradient(48% 56% at 50% 20%, rgba(233,166,60,.18) 0%, rgba(55,174,178,.14) 38%, rgba(5,36,47,0) 74%);"></div>
-    <div style="position:relative; max-width:1240px; margin:0 auto;">
-      <h2 style="font-family:'Cormorant Garamond',Georgia,serif; font-weight:400; font-size:clamp(34px,4.4vw,56px); line-height:1.06; margin:0 0 18px; text-align:center;">Чем раньше — тем дешевле</h2>
-      <p style="margin:0 auto 56px; font-size:19px; color:#C0D5D6; max-width:560px; text-align:center;">Цена участия растёт по мере набора группы. Проживание и питание оплачиваются отдельно в ретрит-центре.</p>
+  <!-- ================= стоимость ================= -->
+  <section class="sec sec--pebble" id="price">
+    <div class="wrap">
+      <h2 class="rv" style="max-width:640px;">Чем раньше — тем дешевле</h2>
+      <p class="lead rv" style="max-width:600px; margin-bottom:32px;">Цена участия растёт по мере набора группы. Проживание и питание оплачиваются отдельно в ретрит-центре.</p>
 
-      <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:20px; margin-bottom:44px;">
-        <div class="wave" data-wave="2026-08-05" data-state="active" style="border:1px solid rgba(232,241,241,.18); padding:36px 32px; text-align:center;">
-          <div style="height:29px; margin-bottom:18px;">
-            
-              <div class="wave-tag" style="font-size:11px; letter-spacing:.22em; text-transform:uppercase; color:#E9A63C;">Действует сейчас</div>
-            
-          </div>
-          <div style="font-size:12px; letter-spacing:.2em; text-transform:uppercase; color:#85A5A8; margin-bottom:16px;">Первая волна</div>
-          <div style="font-family:'Cormorant Garamond',serif; font-size:56px; line-height:1; color:#E8F1F1; margin-bottom:14px;">70 000 ₽</div>
-          <div style="font-size:14px; color:#9FBCBE;">при оплате до 5 августа</div>
+      <div class="grid g3 rv stg" style="margin-bottom:32px;">
+        <div class="card wave" data-wave="2026-08-05" data-state="active" style="background:var(--foam);">
+          <div class="wave-tag"><span class="pulse" aria-hidden="true"></span>Действует сейчас</div>
+          <p class="eb" style="margin-bottom:6px;">Первая волна</p>
+          <div class="wave-price">70 000 ₽</div>
+          <div class="wave-deadline">при оплате до 5 августа</div>
         </div>
-        <div class="wave" data-wave="2026-08-15" data-state="future" style="border:1px solid rgba(232,241,241,.18); padding:36px 32px; text-align:center;">
-          <div style="height:29px; margin-bottom:18px;">
-            
-              <div class="wave-tag" style="font-size:11px; letter-spacing:.22em; text-transform:uppercase; color:#E9A63C;">Действует сейчас</div>
-            
-          </div>
-          <div style="font-size:12px; letter-spacing:.2em; text-transform:uppercase; color:#85A5A8; margin-bottom:16px;">Вторая волна</div>
-          <div style="font-family:'Cormorant Garamond',serif; font-size:48px; line-height:1; color:#C0D5D6; margin-bottom:14px;">100 000 ₽</div>
-          <div style="font-size:14px; color:#6D8D91;">при оплате до 15 августа</div>
+        <div class="card wave wave--dim" data-wave="2026-08-15" data-state="future" style="background:var(--foam);">
+          <div class="wave-tag"><span class="pulse" aria-hidden="true"></span>Действует сейчас</div>
+          <p class="eb" style="margin-bottom:6px;">Вторая волна</p>
+          <div class="wave-price">100 000 ₽</div>
+          <div class="wave-deadline">при оплате до 15 августа</div>
         </div>
-        <div class="wave" data-wave="2026-08-20" data-state="future" style="border:1px solid rgba(232,241,241,.18); padding:36px 32px; text-align:center;">
-          <div style="height:29px; margin-bottom:18px;">
-            
-              <div class="wave-tag" style="font-size:11px; letter-spacing:.22em; text-transform:uppercase; color:#E9A63C;">Действует сейчас</div>
-            
-          </div>
-          <div style="font-size:12px; letter-spacing:.2em; text-transform:uppercase; color:#85A5A8; margin-bottom:16px;">Третья волна</div>
-          <div style="font-family:'Cormorant Garamond',serif; font-size:48px; line-height:1; color:#C0D5D6; margin-bottom:14px;">120 000 ₽</div>
-          <div style="font-size:14px; color:#6D8D91;">при оплате до 20 августа</div>
+        <div class="card wave wave--dim" data-wave="2026-08-20" data-state="future" style="background:var(--foam);">
+          <div class="wave-tag"><span class="pulse" aria-hidden="true"></span>Действует сейчас</div>
+          <p class="eb" style="margin-bottom:6px;">Третья волна</p>
+          <div class="wave-price">120 000 ₽</div>
+          <div class="wave-deadline">при оплате до 20 августа</div>
         </div>
       </div>
-      <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr)); gap:1px; margin-bottom:44px;">
-        <div style="background:#05242F; box-shadow:0 0 0 1px rgba(232,241,241,.14); padding:24px 26px; font-size:16px; color:#CFDFDF;">Участие в рассрочку</div>
-        <div style="background:#05242F; box-shadow:0 0 0 1px rgba(232,241,241,.14); padding:24px 26px; font-size:16px; color:#CFDFDF;">Индивидуальная консультация</div>
-        <div style="background:#05242F; box-shadow:0 0 0 1px rgba(232,241,241,.14); padding:24px 26px; font-size:16px; color:#CFDFDF;">Работа с наставником</div>
+
+      <div class="grid g3 rv" style="margin-bottom:36px;">
+        <div class="card" style="background:var(--foam);"><p>Участие в рассрочку</p></div>
+        <div class="card" style="background:var(--foam);"><p>Индивидуальная консультация</p></div>
+        <div class="card" style="background:var(--foam);"><p>Работа с наставником</p></div>
       </div>
 
-      <div style="display:grid; grid-template-columns:1fr 1px 1fr; gap:56px; border-top:1px solid rgba(232,241,241,.14); padding-top:48px;">
+      <div class="grid g2 rv" style="padding-top:32px; border-top:1px solid var(--line); gap:32px;">
         <div>
-          <div style="font-size:11px; letter-spacing:.24em; text-transform:uppercase; color:#E9A63C; margin-bottom:22px;">Входит в стоимость участия</div>
-          <ul style="list-style:none; padding:0; margin:0; display:grid; gap:12px; font-size:16px; color:#CFDFDF;">
+          <p class="eb">Входит в стоимость участия</p>
+          <ul style="list-style:none; padding:0; margin:0; display:grid; gap:10px; font-size:16px; color:var(--sea-ink);">
             <li>Все групповые сессии с автором — 7 дней</li>
             <li>Индивидуальный разбор стратегии</li>
             <li>Утренние и вечерние практики</li>
             <li>Материалы и поддержка группы после ретрита</li>
           </ul>
         </div>
-        <div style="background:rgba(232,241,241,.14); width:1px;"></div>
         <div>
-          <div style="font-size:11px; letter-spacing:.24em; text-transform:uppercase; color:#85A5A8; margin-bottom:22px;">Оплачивается отдельно</div>
-          <ul style="list-style:none; padding:0; margin:0 0 28px; display:grid; gap:12px; font-size:16px; color:#9FBCBE;">
+          <p class="eb">Оплачивается отдельно</p>
+          <ul style="list-style:none; padding:0; margin:0 0 24px; display:grid; gap:10px; font-size:16px; color:var(--sea-ink);">
             <li>Проживание — от 1 875 ₽ с человека в сутки</li>
             <li>Питание — 1 800 ₽ в день, трёхразовое в кафе при центре</li>
             <li>Дорога до Вардане</li>
           </ul>
-          <div style="border:1px solid rgba(233,166,60,.3); padding:22px 24px; background:rgba(9,63,82,.3);">
-            <div style="font-size:11px; letter-spacing:.2em; text-transform:uppercase; color:#E9A63C; margin-bottom:12px;">Пример полного бюджета</div>
-            <p style="margin:0; font-size:16px; line-height:1.6; color:#CFDFDF;">Участие 70 000 ₽ + двухместный номер 7 ночей 14 000 ₽ + питание 12 600 ₽ = <strong style="font-weight:500; color:#E8F1F1;">96 600 ₽</strong> на человека.</p>
+          <div class="card" style="background:var(--foam);">
+            <p class="eb">Пример полного бюджета</p>
+            <p>Участие 70 000 ₽ + двухместный номер 7 ночей 14 000 ₽ + питание 12 600 ₽ = <strong style="font-weight:500; color:var(--ink);">96 600 ₽</strong> на человека.</p>
           </div>
         </div>
       </div>
     </div>
   </section>
 
-  <section class="reveal" style="background:#E9EFEF; color:#06242E; padding:120px 48px;">
-    <div style="max-width:1240px; margin:0 auto;">
-      <h2 style="font-family:'Cormorant Garamond',Georgia,serif; font-weight:400; font-size:clamp(34px,4.4vw,56px); line-height:1.06; margin:0 0 56px; max-width:620px;">О чём обычно спрашивают до оплаты</h2>
-      <div style="display:grid; gap:0; max-width:900px;">
-        <div style="padding:28px 0; border-top:1px solid #CBD9D9;">
-          <strong style="display:block; font-weight:500; font-size:19px; margin-bottom:10px;">Это не секта?</strong>
-          <p style="margin:0; font-size:17px; line-height:1.65; color:#405A5F;">Нет. Полное расписание известно заранее, из любой практики можно выйти, обязательных ритуалов нет, допродаж на месте не бывает.</p>
+  <!-- ================= FAQ ================= -->
+  <section class="sec">
+    <div class="wrap">
+      <h2 class="rv" style="max-width:620px; margin-bottom:32px;">О чём обычно спрашивают до оплаты</h2>
+      <div class="faq rv" style="max-width:900px;">
+        <div>
+          <h3>Это не секта?</h3>
+          <p>Нет. Полное расписание известно заранее, из любой практики можно выйти, обязательных ритуалов нет, допродаж на месте не бывает.</p>
         </div>
-        <div style="padding:28px 0; border-top:1px solid #CBD9D9;">
-          <strong style="display:block; font-weight:500; font-size:19px; margin-bottom:10px;">Кому не подойдёт?</strong>
-          <p style="margin:0; font-size:17px; line-height:1.65; color:#405A5F;">Часть практик имеет противопоказания: сердечно-сосудистые заболевания в острой фазе, беременность, состояния, требующие постоянного наблюдения. Перед заездом заполняется анкета здоровья — точный список согласуем с профильным специалистом.</p>
+        <div>
+          <h3>Кому не подойдёт?</h3>
+          <p>Часть практик имеет противопоказания: сердечно-сосудистые заболевания в острой фазе, беременность, состояния, требующие постоянного наблюдения. Перед заездом заполняется анкета здоровья — точный список согласуем с профильным специалистом.</p>
         </div>
-        <div style="padding:28px 0; border-top:1px solid #CBD9D9;">
-          <strong style="display:block; font-weight:500; font-size:19px; margin-bottom:10px;">Можно ли работать во время ретрита?</strong>
-          <p style="margin:0; font-size:17px; line-height:1.65; color:#405A5F;">Да, с 14:00 до 17:00 программы нет. Но чем меньше вы работаете, тем выше результат — это наблюдение по семи прошлым потокам.</p>
+        <div>
+          <h3>Можно ли работать во время ретрита?</h3>
+          <p>Да, свободное время – после обеда до 16:00. Но чем меньше вы работаете, тем выше результат.</p>
         </div>
-        <div style="padding:28px 0; border-top:1px solid #CBD9D9;">
-          <strong style="display:block; font-weight:500; font-size:19px; margin-bottom:10px;">Что если придётся отменить поездку?</strong>
-          <p style="margin:0; font-size:17px; line-height:1.65; color:#405A5F;">Условия возврата и переноса организаторы обсуждают индивидуально. Зафиксируйте договорённости до оплаты — письмом или по телефону +7 905 725-97-97.</p>
+        <div>
+          <h3>Ночные практики до трёх часов ночи – я не высплюсь?</h3>
+          <p>Ночные процессы проходят через день, а не ежедневно. На следующее утро – мягкий режим без ранних практик. Участники прошлых потоков отмечают, что при высоком уровне энергии восстанавливаются быстрее обычного, но режим вы регулируете сами – участие в каждой практике добровольное.</p>
         </div>
-        <div style="padding:28px 0; border-top:1px solid #CBD9D9; border-bottom:1px solid #CBD9D9;">
-          <strong style="display:block; font-weight:500; font-size:19px; margin-bottom:10px;">Есть рассрочка?</strong>
-          <p style="margin:0; font-size:17px; line-height:1.65; color:#405A5F;">Да. Отметьте это в заявке — организаторы расскажут срок, размер первого взноса и условия партнёра.</p>
+        <div>
+          <h3>Что если придётся отменить поездку?</h3>
+          <p>Условия возврата и переноса организаторы обсуждают индивидуально. Зафиксируйте договорённости до оплаты — письмом или по телефону +7 905 725-97-97.</p>
         </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="reveal" style="position:relative; overflow:hidden; padding:130px 48px;">
-    <div style="position:absolute; inset:0; background:radial-gradient(46% 58% at 30% 44%, rgba(55,174,178,.22) 0%, rgba(5,36,47,0) 70%);"></div>
-    <div style="position:relative; max-width:1240px; margin:0 auto;">
-      <div style="max-width:820px;">
-        <div style="font-size:11px; letter-spacing:.28em; text-transform:uppercase; color:#85A5A8; margin-bottom:36px;">Слово автора</div>
-        <blockquote style="margin:0 0 36px; font-family:'Cormorant Garamond',Georgia,serif; font-weight:400; font-size:clamp(26px,3.2vw,42px); line-height:1.24; color:#E8F1F1;">В энергоактивной психологии нет ничего сверхъестественного или неестественного. Это не особая практика, отдельная от всего происходящего в жизни, — это особый способ жизни.</blockquote>
-        <p style="margin:0 0 22px; font-size:18px; line-height:1.7; color:#C0D5D6;">Всё то, что вы и так делаете — дышите, ходите, спите, говорите, управляете, планируете, распределяете, — вы можете делать во много раз эффективнее. Помогая себе и близким быть здоровыми и счастливыми в любой ситуации. Вот, собственно, и весь секрет.</p>
-        <p style="margin:0 0 32px; font-size:18px; line-height:1.7; color:#C0D5D6;">Если чувствуете, что способны в своей жизни на большее, но нужен толчок для прорыва, — жду вас в Вардане.</p>
-        <div style="display:flex; align-items:center; gap:18px;">
-          <span style="width:44px; height:1px; background:rgba(233,166,60,.6);"></span>
-          <span style="font-size:14px; letter-spacing:.16em; text-transform:uppercase; color:#E9A63C;">Андрей Захаревич</span>
+        <div>
+          <h3>Есть рассрочка?</h3>
+          <p>Да. Отметьте это в заявке — организаторы расскажут срок, размер первого взноса и условия партнёра.</p>
         </div>
       </div>
     </div>
   </section>
 
-  <section class="reveal" id="form" style="position:relative; overflow:hidden; padding:130px 48px 110px;">
-    <div style="position:absolute; inset:0; background:radial-gradient(52% 62% at 50% 36%, rgba(55,174,178,.3) 0%, rgba(5,36,47,0) 72%);"></div>
-    <div style="position:absolute; left:50%; top:34%; width:560px; height:560px; margin:-280px 0 0 -280px; border-radius:50%; border:1px solid rgba(233,166,60,.16);"></div>
-    <div style="position:relative; max-width:1240px; margin:0 auto;">
-      <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,400px),1fr)); gap:72px; align-items:start;">
-        <div style="max-width:560px;">
-          <div style="font-size:11px; letter-spacing:.28em; text-transform:uppercase; color:#7FC3C6; margin-bottom:26px;">Заявка</div>
-          <h2 style="font-family:'Cormorant Garamond',Georgia,serif; font-weight:400; font-size:clamp(34px,4.4vw,56px); line-height:1.05; margin:0 0 22px;">Забронировать место в группе</h2>
-          <p style="margin:0 0 40px; font-size:19px; line-height:1.6; color:#C0D5D6;">Это ещё не оплата. Оставьте имя и контакт — расскажем условия, ответим на вопросы и пришлём полное расписание.</p>
-          <form id="leadForm" novalidate style="display:grid; gap:16px; max-width:480px;">
+  <!-- ================= слово автора ================= -->
+  <section class="sec sec--pebble">
+    <div class="wrap">
+      <div class="rv" style="max-width:820px;">
+        <p class="eb">Слово автора</p>
+        <blockquote class="pr" style="margin:0 0 26px; font-size:26px; line-height:1.26;">В энергоактивной психологии нет ничего сверхъестественного или неестественного. Это не особая практика, отдельная от всего происходящего в жизни, — это особый способ жизни.</blockquote>
+        <p class="muted">Всё то, что вы и так делаете — дышите, ходите, спите, говорите, управляете, планируете, распределяете, — вы можете делать во много раз эффективнее. Помогая себе и близким быть здоровыми и счастливыми в любой ситуации. Вот, собственно, и весь секрет.</p>
+        <p class="muted" style="margin-bottom:22px;">Если чувствуете, что способны в своей жизни на большее, но нужен толчок для прорыва, — жду вас в Вардане.</p>
+        <p class="eb" style="margin:0;">Андрей Захаревич</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= заявка ================= -->
+  <section class="sec sec--ink" id="form">
+    <div class="wrap">
+      <div class="grid rv" style="gap:40px;" id="formGrid">
+        <div>
+          <p class="eb">Заявка</p>
+          <h2>Забронировать место в группе</h2>
+          <p style="max-width:520px; color:rgba(246,242,236,.85);">Это ещё не оплата. Оставьте имя и контакт — расскажем условия, ответим на вопросы и пришлём полное расписание.</p>
+          <p style="display:flex; align-items:center; gap:10px; color:var(--gold); font-weight:500; margin-bottom:28px;">
+            <span class="pulse" aria-hidden="true"></span>Первая волна 70 000 ₽ — при оплате до 5 августа
+          </p>
+          <form id="leadForm" novalidate style="display:grid; gap:14px; max-width:480px;">
             <label for="lf-name" class="sr-only">Как к вам обращаться</label>
             <input type="text" id="lf-name" name="name" autocomplete="name" placeholder="Как к вам обращаться" required>
             <label for="lf-contact" class="sr-only">Телефон или телеграм</label>
             <input type="text" id="lf-contact" name="contact" autocomplete="tel" placeholder="Телефон или телеграм" required>
             <div class="hp"><label for="lf-company">Компания</label><input type="text" id="lf-company" name="company" tabindex="-1" autocomplete="off"></div>
-            <button type="submit" id="lf-submit" class="btn-sun">Отправить заявку</button>
-            <p style="margin:6px 0 0; font-size:13px; line-height:1.6; color:#6D8D91;">Нажимая кнопку, вы соглашаетесь с <a href="./privacy" style="color:#9FBCBE; border-bottom:1px solid rgba(232,241,241,.3);">обработкой персональных данных</a>.</p>
+            <button type="submit" id="lf-submit" class="btn">Отправить заявку</button>
+            <p style="margin:4px 0 0; font-size:14px; line-height:1.55; color:rgba(246,242,236,.7);">Нажимая кнопку, вы соглашаетесь с <a href="./privacy" style="border-bottom:1px solid rgba(246,242,236,.4);">обработкой персональных данных</a>.</p>
             <p id="lf-status" class="form-status" role="status" aria-live="polite"></p>
-          </form>        </div>
-        <aside style="border:1px solid rgba(232,241,241,.18); padding:32px 30px; background:rgba(8,51,68,.6);">
-          
-          <strong style="display:block; font-weight:500; font-size:19px; margin-bottom:8px; color:#E8F1F1;">Юлия</strong>
-          <div style="font-size:14px; color:#85A5A8; margin-bottom:20px;">Организатор, бронирование номеров</div>
-          <p style="margin:0 0 22px; font-size:16px; line-height:1.6; color:#9FBCBE;">Отвечаю в течение рабочего дня. Можно спросить что угодно до оплаты — включая противопоказания и условия возврата.</p>
-          <div style="border-top:1px solid rgba(232,241,241,.14); padding-top:20px; font-family:'IBM Plex Mono',monospace; font-size:15px; color:#E9A63C;"><a href="tel:+79057259797" style="color:#E9A63C;">+7 905 725-97-97</a></div>
+          </form>
+        </div>
+        <aside style="border:1px solid rgba(246,242,236,.24); border-radius:var(--r); padding:28px 26px; align-self:start;">
+          <strong style="display:block; font-weight:500; font-size:19px; margin-bottom:6px;">Юлия</strong>
+          <div style="font-size:15px; color:rgba(246,242,236,.7); margin-bottom:18px;">Организатор, бронирование номеров</div>
+          <p style="color:rgba(246,242,236,.85); font-size:16px;">Отвечаю в течение рабочего дня. Можно спросить что угодно до оплаты — включая противопоказания и условия возврата.</p>
+          <div style="margin-top:18px; padding-top:18px; border-top:1px solid rgba(246,242,236,.24);">
+            <a href="tel:+79057259797" style="color:var(--gold); font-weight:500; font-size:17px;">+7 905 725-97-97</a>
+          </div>
         </aside>
       </div>
     </div>
   </section>
 
-  <footer style="border-top:1px solid rgba(232,241,241,.12); padding:44px 48px; display:flex; flex-wrap:wrap; gap:20px; justify-content:space-between; align-items:center; font-size:13px; color:#8FADB0; letter-spacing:.06em;">
-    <span style="letter-spacing:.24em; text-transform:uppercase; color:#E9A63C;">Homo Unicum</span>
+  <footer style="padding:32px var(--px); border-top:1px solid var(--line-soft); display:flex; flex-wrap:wrap; gap:14px 24px; justify-content:space-between; align-items:center; font-size:14px; color:var(--sea);">
+    <span class="pr" style="color:var(--ink); font-size:15px;">Homo Unicum</span>
     <span>Вардане, Сочи · 20—27 августа 2026</span>
-    <span><a href="https://homounicum.org/public_offer" target="_blank" rel="noopener" style="color:#8FADB0;">Оферта</a> · <a href="./privacy" style="color:#8FADB0;">Политика обработки данных</a></span>
+    <span><a href="https://homounicum.org/public_offer" target="_blank" rel="noopener">Оферта</a> · <a href="./privacy">Политика обработки данных</a></span>
   </footer>
 
-</div>
 </main>
 
-<div class="mobile-bar" id="mobileBar"><a href="#form">Забронировать место</a></div>
+<div class="mobile-bar" id="mobileBar"><a class="btn" href="#form">Забронировать место</a></div>
 
 <script type="application/ld+json">
 {
@@ -913,6 +1155,8 @@ a.sr-only:focus { left:0; top:0; width:auto; height:auto; z-index:40;
 </script>
 
 <script>
+var REDUCE = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
 /* ---------- бургер ---------- */
 (function(){
   var b = document.getElementById('burger'), p = document.getElementById('navPanel');
@@ -927,15 +1171,39 @@ a.sr-only:focus { left:0; top:0; width:auto; height:auto; z-index:40;
   }); });
 })();
 
-/* ---------- появление секций ---------- */
+/* ---------- появление: play-once + фолбэк ----------
+   Если IntersectionObserver не отработал (фоновая вкладка, печать, бот) —
+   через 2.5s показываем всё, чтобы страница не осталась пустой.          */
 (function(){
-  var els = document.querySelectorAll('.reveal');
-  var noMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (noMotion || !('IntersectionObserver' in window)) { els.forEach(function(e){ e.classList.add('in'); }); return; }
+  var els = [].slice.call(document.querySelectorAll('.rv,.hr'));
+  function showAll(){ els.forEach(function(e){ e.classList.add('in'); }); }
+  if (REDUCE || !('IntersectionObserver' in window)) { showAll(); return; }
   var io = new IntersectionObserver(function(en){ en.forEach(function(e){
     if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
-  }); }, { rootMargin:'0px 0px -6% 0px', threshold:0.04 });
-  els.forEach(function(e, i){ e.style.transitionDelay = (i % 3) * 60 + 'ms'; io.observe(e); });
+  }); }, { rootMargin:'0px 0px -8% 0px', threshold:0.08 });
+  els.forEach(function(e){ io.observe(e); });
+  setTimeout(function(){ if (document.visibilityState !== 'visible') showAll(); }, 2500);
+  window.addEventListener('beforeprint', showAll);
+})();
+
+/* ---------- счётчики: разметка уже содержит финальное число ---------- */
+(function(){
+  var els = [].slice.call(document.querySelectorAll('.count'));
+  if (!els.length || REDUCE || !('IntersectionObserver' in window)) return;
+  function run(el){
+    var to = parseFloat(el.dataset.to), t0 = null, dur = 900;
+    function step(ts){
+      if (t0 === null) t0 = ts;
+      var t = Math.min((ts - t0) / dur, 1);
+      el.textContent = Math.round(to * (1 - Math.pow(1 - t, 3)));
+      if (t < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+  var io = new IntersectionObserver(function(en){ en.forEach(function(e){
+    if (e.isIntersecting) { run(e.target); io.unobserve(e.target); }
+  }); }, { threshold:0.3 });
+  els.forEach(function(e){ io.observe(e); });
 })();
 
 /* ---------- «как устроен метод» ---------- */
@@ -947,7 +1215,7 @@ a.sr-only:focus { left:0; top:0; width:auto; height:auto; z-index:40;
     box.hidden = !open;
     btn.setAttribute('aria-expanded', String(open));
     btn.querySelector('[data-label]').textContent = open ? 'Свернуть' : 'Как устроен метод';
-    btn.querySelector('[data-sign]').textContent = open ? '\u2212' : '+';
+    btn.querySelector('[data-sign]').textContent = open ? '−' : '+';
   });
 })();
 
@@ -958,9 +1226,9 @@ a.sr-only:focus { left:0; top:0; width:auto; height:auto; z-index:40;
   var now = new Date(), current = null;
   waves.forEach(function(w){
     var dl = new Date(w.dataset.wave + 'T23:59:59+03:00');
-    if (dl < now) { w.dataset.state = 'past'; }
-    else if (!current) { current = w; w.dataset.state = 'active'; }
-    else { w.dataset.state = 'future'; }
+    if (dl < now) { w.dataset.state = 'past'; w.classList.add('wave--dim'); }
+    else if (!current) { current = w; w.dataset.state = 'active'; w.classList.remove('wave--dim'); }
+    else { w.dataset.state = 'future'; w.classList.add('wave--dim'); }
   });
 })();
 
@@ -988,19 +1256,44 @@ a.sr-only:focus { left:0; top:0; width:auto; height:auto; z-index:40;
   });
 })();
 
-/* ---------- мобильная полоса CTA ---------- */
+/* ---------- прокрутка: шапка, шкала дня, параллакс хиро, полоса CTA ---------- */
 (function(){
-  var bar = document.getElementById('mobileBar'), form = document.getElementById('form');
-  var hero = document.querySelector('section');
-  if (!bar || !form || !hero) return;
-  var upd = function(){
-    var pastHero = hero.getBoundingClientRect().bottom < 0;
-    var formNear = form.getBoundingClientRect().top < window.innerHeight * 0.75;
-    bar.classList.toggle('show', pastHero && !formNear);
-  };
-  upd();
-  window.addEventListener('scroll', upd, { passive:true });
-  window.addEventListener('resize', upd, { passive:true });
+  var hd    = document.getElementById('hd');
+  var day   = document.getElementById('day');
+  var fill  = document.getElementById('railFill');
+  var img   = document.getElementById('heroImg');
+  var hero  = document.querySelector('.hero');
+  var bar   = document.getElementById('mobileBar');
+  var form  = document.getElementById('form');
+  var ticking = false;
+
+  function frame(){
+    ticking = false;
+    var y = window.pageYOffset || document.documentElement.scrollTop;
+
+    if (hd) hd.classList.toggle('scrolled', y > 40);
+
+    if (day && fill && !REDUCE) {
+      var r = day.getBoundingClientRect();
+      var p = (window.innerHeight * 0.7 - r.top) / r.height;
+      fill.style.transform = 'scaleY(' + Math.max(0, Math.min(1, p)) + ')';
+    }
+
+    if (img && hero && !REDUCE) {
+      var h = hero.offsetHeight;
+      img.style.transform = 'translate3d(0,' + (Math.min(y, h) * 0.22) + 'px,0)';
+    }
+
+    if (bar && form && hero) {
+      var pastHero = hero.getBoundingClientRect().bottom < 0;
+      var formNear = form.getBoundingClientRect().top < window.innerHeight * 0.8;
+      bar.classList.toggle('show', pastHero && !formNear);
+    }
+  }
+  function onScroll(){ if (!ticking) { ticking = true; requestAnimationFrame(frame); } }
+  frame();
+  window.addEventListener('scroll', onScroll, { passive:true });
+  window.addEventListener('resize', onScroll, { passive:true });
 })();
 
 /* ---------- лид-форма → Telegram через Cloudflare Worker ---------- */
