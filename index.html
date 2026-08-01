@@ -188,6 +188,11 @@ h3, .h3 { font-size:20px; line-height:1.26; margin:0 0 10px; }
       filter:saturate(1.12) contrast(1.04) brightness(1.03); }
 .ph::after { content:''; position:absolute; inset:0; background:rgba(14,124,134,.06); pointer-events:none; }
 .ph img { width:100%; height:100%; object-fit:cover; }
+/* без тонирования: на уже тёплом любительском кадре saturate(1.12) тянет
+   цвет дальше и подчёркивает артефакты сжатия — снимок кажется хуже,
+   чем он есть */
+.ph--plain { filter:none; }
+.ph--plain::after { display:none; }
 .bleed { position:relative; margin:0; height:52vh; min-height:280px; }
 @media (min-width:1200px) { .bleed { height:620px; } }
 .bleed .ph { position:absolute; inset:0; border-radius:0; }
@@ -1074,7 +1079,7 @@ a.sr-only:focus { left:0; top:0; width:auto; height:auto; z-index:60;
       <p class="muted rv" style="max-width:var(--w-text); margin-bottom:32px;">Субтропики Лазаревского района: галечные пляжи, дендрарий, озёра и водопады. Закрытая территория на склоне над морем: три корпуса, бассейн, беседки и террасы, где проходят дневные сессии. Спуск к галечному пляжу — семь минут пешком. Во всех номерах кондиционер, холодильник, душ; охраняемая парковка.</p>
 
       <div class="collage stg">
-        <div class="ph"><img src="photos/r/g-circle.webp" alt="Круг группы на террасе с видом на море" width="1400" height="1400" loading="lazy" decoding="async" style="object-position:center 45%;"></div>
+        <div class="ph ph--plain"><img src="photos/r/g-terrace.webp" alt="Круг группы на террасе с видом на море" width="1190" height="1400" loading="lazy" decoding="async" style="object-position:center 45%;"></div>
         <div class="ph"><img src="photos/r/v-pool.webp" alt="Бассейн и территория центра" width="1600" height="1000" loading="lazy" decoding="async"></div>
         <div class="ph"><img src="photos/r/v-gazebo.webp" alt="Беседка для практик на территории центра" width="1200" height="900" loading="lazy" decoding="async"></div>
       </div>
