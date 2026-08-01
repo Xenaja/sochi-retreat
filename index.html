@@ -497,6 +497,13 @@ h3, .h3 { font-size:20px; line-height:1.26; margin:0 0 10px; }
 .wave-deadline { font-size:15px; color:var(--sea-ink); }
 .wave[data-state="active"] .wave-deadline { color:var(--gold-ink); }
 
+/* ---- список «Ведь это» ----
+   Не grid: там строка тянется по самой высокой ячейке, и рядом с двухстрочным
+   пунктом сосед оставляет под собой дыру. В колонках строки не связаны. */
+.perks > div { margin-bottom:14px; break-inside:avoid; }
+.perks > div:last-child { margin-bottom:0; }
+@media (min-width:768px) { .perks { column-count:2; column-gap:56px; } }
+
 /* ---- врезки CTA ---- */
 .cta-center { display:flex; justify-content:center; }
 .cta-center .btn { min-width:280px; }
@@ -996,7 +1003,7 @@ a.sr-only:focus { left:0; top:0; width:auto; height:auto; z-index:60;
       <h2 class="rv" style="max-width:780px;">Совместите тренинг и отдых на море</h2>
       <p class="lead rv" style="max-width:640px; margin-bottom:32px;">Что может быть лучше, чем соединить трансформационный тренинг с отдыхом на жемчужине черноморского побережья России.</p>
       <p class="eb rv">Ведь это</p>
-      <div class="grid g2 stg" style="max-width:1040px;">
+      <div class="perks stg" style="max-width:1040px;">
         <div style="display:grid; grid-template-columns:16px 1fr; gap:12px; font-size:17px; line-height:1.5;"><span class="pr" style="color:var(--sea);">—</span><span>Тёплое и ласковое море, дендрарий, озёра и водопады</span></div>
         <div style="display:grid; grid-template-columns:16px 1fr; gap:12px; font-size:17px; line-height:1.5;"><span class="pr" style="color:var(--sea);">—</span><span>Уникальный климат — субтропический полувлажный</span></div>
         <div style="display:grid; grid-template-columns:16px 1fr; gap:12px; font-size:17px; line-height:1.5;"><span class="pr" style="color:var(--sea);">—</span><span>Потрясающие места для практик — галечные пляжи</span></div>
