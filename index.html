@@ -256,8 +256,6 @@ h3, .h3 { font-size:20px; line-height:1.26; margin:0 0 10px; }
 .hero-list span { font-family:'Prata',serif; font-size:19px; line-height:1; color:var(--sand); }
 .hero-cta { width:100%; margin-top:8px; }
 @media (min-width:768px) { .hero-cta { width:auto; align-self:flex-start; padding-left:44px; padding-right:44px; } }
-.hero-note { display:none; margin:-14px 0 0; font-size:15px; color:var(--dim); }
-@media (min-width:768px) { .hero-note { display:block; } }
 
 /* ---- полоса ключевых цифр ---- */
 .nums { display:grid; grid-template-columns:repeat(2,1fr); gap:26px 16px; padding-top:26px; }
@@ -326,27 +324,17 @@ h3, .h3 { font-size:20px; line-height:1.26; margin:0 0 10px; }
 .slot h3 { margin:0; }
 .slot p { margin:0; color:var(--sea-ink); font-size:16px; }
 @media (min-width:768px) {
-  .slot > summary, .slot .slot-wrap { display:grid; grid-template-columns:128px minmax(0,1fr); gap:6px 24px; padding:26px 0; }
+  /* display:contents раскладывает время и заголовок по колонкам summary.
+     Всё, что должно занять вторую колонку целиком, живёт в .acc-panel —
+     иначе третий элемент проваливается в узкую колонку времени. */
+  .slot > summary { display:grid; grid-template-columns:128px minmax(0,1fr); gap:6px 24px; padding:26px 0; }
   .slot .slot-head { display:contents; }
   .slot .acc-panel { padding:0 0 26px 152px; }
 }
 @media (min-width:1200px) {
-  .slot > summary, .slot .slot-wrap { grid-template-columns:152px minmax(0,1fr); gap:6px 32px; padding:30px 0; }
+  .slot > summary { grid-template-columns:152px minmax(0,1fr); gap:6px 32px; padding:30px 0; }
   .slot .acc-panel { padding-left:184px; padding-bottom:30px; }
 }
-.slot--ink {
-  background:var(--ink); color:var(--foam); border-top:0; border-radius:var(--r);
-  margin:14px 0; padding:26px 22px;
-}
-.slot--ink .slot-t { color:var(--gold); }
-.slot--ink p, .slot--ink h3 { color:var(--foam); }
-.slot--ink h3 { margin-bottom:8px; }
-@media (max-width:767px) {
-  /* единственная тёмная карточка выходит за колонку — мимо неё не пройти */
-  .slot--ink { margin-left:calc(-1 * (var(--px) + var(--rail))); margin-right:calc(-1 * var(--px));
-    border-radius:0; padding-left:var(--px); padding-right:var(--px); }
-}
-@media (min-width:768px) { .slot--ink { padding:6px 30px 24px; margin:16px 0; } }
 
 /* ============================================================
    Десктопные блоки варианта 4a
@@ -435,6 +423,8 @@ h3, .h3 { font-size:20px; line-height:1.26; margin:0 0 10px; }
 .cta-band { display:grid; gap:16px; align-items:center; }
 @media (min-width:768px) { .cta-band { grid-template-columns:minmax(0,1fr) auto; gap:32px; } }
 .cta-band .btn { justify-self:start; }
+.cta-center { display:flex; justify-content:center; }
+.cta-center .btn { min-width:280px; }
 .cta-deadline { font-weight:500; color:var(--gold-ink); }
 
 /* ---- FAQ ---- */
@@ -547,7 +537,6 @@ a.sr-only:focus { left:0; top:0; width:auto; height:auto; z-index:60;
           <li><span>+</span>кратно увеличить доходы</li>
         </ul>
         <a class="btn hero-cta" href="#form">Забронировать место</a>
-        <p class="hero-note">16 мест в группе · заезд 20.08 к 18:00</p>
       </div>
     </div>
   </section>
@@ -560,7 +549,7 @@ a.sr-only:focus { left:0; top:0; width:auto; height:auto; z-index:60;
         <div><div class="num"><span class="count" data-to="7">7</span></div><p class="eb">дней</p></div>
         <div><div class="num num--gold"><span class="count" data-to="16">16</span></div><p class="eb">мест в группе</p></div>
         <div><div class="num"><span class="count" data-to="40">40</span></div><p class="eb">лет практики автора</p></div>
-        <div><div class="num">20.08</div><p class="eb">заезд</p></div>
+        <div><div class="num"><span class="num--gold">20</span>.08</div><p class="eb">заезд</p></div>
       </div>
     </div>
   </section>
@@ -569,7 +558,6 @@ a.sr-only:focus { left:0; top:0; width:auto; height:auto; z-index:60;
   <section class="sec">
     <div class="wrap">
       <div class="text rv" style="margin-bottom:40px;">
-        <p class="eb">Начнём с главного</p>
         <h2>Энергия находится везде</h2>
         <p class="lead">По сути, вокруг нас — бесконечный источник энергии.</p>
       </div>
@@ -765,8 +753,7 @@ a.sr-only:focus { left:0; top:0; width:auto; height:auto; z-index:60;
         <div><h3>Ощущение контроля</h3><p>Снова чувствуете себя хозяином своей жизни, а не заложником обстоятельств.</p></div>
       </div>
 
-      <div class="cta-band rv" style="margin-top:44px;">
-        <p style="margin:0;">Группа набирается один раз в год — 16 мест.</p>
+      <div class="cta-center rv" style="margin-top:44px;">
         <a class="btn" href="#form">Забронировать место</a>
       </div>
     </div>
@@ -838,13 +825,13 @@ a.sr-only:focus { left:0; top:0; width:auto; height:auto; z-index:60;
           <div class="acc-panel"><p>До 22:00. Энергоактивное дыхание и практики погружения в медитативное состояние.</p></div>
         </details>
 
-        <!-- крючок блока: всегда раскрыт, в аккордеон не сворачивается -->
-        <div class="slot slot--ink rv">
-          <div class="slot-wrap">
+        <details class="acc slot rv">
+          <summary>
             <div class="slot-head"><div class="slot-t">23:00</div><h3>Ночные трансформационные процессы</h3></div>
-            <p>До 03:00, через день. Авторская методика Андрея Захаревича: набор энергии и формирование высокого энергетического потенциала. На следующее утро после ночной практики – мягкий режим.</p>
-          </div>
-        </div>
+            <span class="acc-sign" aria-hidden="true"></span>
+          </summary>
+          <div class="acc-panel"><p>До 03:00, через день. Авторская методика Андрея Захаревича: набор энергии и формирование высокого энергетического потенциала. На следующее утро после ночной практики – мягкий режим.</p></div>
+        </details>
       </div>
 
       <div class="rv" style="margin-top:48px; padding-top:36px; border-top:1px solid var(--line-soft);">
