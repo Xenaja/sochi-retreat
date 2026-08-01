@@ -383,6 +383,16 @@ h3, .h3 { font-size:20px; line-height:1.26; margin:0 0 10px; }
 .reg li { padding:14px 0; border-top:1px solid var(--line-soft); color:var(--sea-ink); font-size:16px; }
 .reg li:last-child { border-bottom:1px solid var(--line-soft); }
 
+/* ---- видеоприглашение: вертикальный кадр 9:16 ---- */
+.inv { display:grid; gap:28px; align-items:center; }
+@media (min-width:768px)  { .inv { grid-template-columns:minmax(0,1fr) 280px; gap:48px; } }
+@media (min-width:1200px) { .inv { grid-template-columns:minmax(0,1fr) 320px; gap:72px; } }
+/* height:auto обязателен: атрибуты width/height у <video> — презентационная
+   подсказка CSS, при не-auto высоте aspect-ratio игнорируется и кадр
+   растягивается на все интринсик-1280px */
+.inv-video { width:100%; height:auto; aspect-ratio:9/16; display:block;
+  border-radius:var(--r); background:var(--ink); }
+
 .method-grid { display:grid; gap:28px; }
 @media (min-width:1200px) { .method-grid { grid-template-columns:minmax(0,1fr) 380px; gap:72px; align-items:start; } }
 .method-text { max-width:720px; }
@@ -684,6 +694,25 @@ a.sr-only:focus { left:0; top:0; width:auto; height:auto; z-index:60;
           </ul>
           <a class="link" href="https://t.me/andrey_zakharevich" target="_blank" rel="noopener">Телеграм-канал автора</a>
         </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= видеоприглашение ================= -->
+  <section class="sec" id="invitation">
+    <div class="wrap">
+      <div class="inv rv">
+        <div>
+          <p class="eb">Приглашение</p>
+          <h2>Андрей Захаревич — лично</h2>
+          <p class="lead" style="margin:0;">Меньше минуты, от первого лица.</p>
+        </div>
+        <!-- preload="none": 10 МБ не должны грузиться, пока не нажали play -->
+        <video class="inv-video" controls preload="none" playsinline
+               poster="video/invitation-poster.webp" width="720" height="1280">
+          <source src="video/invitation.mp4" type="video/mp4">
+          Ваш браузер не воспроизводит видео — <a href="video/invitation.mp4">скачайте файл</a>.
+        </video>
       </div>
     </div>
   </section>
