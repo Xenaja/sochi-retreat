@@ -47,11 +47,10 @@
   --px:20px;
   --py:56px;
   --hh:60px;
-  --rail:28px;
   --r:8px;
   --ease:cubic-bezier(.22,1,.36,1);
 }
-@media (min-width:768px)  { :root { --px:48px;  --py:72px;  --hh:68px; --rail:34px; } }
+@media (min-width:768px)  { :root { --px:48px;  --py:72px;  --hh:68px; } }
 @media (min-width:1200px) { :root { --px:120px; --py:118px; --hh:76px; } }
 
 *, *::before, *::after { box-sizing:border-box; }
@@ -311,12 +310,8 @@ h3, .h3 { font-size:20px; line-height:1.26; margin:0 0 10px; }
 }
 
 /* ============================================================
-   Шкала дня
+   Ритм дня
    ============================================================ */
-.day { position:relative; padding-left:var(--rail); }
-.rail { position:absolute; left:0; top:6px; bottom:6px; width:2px; background:rgba(110,132,150,.3); }
-/* по умолчанию прочерчена — в прогресс её уводит только живая прокрутка */
-.rail i { position:absolute; inset:0; background:var(--sea-ink); transform:scaleY(1); transform-origin:top; }
 .slot { border-top:1px solid var(--line-soft); }
 .slot:first-of-type { border-top:0; }
 .slot-head { display:grid; gap:2px; }
@@ -335,6 +330,17 @@ h3, .h3 { font-size:20px; line-height:1.26; margin:0 0 10px; }
   .slot > summary { grid-template-columns:152px minmax(0,1fr); gap:6px 32px; padding:30px 0; }
   .slot .acc-panel { padding-left:184px; padding-bottom:30px; }
 }
+
+/* ---- ночные процессы: тёмная полоса во всю ширину экрана ----
+   Живёт отдельным блоком вне секции с паддингами: так полоса реально
+   доходит до краёв, без width:100vw (тот на Windows цепляет скроллбар). */
+.night { background:var(--ink); color:var(--foam); padding:clamp(40px,5vw,72px) var(--px); }
+.night-row { max-width:900px; display:grid; gap:6px; }
+@media (min-width:768px)  { .night-row { grid-template-columns:128px minmax(0,1fr); gap:6px 24px; } }
+@media (min-width:1200px) { .night-row { grid-template-columns:152px minmax(0,1fr); gap:6px 32px; } }
+.night .slot-t { color:var(--gold); }
+.night h3 { margin:0 0 8px; }
+.night p { margin:0; color:var(--foam); font-size:16px; }
 
 /* ============================================================
    Десктопные блоки варианта 4a
@@ -775,8 +781,6 @@ a.sr-only:focus { left:0; top:0; width:auto; height:auto; z-index:60;
       <h2 class="rv" style="max-width:700px; margin-bottom:36px;">Ритм дня на тренинге</h2>
 
       <div class="day" id="day" style="max-width:900px;">
-        <div class="rail" aria-hidden="true"><i id="railFill"></i></div>
-
         <details class="acc slot rv">
           <summary>
             <div class="slot-head"><div class="slot-t">08:00</div><h3>Зарядка и биоактивная йога</h3></div>
@@ -824,17 +828,27 @@ a.sr-only:focus { left:0; top:0; width:auto; height:auto; z-index:60;
           </summary>
           <div class="acc-panel"><p>До 22:00. Энергоактивное дыхание и практики погружения в медитативное состояние.</p></div>
         </details>
-
-        <details class="acc slot rv">
-          <summary>
-            <div class="slot-head"><div class="slot-t">23:00</div><h3>Ночные трансформационные процессы</h3></div>
-            <span class="acc-sign" aria-hidden="true"></span>
-          </summary>
-          <div class="acc-panel"><p>До 03:00, через день. Авторская методика Андрея Захаревича: набор энергии и формирование высокого энергетического потенциала. На следующее утро после ночной практики – мягкий режим.</p></div>
-        </details>
       </div>
+    </div>
+  </section>
 
-      <div class="rv" style="margin-top:48px; padding-top:36px; border-top:1px solid var(--line-soft);">
+  <!-- ================= ночные процессы: тёмная полоса во всю ширину ================= -->
+  <section class="night rv">
+    <div class="wrap">
+      <div class="night-row">
+        <div class="slot-t">23:00</div>
+        <div>
+          <h3>Ночные трансформационные процессы</h3>
+          <p>До 03:00, через день. Авторская методика Андрея Захаревича: набор энергии и формирование высокого энергетического потенциала. На следующее утро после ночной практики – мягкий режим.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= что входит в программу · CTA 4 ================= -->
+  <section class="sec">
+    <div class="wrap">
+      <div class="rv">
         <p class="eb">Что входит в программу</p>
         <p class="muted" style="max-width:var(--w-text); margin-bottom:26px;">Авторские названия практик — и что за ними стоит на самом деле.</p>
         <div class="grid g3 stack stg">
@@ -1375,8 +1389,6 @@ var LIVE   = document.visibilityState === 'visible';
 /* ---------- прокрутка: шапка, шкала дня, параллакс, липкая панель ---------- */
 (function(){
   var hd   = document.getElementById('hd');
-  var day  = document.getElementById('day');
-  var fill = document.getElementById('railFill');
   var img  = document.getElementById('heroImg');
   var hero = document.querySelector('.hero');
   var bar  = document.getElementById('mobileBar');
@@ -1388,12 +1400,6 @@ var LIVE   = document.visibilityState === 'visible';
     var y = window.pageYOffset || document.documentElement.scrollTop;
 
     if (hd) hd.classList.toggle('scrolled', y > 40);
-
-    if (day && fill && !REDUCE && LIVE) {
-      var r = day.getBoundingClientRect();
-      var p = (window.innerHeight * 0.7 - r.top) / r.height;
-      fill.style.transform = 'scaleY(' + Math.max(0, Math.min(1, p)) + ')';
-    }
 
     if (img && hero && !REDUCE) {
       var h = hero.offsetHeight;
