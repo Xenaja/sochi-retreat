@@ -204,9 +204,11 @@ h3, .h3 { font-size:20px; line-height:1.26; margin:0 0 10px; }
 /* ============================================================
    Хиро — эталон 2a (390px)
    ============================================================ */
-.hero { position:relative; height:700px; overflow:hidden; }
-@media (min-width:768px)  { .hero { height:620px; } }
-@media (min-width:1200px) { .hero { height:760px; } }
+/* во весь экран; svh — чтобы адресная строка на телефоне не дёргала высоту.
+   min-height держит контент, когда окно ниже, чем нужно заголовку и списку. */
+.hero { position:relative; height:100vh; height:100svh; min-height:620px; overflow:hidden; }
+@media (min-width:768px)  { .hero { min-height:640px; } }
+@media (min-width:1200px) { .hero { min-height:700px; } }
 .hero-ph { position:absolute; inset:0; overflow:hidden;
   filter:saturate(1.12) contrast(1.04) brightness(1.03); }
 .hero-ph img { position:absolute; left:0; top:-8%; width:100%; height:116%;
