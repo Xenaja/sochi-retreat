@@ -217,7 +217,13 @@ h3, .h3 { font-size:20px; line-height:1.26; margin:0 0 10px; }
   padding:0 var(--px); transition:background .25s ease, border-color .25s ease;
   border-bottom:1px solid transparent;
 }
-.hd-logo { font-family:'Prata',serif; font-size:15px; color:var(--foam); }
+.hd-logo { display:flex; align-items:center; }
+/* над хиро шапка прозрачная, а надпись в логотипе тёмная — там он идёт
+   сплошным кремовым силуэтом; на светлой шапке возвращается оригинал */
+.hd-logo img { display:block; width:auto; height:32px; filter:brightness(0) invert(1); }
+@media (min-width:768px)  { .hd-logo img { height:36px; } }
+@media (min-width:1200px) { .hd-logo img { height:42px; } }
+.hd.scrolled .hd-logo img { filter:none; }
 .hd nav { display:none; gap:30px; }
 .hd nav a, .hd .hd-cta { font-size:15px; color:var(--foam); }
 .hd .hd-cta { display:none; font-weight:500; border-bottom:1px solid rgba(246,242,236,.5); padding-bottom:2px; }
@@ -621,7 +627,9 @@ a.sr-only:focus { left:0; top:0; width:auto; height:auto; z-index:60;
 <a class="sr-only" href="#main">Перейти к содержанию</a>
 
 <header class="hd" id="hd">
-  <span class="hd-logo">Homo Unicum</span>
+  <a class="hd-logo" href="#main" aria-label="Homo Unicum — на главную">
+    <img src="visual/logo.png" alt="Homo Unicum" width="250" height="96">
+  </a>
   <nav id="navDesk">
     <a href="#author">Автор</a>
     <a href="#method">Метод</a>
@@ -1081,7 +1089,7 @@ a.sr-only:focus { left:0; top:0; width:auto; height:auto; z-index:60;
       <div class="collage stg">
         <div class="ph ph--plain"><img src="photos/r/g-terrace.webp" alt="Круг группы на террасе с видом на море" width="1190" height="1400" loading="lazy" decoding="async" style="object-position:center 45%;"></div>
         <div class="ph"><img src="photos/r/v-pool.webp" alt="Бассейн и территория центра" width="1600" height="1000" loading="lazy" decoding="async"></div>
-        <div class="ph"><img src="photos/r/v-gazebo.webp" alt="Беседка для практик на территории центра" width="1200" height="900" loading="lazy" decoding="async"></div>
+        <div class="ph ph--plain"><img src="photos/r/g-yoga.webp" alt="Утренняя йога на террасе с видом на море" width="1150" height="740" loading="lazy" decoding="async" style="object-position:50% 60%;"></div>
       </div>
 
       <div class="hr" style="margin:36px 0 30px;"></div>
