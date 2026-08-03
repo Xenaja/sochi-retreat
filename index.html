@@ -500,9 +500,16 @@ h3, .h3 { font-size:20px; line-height:1.26; margin:0 0 10px; }
 
 .word-grid { display:grid; gap:28px; }
 @media (min-width:1200px) { .word-grid { grid-template-columns:minmax(0,1fr) 420px; gap:80px; align-items:start; } }
-.word-ph { aspect-ratio:1/1; max-width:420px; margin-bottom:26px; }
+.word-ph { aspect-ratio:1/1; max-width:420px; }
 .word-q { margin:0 0 18px; font-size:26px; line-height:1.3; }
 @media (min-width:1200px) { .word-q { font-size:38px; } }
+/* абзацы вынесены из-под фото в отдельный блок на всю ширину секции:
+   в узкой 420px-колонке они читались как мелкая сноска (16-17px body)
+   рядом с 38px цитатой, а разная высота колонок квоты и фото+текст
+   давала пустой тёмный хвост снизу */
+.word-text { max-width:var(--w-text); margin-top:36px; padding-top:32px;
+  border-top:1px solid var(--line-foam); font-size:18px; line-height:1.55; }
+@media (min-width:1200px) { .word-text { margin-top:56px; font-size:21px; } }
 
 /* ---- приглашённый мастер ----
    Prata только у имени и цитаты; роль — Onest, иначе в колонке
@@ -1159,7 +1166,7 @@ a.sr-only:focus { left:0; top:0; width:auto; height:auto; z-index:60;
   <!-- ================= пауза: костёр ================= -->
   <figure class="bleed rv" style="height:44vh; min-height:240px;">
     <div class="ph">
-      <img src="photos/r/g-bonfire.webp" alt="Вечерний сбор группы у костра на берегу" width="1600" height="1200" loading="lazy" decoding="async" style="object-position:center 65%;">
+      <img src="photos/r/g-bonfire.webp" alt="Вечерний сбор группы у костра на берегу" width="1500" height="1469" loading="lazy" decoding="async" style="object-position:center 65%;">
     </div>
     <div class="scrim scrim--light"></div>
     <figcaption><div class="pr" style="font-size:28px; line-height:1.12;">Костёр на берегу</div></figcaption>
@@ -1168,7 +1175,7 @@ a.sr-only:focus { left:0; top:0; width:auto; height:auto; z-index:60;
   <!-- ================= отзывы ================= -->
   <section class="sec">
     <div class="wrap">
-      <h2 class="rv" style="max-width:760px; margin-bottom:36px;">Что говорят те, с кем работал Андрей Захаревич</h2>
+      <h2 class="rv" style="max-width:760px; margin-bottom:36px;">Что говорят те, кто побывал на программах Андрея Захаревича</h2>
 
       <p class="eb rv">Отзывы с ретрита в Вардане</p>
       <div class="grid g3 stg revs" style="margin-bottom:20px;">
@@ -1404,9 +1411,11 @@ a.sr-only:focus { left:0; top:0; width:auto; height:auto; z-index:60;
           <div class="ph ph--plain word-ph">
             <img src="photos/r/author-portrait.webp" alt="Андрей Захаревич" width="900" height="904" loading="lazy" decoding="async">
           </div>
-          <p>Всё то, что вы и так делаете — дышите, ходите, спите, говорите, управляете, планируете, распределяете, — вы можете делать во много раз эффективнее. Помогая себе и близким быть здоровыми и счастливыми в любой ситуации. Вот, собственно, и весь секрет.</p>
-          <p>Если чувствуете, что способны в своей жизни на большее, но нужен толчок для прорыва, — жду вас в Вардане.</p>
         </div>
+      </div>
+      <div class="word-text rv">
+        <p>Всё то, что вы и так делаете — дышите, ходите, спите, говорите, управляете, планируете, распределяете, — вы можете делать во много раз эффективнее. Помогая себе и близким быть здоровыми и счастливыми в любой ситуации. Вот, собственно, и весь секрет.</p>
+        <p>Если чувствуете, что способны в своей жизни на большее, но нужен толчок для прорыва, — жду вас в Вардане.</p>
       </div>
     </div>
   </section>
