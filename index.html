@@ -466,6 +466,16 @@ h3, .h3 { font-size:20px; line-height:1.26; margin:0 0 10px; }
   font-weight:500; font-size:13px; line-height:1; padding:8px 12px; border-radius:var(--r); }
 .rev-media button:hover .rev-watch { background:var(--foam); }
 .rev-media iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }
+/* видеоотзывы с ретрита: вертикальный кадр 9:16, играет по клику.
+   height:auto обязателен — атрибуты width/height у <video> это
+   презентационная подсказка CSS, при не-auto высоте aspect-ratio не работает */
+.rev-vid { margin:0; text-align:center; }
+/* ширину ограничиваем: без этого 9:16 в колонке 389px даёт 692px высоты
+   и ряд из трёх роликов занимает почти весь экран */
+.rev-vid video { display:block; width:100%; height:auto; max-width:320px; margin:0 auto;
+  aspect-ratio:9/16; border-radius:var(--r); background:var(--ink); }
+.rev-vid figcaption { margin-top:12px; }
+
 .rev-name { display:block; font-family:'Prata',serif; font-weight:400; font-size:20px; line-height:1.2; margin-top:14px; }
 @media (min-width:1200px) { .rev-name { font-size:22px; } }
 .rev-role { display:block; font-size:15px; color:var(--sea-ink); margin-top:4px; }
@@ -1131,6 +1141,30 @@ a.sr-only:focus { left:0; top:0; width:auto; height:auto; z-index:60;
   <section class="sec">
     <div class="wrap">
       <h2 class="rv" style="max-width:760px; margin-bottom:36px;">Что говорят те, с кем работал Андрей Захаревич</h2>
+
+      <p class="eb rv">С ретрита в Вардане</p>
+      <div class="grid g3 stg revs" style="margin-bottom:20px;">
+        <figure class="rev-vid">
+          <video controls preload="none" playsinline poster="video/review-1-poster.webp" width="720" height="1280">
+            <source src="video/review-1.mp4" type="video/mp4">
+          </video>
+          <figcaption class="rev-role">Участница ретрита</figcaption>
+        </figure>
+        <figure class="rev-vid">
+          <video controls preload="none" playsinline poster="video/review-2-poster.webp" width="720" height="1280">
+            <source src="video/review-2.mp4" type="video/mp4">
+          </video>
+          <figcaption class="rev-role">Участница ретрита</figcaption>
+        </figure>
+        <figure class="rev-vid">
+          <video controls preload="none" playsinline poster="video/review-3-poster.webp" width="720" height="1280">
+            <source src="video/review-3.mp4" type="video/mp4">
+          </video>
+          <figcaption class="rev-role">Участница ретрита</figcaption>
+        </figure>
+      </div>
+
+      <p class="eb rv" style="margin-top:44px; padding-top:32px; border-top:1px solid var(--line-soft);">С семинаров и мастер-классов</p>
       <div class="grid g3 stg" id="revGrid" style="gap:28px 16px; margin-bottom:32px;">
         <article class="rev">
           <div class="rev-media">
