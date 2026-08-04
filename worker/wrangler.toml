@@ -1,0 +1,6 @@
+name = "sochi-retreat-lead-form"
+main = "telegram-form-worker.js"
+compatibility_date = "2024-11-01"
+
+[vars]
+ALLOW_ORIGIN = "https://moresily.ru"
