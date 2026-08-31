@@ -7,16 +7,34 @@
  * Переменные окружения (Settings → Variables and Secrets):
  *   BOT_TOKEN    — токен бота от @BotFather (секрет)
  *   CHAT_ID      — chat_id получателя заявок
- *   ALLOW_ORIGIN — https://moresily.ru
+ *   ALLOW_ORIGIN — список разрешённых адресов через запятую
+ *
+ * ⚠️ Воркер обслуживает два лендинга: moresily.ru (тренинг Захаревича) и
+ * лендинг женского ретрита в Вардане. Заголовок Access-Control-Allow-Origin
+ * принимает ровно один адрес, поэтому origin запроса сверяется со списком
+ * и возвращается эхом. Заявки различаются префиксом в поле task: [сочи] и [тати].
  */
 
 export default {
   async fetch(request, env) {
-    const origin = env.ALLOW_ORIGIN || '*';
+    const allowed = String(env.ALLOW_ORIGIN || '*')
+      .split(',')
+      .map((v) => v.trim())
+      .filter(Boolean);
+    const reqOrigin = request.headers.get('Origin') || '';
+    // эхо только для адреса из списка; чужому уйдёт первый разрешённый,
+    // и его браузер честно отклонит ответ
+    const origin = allowed.includes('*')
+      ? '*'
+      : allowed.includes(reqOrigin)
+        ? reqOrigin
+        : allowed[0] || '';
     const cors = {
       'Access-Control-Allow-Origin': origin,
       'Access-Control-Allow-Methods': 'POST, OPTIONS',
       'Access-Control-Allow-Headers': 'Content-Type',
+      // без Vary промежуточный кеш отдаст второму лендингу заголовок первого
+      Vary: 'Origin',
     };
 
     if (request.method === 'OPTIONS') return new Response(null, { headers: cors });
@@ -44,8 +62,13 @@ export default {
     }
 
     const esc = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    // заголовок по префиксу задачи: иначе заявки двух ретритов приходят
+    // в один чат под одной шапкой и путаются
+    const title = task.startsWith('[тати]')
+      ? '🟢 <b>Заявка — женский ретрит в Вардане</b>'
+      : '🟢 <b>Заявка — Энергия моря и личной силы</b>';
     const text =
-      '🟢 <b>Заявка — Энергия моря и личной силы</b>\n\n' +
+      title + '\n\n' +
       `<b>Имя:</b> ${esc(name)}\n` +
       `<b>Контакт:</b> ${esc(contact)}\n` +
       (task ? `<b>Задача:</b> ${esc(task)}\n` : '') +

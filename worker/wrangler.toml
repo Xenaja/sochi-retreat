@@ -3,4 +3,5 @@ main = "telegram-form-worker.js"
 compatibility_date = "2024-11-01"
 
 [vars]
-ALLOW_ORIGIN = "https://moresily.ru"
+# два лендинга на одном воркере: боевой домен и страница ретрита на GitHub Pages
+ALLOW_ORIGIN = "https://moresily.ru,https://xenaja.github.io"
