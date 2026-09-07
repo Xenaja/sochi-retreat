@@ -9,3 +9,6 @@ photos/pavitra/
 Thumbs.db
 inv.mp4
 video/1707*.mp4
+
+# кеш wrangler: id аккаунта Cloudflare, в репозитории ему не место
+worker/.wrangler/
