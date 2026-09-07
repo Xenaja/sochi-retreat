@@ -4,4 +4,4 @@ compatibility_date = "2024-11-01"
 
 [vars]
 # два лендинга на одном воркере: боевой домен и страница ретрита на GitHub Pages
-ALLOW_ORIGIN = "https://moresily.ru,https://xenaja.github.io"
+ALLOW_ORIGIN = "https://moresily.ru,https://xenaja.github.io,https://kundalini.fest-sun.ru"

@@ -1,7 +1,7 @@
 import worker from 'file:///C:/Users/Acer/Documents/Projects/sochi-retreat-lending/Zakharevith/worker/telegram-form-worker.js';
 
 const ENV = {
-  ALLOW_ORIGIN: 'https://moresily.ru,https://xenaja.github.io',
+  ALLOW_ORIGIN: 'https://moresily.ru,https://xenaja.github.io,https://kundalini.fest-sun.ru',
   BOT_TOKEN: 'test-token',
   CHAT_ID: '1',
 };
@@ -34,6 +34,8 @@ check('preflight xenaja.github.io', r.headers.get('Access-Control-Allow-Origin')
 check('Vary выставлен', r.headers.get('Vary'), 'Origin');
 
 // чужой origin получает не свой адрес — браузер такой ответ отклонит
+r = await worker.fetch(req('https://kundalini.fest-sun.ru', null, 'OPTIONS'), ENV);
+check('preflight kundalini.fest-sun.ru', r.headers.get('Access-Control-Allow-Origin'), 'https://kundalini.fest-sun.ru');
 r = await worker.fetch(req('https://evil.example', null, 'OPTIONS'), ENV);
 check('чужой origin не проходит', r.headers.get('Access-Control-Allow-Origin'), 'https://moresily.ru');
 
